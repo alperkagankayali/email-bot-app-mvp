@@ -3,14 +3,16 @@ import React from "react";
 import { AreaChartOutlined } from "@ant-design/icons";
 import type { FormProps } from "antd";
 import { Button, Form, Input } from "antd";
-import Link from "next/link";
-
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 type FieldType = {
   username?: string;
   password?: string;
 };
 
 export default function Login() {
+  const t = useTranslations('pages');
+
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
   };
@@ -39,7 +41,7 @@ export default function Login() {
             autoComplete="off"
           >
             <Form.Item<FieldType>
-              label="Username"
+              label={t("Username")}
               name="username"
               rules={[
                 { required: true, message: "Please input your username!" },
@@ -49,7 +51,7 @@ export default function Login() {
             </Form.Item>
 
             <Form.Item<FieldType>
-              label="Password"
+              label={t("password")}
               name="password"
               rules={[
                 { required: true, message: "Please input your password!" },
@@ -63,8 +65,8 @@ export default function Login() {
               </Button>
             </Form.Item>
           </Form>
-          <Link href={'/reset-password'}>Şifremi Unuttum</Link> | 
-          <Link href={'/sginup'}>Kayıt Ol</Link>
+          <Link href={"/reset-password"}>Şifremi Unuttum</Link> |
+          <Link href={"/sginup"}>Kayıt Ol</Link>
         </div>
       </div>
     </div>

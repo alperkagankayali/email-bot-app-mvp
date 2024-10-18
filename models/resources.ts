@@ -1,14 +1,15 @@
-import { Schema, model, models } from "mongoose";
-
-const resourcesSchema = new Schema({
-  pages: {
-    type: Map,
-    of: Map, // Her sayfa, kendi içinde başka bir Map (alt alanlar) içerecek
-    required: true,
+import { Schema, Types, model, models } from "mongoose";
+interface IResource {
+  [key: string]: string; // Dinamik anahtar-değer çiftleri
+}
+const resourcesSchema = new Schema(
+  {
+    code: { type: String },
   },
-});
+  { strict: false }
+);
 
 const Resources =
-  models.Resources || model("Resources", resourcesSchema);
+  models.Resources || model<IResource>("Resources", resourcesSchema);
 
 export default Resources;
