@@ -1,9 +1,13 @@
 import Login from "@/components/login";
 
-export default async function Home() {
+export default async function Home({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   return (
-    <div className="">
-      <Login />
+    <div>
+      <Login locale={locale} />
     </div>
   );
 }

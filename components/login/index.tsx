@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { AreaChartOutlined, DownOutlined } from "@ant-design/icons";
+import { AreaChartOutlined } from "@ant-design/icons";
 import type { FormProps } from "antd";
 import { Form, Input, Select } from "antd";
 import { useTranslations } from "next-intl";
@@ -108,7 +108,7 @@ export default function Login({ locale }: IProps) {
             {language?.length > 0 && (
               <Select
                 labelInValue
-                defaultValue={language.find((e: any) => e.label === locale)}
+                defaultValue={language.find((e) => e.label === locale)}
                 style={{ width: 120 }}
                 onChange={handleMenuClick}
                 options={language}
