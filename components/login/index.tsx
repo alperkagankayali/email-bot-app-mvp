@@ -1,27 +1,62 @@
 "use client";
-import React from "react";
-import { AreaChartOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import { AreaChartOutlined, DownOutlined } from "@ant-design/icons";
 import type { FormProps } from "antd";
-import { Button, Form, Input } from "antd";
+import { Form, Input, Select } from "antd";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
+import { Button } from "antd";
+import { useRouter } from "@/i18n/routing";
 type FieldType = {
   username?: string;
   password?: string;
 };
 
-export default function Login() {
-  const t = useTranslations('pages');
+export type IProps = {
+  locale: string;
+};
+export type ISelect = {
+  id: string;
+  label: "en" | "de" | "tr";
+  value: string;
+};
 
+export default function Login({ locale }: IProps) {
+
+  const [language, setLanguage] = useState<any[]>([]);
+  const t = useTranslations("pages");
+  const router = useRouter();
+
+  const handleMenuClick = (e: ISelect) => {
+    router.push("/", { locale: e.label });
+  };
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
   };
+  useEffect(() => {
+    async function fetchPosts() {
+      let res = await fetch("http://localhost:3000/api/language/get");
+      let data = await res.json();
+      const newList = data.languages.map((e: any) => {
+        const newObj: any = {};
+        newObj.label = e.code;
+        newObj.value = e.name;
+        newObj.id = e._id;
+        return newObj;
+      });
+      setLanguage(newList);
+    }
+    fetchPosts();
+  }, []);
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
     errorInfo
   ) => {
     console.log("Failed:", errorInfo);
   };
+
+  if (!language) return <div>Loading...</div>;
+
   return (
     <div className="flex items-center h-screen justify-center">
       <div className="w-[500px] m-auto flex justify-center flex-col">
@@ -65,8 +100,21 @@ export default function Login() {
               </Button>
             </Form.Item>
           </Form>
-          <Link href={"/reset-password"}>Şifremi Unuttum</Link> |
-          <Link href={"/sginup"}>Kayıt Ol</Link>
+          <div className="flex justify-between">
+            <div>
+              <Link href={"/reset-password"}>Şifremi Unuttum</Link> {" | "}
+              <Link href={"/sginup"}>Kayıt Ol</Link>
+            </div>
+            {language?.length > 0 && (
+              <Select
+                labelInValue
+                defaultValue={language.find((e: any) => e.label === locale)}
+                style={{ width: 120 }}
+                onChange={handleMenuClick}
+                options={language}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>

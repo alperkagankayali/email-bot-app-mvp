@@ -1,9 +1,13 @@
 import Login from "@/components/login";
 
-export default function HomePage() {
+export default function HomePage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   return (
     <div>
-      <Login />
+      <Login locale={locale}/>
     </div>
   );
 }

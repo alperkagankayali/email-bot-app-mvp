@@ -31,5 +31,5 @@ async function handleAPIMiddleware(req: NextRequest) {
 
 // Middleware için matcher
 export const config = {
-  matcher: ['/', '/(de|en)/:path*', '/api/:path*'], // Hem i18n rotaları hem de API için matcher
+  matcher: ['/', '/(de|en|tr)/:path*', '/api/:path*'], // Hem i18n rotaları hem de API için matcher
 };
