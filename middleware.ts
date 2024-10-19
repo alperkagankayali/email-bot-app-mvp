@@ -1,25 +1,38 @@
 import createMiddleware from "next-intl/middleware";
-import { routing } from "@/i18n/routing";
 import { NextRequest, NextResponse } from "next/server";
-
-const i18nMiddleware = createMiddleware(routing);
+import { getLanguage } from "./services/service/generalService";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
-  // 1. API isteklerini kontrol ediyoruz
-  if (pathname.startsWith('/api')) {
-    // API istekleri için özel bir middleware işlemi uygulayacağız
-    return handleAPIMiddleware(req);
+  const currentUser = req.cookies.get("currentUser")?.value;
+  let defaultLocale = req.headers.get("accept-language") || "en";
+  defaultLocale = defaultLocale.includes("*") ? "en" : defaultLocale;
+  const resLanguage = await getLanguage();
+  const locales: string[] = [];
+  
+  if (!!resLanguage.data) {
+    resLanguage.data?.forEach((element: any) => {
+      locales.push(element.code);
+    });
   }
 
-  // 2. i18n middleware'i çalıştırıyoruz (API dışındaki tüm istekler için)
-  return i18nMiddleware(req);
+  if (pathname.startsWith("/api")) {
+    return handleAPIMiddleware(req);
+  } 
+  
+  else if (!currentUser && !req.nextUrl.pathname.startsWith("/")) {
+    return Response.redirect(new URL(`/`, req.url));
+  }
+  const handleI18nRouting = createMiddleware({
+    locales: locales.length > 0 ? locales : ["en", "de", "tr"],
+    defaultLocale,
+  });
+  const response = handleI18nRouting(req);
+
+  return response;
 }
 
-// API middleware fonksiyonu
 async function handleAPIMiddleware(req: NextRequest) {
-  
   // const apiKey = req.headers.get('x-api-key'); // API anahtarı kontrolü
   // if (!apiKey || apiKey !== 'expected-api-key') {
   //   return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -31,5 +44,5 @@ async function handleAPIMiddleware(req: NextRequest) {
 
 // Middleware için matcher
 export const config = {
-  matcher: ['/', '/(de|en|tr)/:path*', '/api/:path*'], // Hem i18n rotaları hem de API için matcher
+  matcher: ["/", "/(de|en|tr)/:path*", "/api/:path*"], // Hem i18n rotaları hem de API için matcher
 };

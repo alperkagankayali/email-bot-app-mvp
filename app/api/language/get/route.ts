@@ -10,9 +10,10 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json({
-      success: true,
-      message: "Veri başarıyla alındı",
-      languages,
+      message: "User information error. Authentication failed.",
+      color: "danger",
+      status: 200,
+      data: languages,
     });
   } catch (error) {
     console.error("Hata:", error);
