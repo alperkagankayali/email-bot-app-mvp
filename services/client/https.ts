@@ -3,7 +3,7 @@ import axios from 'axios'
 
 let instance = axios.create({
   headers: {
-    Authorization: `Bearer ${localStorage.getItem('access_token')}`
+    Authorization: ""
   }
 })
 

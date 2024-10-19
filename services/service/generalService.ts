@@ -12,9 +12,9 @@ export const getLanguage = async () => {
   return result;
 };
 
-export const getResource = async (params: { code: string }) => {
+export const getResource = async (code: string) => {
   const url =
-    servicesBaseUrl + finalConfig.CREATE_RESOURCES + jsonToQueryString(params);
+    servicesBaseUrl + finalConfig.GET_RESOURCES + jsonToQueryString({ code });
   const config = headers.content_type.application_json;
   const result = await getRequest(url, config);
   return result;

@@ -6,6 +6,7 @@ export interface IUser {
   email: string;
   language: string;
   department: string;
+  password: string;
   userType: "admin" | "user" | "superadmin";
 }
 
@@ -16,15 +17,14 @@ export interface IUserAction {
   actionDate: Date;
 }
 
-
 export interface IUserTrainingAssignment {
-  userId: IUser,
-  educationId: string,
+  userId: IUser;
+  educationId: string;
 }
 
-export interface IUserTrainingHistory{
-  userId: IUser,
-  educationId: string,
-  status: "not_completed" | "in_progress" | "completed"
-  created_at:Date
+export interface IUserTrainingHistory {
+  userId: IUser;
+  educationId: string;
+  status: "not_completed" | "in_progress" | "completed";
+  created_at: Date;
 }

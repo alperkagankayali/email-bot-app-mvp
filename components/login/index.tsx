@@ -7,9 +7,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Button } from "antd";
 import { useRouter } from "@/i18n/routing";
-import { increase } from "@/redux/slice/counter";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { getLanguage } from "@/services/service/generalService";
+
 type FieldType = {
   username?: string;
   password?: string;
@@ -38,10 +37,9 @@ export default function Login({ locale }: IProps) {
   };
   
   useEffect(() => {
-    async function fetchPosts() {
-      let res = await fetch("http://localhost:3000/api/language/get");
-      let data = await res.json();
-      const newList = data.languages.map((e: any) => {
+    async function fetchResource() {
+      let res = await getLanguage();
+      const newList = res.languages.map((e: any) => {
         const newObj: any = {};
         newObj.label = e.code;
         newObj.value = e.name;
@@ -50,7 +48,7 @@ export default function Login({ locale }: IProps) {
       });
       setLanguage(newList);
     }
-    fetchPosts();
+    fetchResource();
   }, []);
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (

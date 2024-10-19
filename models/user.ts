@@ -12,8 +12,10 @@ const userSchema = new Schema<IUser>({
     enum: ["user", "admin", "superadmin"],
     required: true,
   },
+  password:{ type: String },
 });
 
 const User = models.User || model<IUser>("User", userSchema);
 
 export default User;
+
