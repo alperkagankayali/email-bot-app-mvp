@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 import "../globals.css";
+import StoreProvider from "../StoreProvider";
 
 export const metadata: Metadata = {
   title: "Kliniker",
@@ -21,11 +22,13 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} >
+    <html lang={locale}>
       <body>
-        <NextIntlClientProvider messages={messages}>
-          <AntdRegistry>{children}</AntdRegistry>
-        </NextIntlClientProvider>
+        <StoreProvider>
+          <NextIntlClientProvider messages={messages}>
+            <AntdRegistry>{children}</AntdRegistry>
+          </NextIntlClientProvider>
+        </StoreProvider>
       </body>
     </html>
   );

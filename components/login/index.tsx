@@ -7,6 +7,9 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Button } from "antd";
 import { useRouter } from "@/i18n/routing";
+import { increase } from "@/redux/slice/counter";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 type FieldType = {
   username?: string;
   password?: string;
@@ -22,17 +25,18 @@ export type ISelect = {
 };
 
 export default function Login({ locale }: IProps) {
-
   const [language, setLanguage] = useState<any[]>([]);
   const t = useTranslations("pages");
   const router = useRouter();
 
+  
   const handleMenuClick = (e: ISelect) => {
     router.push("/", { locale: e.label });
   };
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
   };
+  
   useEffect(() => {
     async function fetchPosts() {
       let res = await fetch("http://localhost:3000/api/language/get");
