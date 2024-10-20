@@ -47,7 +47,7 @@ export default function Login({ locale }: IProps) {
 
   useEffect(() => {
     async function fetchResource() {
-      let res = await getLanguage();
+      const res :any= await getLanguage();
       const newList = res.data.map((e: any) => {
         const newObj: any = {};
         newObj.label = e.code;

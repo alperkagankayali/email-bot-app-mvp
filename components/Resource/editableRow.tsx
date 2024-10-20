@@ -1,15 +1,23 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import type { TableProps } from "antd";
-import { Form, Input, InputNumber, Popconfirm, Table, Typography } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Popconfirm,
+  Table,
+  Typography,
+} from "antd";
 import { PaginationType } from "@/types/paginationType";
 import {
-  getResource,
   getResourceAll,
   updateResource,
 } from "@/services/service/generalService";
+import AddResource from "./addResources";
 
-interface DataType {
+export interface DataType {
   key: string;
   langKey: string;
   value: string;
@@ -30,8 +38,8 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   dataIndex,
   title,
   inputType,
-  record,
-  index,
+  // record,
+  // index,
   children,
   ...restProps
 }) => {
@@ -76,24 +84,19 @@ const ResourceTable: React.FC = () => {
   };
 
   const [pagination, setPagination] = useState<PaginationType>();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchLanguage() {
-      let res = await getResourceAll(10, 1, "");
-      const data: any = [];
-      const responseData = res.data.reduce((acc: any, item: any) => {
-        Object.entries(item).forEach(([key, value]) => {
-          if (!["_id", "__v", "code"].includes(key)) {
-            // Sabit alanları hariç tut
-            acc.langKey = key;
-            acc.value = value; // Anahtar-değer çiftlerini birleştir
-            data.push({ langKey: key, value, key: item._id, code: item.code });
-          }
-        });
-        return acc;
-      }, {});
-      console.log("responseData", responseData);
-      setData(data);
+      const res: any = await getResourceAll(10, 1, "");
+      const newData = res.data.map((e: any) => {
+        return {
+          ...e,
+          langKey: e.key,
+          key: e._id,
+        };
+      });
+      setData(newData);
       setPagination(res.pagination);
     }
     fetchLanguage();
@@ -102,12 +105,11 @@ const ResourceTable: React.FC = () => {
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as DataType;
-      const updateRes = await updateResource(
-        key as any,
-        row.langKey,
-        row.value
-      );
-      console.log("key", key);
+      const updateRes = await updateResource(key as any, {
+        key: row.langKey,
+        value: row.value,
+      });
+      console.log("key", updateRes);
       const newData = [...data];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -187,20 +189,64 @@ const ResourceTable: React.FC = () => {
       }),
     };
   });
+  const handleAdd = (newData: DataType) => {
+    setIsModalOpen(!isModalOpen);
+    console.log('newdata',[...data, newData])
+    setData([...data, newData]);
+  };
+  const onChange: TableProps<DataType>["onChange"] = async (
+    pagination
+    // filters,
+    // sorter,
+    // extra
+  ) => {
+    const res: any = await getResourceAll(
+      pagination.pageSize,
+      pagination.current
+    );
+    const newData = res.data.map((e: any) => {
+      return {
+        ...e,
+        langKey: e.key,
+        key: e._id,
+      };
+    });
+    setData(newData);
+  };
 
   return (
-    <Form form={form} component={false}>
-      <Table<DataType>
-        components={{
-          body: { cell: EditableCell },
-        }}
-        bordered
-        dataSource={data}
-        columns={mergedColumns}
-        rowClassName="editable-row"
-        pagination={{ onChange: cancel }}
+    <div>
+      <Button
+        onClick={() => setIsModalOpen(true)}
+        type="primary"
+        style={{ marginBottom: 16 }}
+      >
+        Add a resource
+      </Button>
+      <Form form={form} component={false}>
+        <Table<DataType>
+          components={{
+            body: { cell: EditableCell },
+          }}
+          bordered
+          dataSource={data}
+          columns={mergedColumns}
+          rowClassName="editable-row"
+          onChange={onChange}
+          pagination={{
+            defaultPageSize: 10,
+            pageSizeOptions: ["10", "20", "30"],
+            total: pagination?.totalItems,
+            onChange: cancel,
+          }}
+        />
+      </Form>
+      <AddResource
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        handleAdd={handleAdd}
       />
-    </Form>
+    </div>
   );
 };
 

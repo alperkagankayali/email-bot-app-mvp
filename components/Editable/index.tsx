@@ -201,9 +201,9 @@ const Editable: React.FC = () => {
 
   const onChange: TableProps<DataType>["onChange"] = async (
     pagination,
-    filters,
-    sorter,
-    extra
+    // filters,
+    // sorter,
+    // extra
   ) => {
     let res = await getLanguage(pagination.pageSize, pagination.current, false);
     setDataSource(

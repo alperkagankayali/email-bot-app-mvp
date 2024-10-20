@@ -28,14 +28,14 @@ const resourceSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(fetcResources.pending, (state, action) => {
+      .addCase(fetcResources.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetcResources.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.resource = action.payload;
       })
-      .addCase(fetcResources.rejected, (state, action) => {
+      .addCase(fetcResources.rejected, (state) => {
         state.status = "failed";
       });
   },
@@ -43,7 +43,7 @@ const resourceSlice = createSlice({
 
 const fetcResources = createAsyncThunk(
   "resource/get",
-  async (code: string, thunkAPI) => {
+  async (code: string) => {
     const response = await getResource(code);
     return response.data;
   }

@@ -4,3 +4,9 @@ export interface IResource {
 interface Pages {
   [key: string]: string;
 }
+
+export interface IResourceDb {
+  code: string;
+  key: string;
+  value: string;
+}

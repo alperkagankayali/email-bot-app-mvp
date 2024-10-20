@@ -1,15 +1,13 @@
-import { Schema, Types, model, models } from "mongoose";
-interface IResource {
-  [key: string]: string; // Dinamik anahtar-değer çiftleri
-}
-const resourcesSchema = new Schema(
-  {
-    code: { type: String },
-  },
-  { strict: false }
-);
+import { IResourceDb } from "@/types/resourcesType";
+import { Schema, model, models } from "mongoose";
+
+const resourcesSchema = new Schema<IResourceDb>({
+  code: { type: String },
+  key: { type: String },
+  value: { type: String },
+});
 
 const Resources =
-  models.Resources || model<IResource>("Resources", resourcesSchema);
+  models.Resources || model<IResourceDb>("Resources", resourcesSchema);
 
 export default Resources;
