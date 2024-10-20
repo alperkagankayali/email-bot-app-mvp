@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { AreaChartOutlined, MailOutlined } from "@ant-design/icons";
+import { MailOutlined } from "@ant-design/icons";
 import type { FormProps } from "antd";
 import { Form, Input, Select } from "antd";
-import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Button } from "antd";
 import { useRouter } from "@/i18n/routing";
@@ -28,7 +27,6 @@ export type ISelect = {
 
 export default function Login({ locale }: IProps) {
   const [language, setLanguage] = useState<any[]>([]);
-  const t = useTranslations("pages");
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -40,7 +38,7 @@ export default function Login({ locale }: IProps) {
     if (!!values.password && values.password?.length > 3 && !!values.username) {
       const res = await handleLogin(values.username, values.password);
       if (res.status === 200) {
-        localStorage.setItem('token',JSON.stringify(res.data.token))
+        localStorage.setItem("token", JSON.stringify(res.data.token));
         dispatch(userInfo(res.data.user));
         router.push("/dashboard");
       }

@@ -1,6 +1,7 @@
 import connectToDatabase from "@/lib/mongoose";
 import Languages from "@/models/languages";
 import { NextResponse } from "next/server";
+export const dynamic = 'force-dynamic'; // <- add this to force dynamic render
 
 export async function GET(request: Request) {
   try {

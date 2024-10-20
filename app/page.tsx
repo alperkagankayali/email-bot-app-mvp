@@ -1,13 +1,6 @@
-import Login from "@/components/login";
+import { redirect } from "next/navigation";
 
-export default async function Home({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) {
-  return (
-    <div>
-      <Login locale={locale} />
-    </div>
-  );
+// This page only renders when the app is built statically (output: 'export')
+export default function RootPage() {
+  redirect("/en");
 }
