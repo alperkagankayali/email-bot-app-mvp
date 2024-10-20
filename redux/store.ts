@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import resourceSlice from "@/redux/slice/resource";
-
+import user from "@/redux/slice/user";
 export const makeStore = () => {
   return configureStore({
-    reducer: { resource: resourceSlice },
+    reducer: { resource: resourceSlice, user },
   });
 };
 

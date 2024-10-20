@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 const bcrypt = require("bcryptjs");
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-const { createKey, createCodec } = require("json-crypto");
+const {  createCodec } = require("json-crypto");
 
 export async function POST(request: Request) {
   try {

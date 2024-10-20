@@ -9,6 +9,8 @@ import { Button } from "antd";
 import { useRouter } from "@/i18n/routing";
 import { getLanguage, handleLogin } from "@/services/service/generalService";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { userInfo } from "@/redux/slice/user";
 
 type FieldType = {
   username?: string;
@@ -28,15 +30,19 @@ export default function Login({ locale }: IProps) {
   const [language, setLanguage] = useState<any[]>([]);
   const t = useTranslations("pages");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleMenuClick = (e: ISelect) => {
     router.push("/", { locale: e.label });
   };
+
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!!values.password && values.password?.length > 3 && !!values.username) {
       const res = await handleLogin(values.username, values.password);
-      if(res.status === 200) {
-        router.push('/dashboard')
+      if (res.status === 200) {
+        localStorage.setItem('token',JSON.stringify(res.data.token))
+        dispatch(userInfo(res.data.user));
+        router.push("/dashboard");
       }
     }
   };

@@ -1,30 +1,34 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { getLanguage } from "./services/service/generalService";
+const cache = new Map();
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
   const currentUser = req.cookies.get("currentUser")?.value;
   let defaultLocale = req.headers.get("accept-language") || "en";
   defaultLocale = defaultLocale.includes("*") ? "en" : defaultLocale;
-  const resLanguage = await getLanguage();
-  const locales: string[] = [];
-  
-  if (!!resLanguage.data) {
-    resLanguage.data?.forEach((element: any) => {
-      locales.push(element.code);
-    });
+  const languageCookie = cache.get("locales");
+
+  if (languageCookie === null || languageCookie === undefined) {
+    const resLanguage = await getLanguage();
+    const locales: string[] = [];
+    if (!!resLanguage?.data) {
+      resLanguage.data?.forEach((element: any) => {
+        locales.push(element.code);
+      });
+      cache.set("locales", locales);
+    }
   }
 
   if (pathname.startsWith("/api")) {
     return handleAPIMiddleware(req);
-  } 
-  
-  else if (!currentUser && !req.nextUrl.pathname.startsWith("/")) {
+  } else if (!currentUser && !req.nextUrl.pathname.startsWith("/")) {
     return Response.redirect(new URL(`/`, req.url));
   }
   const handleI18nRouting = createMiddleware({
-    locales: locales.length > 0 ? locales : ["en", "de", "tr"],
+    locales: !!languageCookie ? languageCookie : ["en", "de", "tr"],
     defaultLocale,
   });
   const response = handleI18nRouting(req);

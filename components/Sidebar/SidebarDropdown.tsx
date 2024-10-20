@@ -1,6 +1,6 @@
 import React from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Link } from "@/i18n/routing";
 
 const SidebarDropdown = ({ item }: any) => {
   const pathname = usePathname();
