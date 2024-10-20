@@ -106,7 +106,7 @@ const menuGroups = [
         label: "Dil Ayarları",
         route: "#",
         children: [
-          { label: "Diller", route: "/dashboard/language" },
+          { label: "Diller", route: "/dashboard/languages" },
           { label: "Dil Kaynakları", route: "/dashboard/resource" },
         ],
       },

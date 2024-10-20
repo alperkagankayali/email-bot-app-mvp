@@ -1,7 +1,11 @@
 {
   "GET_LANGUAGES": "/language/get",
   "GET_RESOURCES": "/resource/get",
+  "GET_ALL_RESOURCES": "/resource/getAll",
   "CREATE_LANGUAGE":"/language",
   "CREATE_RESOURCES":"/resource",
-  "LOGIN":"/user/login"
+  "LOGIN":"/user/login",
+  "UPDATE_LANGUAGE":"/language/update",
+  "UPDATE_RESOURCE":"/resource/update"
+
 }

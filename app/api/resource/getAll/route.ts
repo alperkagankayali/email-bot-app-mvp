@@ -1,32 +1,26 @@
 import connectToDatabase from "@/lib/mongoose";
-import Languages from "@/models/languages";
+import Resources from "@/models/resources";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
     await connectToDatabase();
     const { searchParams } = new URL(request.url);
-    const isActive = searchParams.get("isActive"); // Varsayılan 1. sayfa
+    const code = searchParams.get("code");
     const page = parseInt(searchParams.get("page") || "1"); // Varsayılan 1. sayfa
     const limit = parseInt(searchParams.get("limit") || "10"); // Varsayılan limit 10
     const skip = (page - 1) * limit; //
-    const total = await Languages.countDocuments();
-    const languages = await Languages.find(
-      !!isActive && JSON.parse(isActive || "") 
-        ? { isActive: true }
-        : {}
-    )
+    const total = await Resources.countDocuments();
+    const resources = await Resources.find(!!code ? { code: code } : {})
       .sort({
         created_at: "asc",
       })
       .skip(skip)
       .limit(limit);
-
     return NextResponse.json({
-      message: "Success data.",
-      color: "success",
-      status: 200,
-      data: languages,
+      success: true,
+      message: "Veri başarıyla alındı",
+      data: resources,
       pagination: {
         totalPages: Math.ceil(total / limit),
         currentPage: page,

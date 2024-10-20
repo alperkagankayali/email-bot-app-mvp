@@ -5,16 +5,17 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     await connectToDatabase();
-    const body = await request.json();
-    
-    const language = new Languages({
-      ...body,
-    });
-    const languageCreated = await Languages.insertMany(body);
+    const { id, updateData } = await request.json();
+    const updateLanguage = await Languages.findOneAndUpdate(
+      { _id: id }, // Güncellenecek kaydı bulmak için filtre
+      { $set: updateData }, // Güncellenecek veriler
+      { new: true } // Güncellenmiş veriyi döndür
+    );
+
     return NextResponse.json({
       success: true,
       message: "Veri başarıyla alındı",
-      languageCreated,
+      data: updateLanguage,
     });
   } catch (error) {
     console.error("Hata:", error);
