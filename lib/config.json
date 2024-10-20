@@ -2,5 +2,6 @@
   "GET_LANGUAGES": "/language/get",
   "GET_RESOURCES": "/resource/get",
   "CREATE_LANGUAGE":"/language",
-  "CREATE_RESOURCES":"/resource"
+  "CREATE_RESOURCES":"/resource",
+  "LOGIN":"/user/login"
 }

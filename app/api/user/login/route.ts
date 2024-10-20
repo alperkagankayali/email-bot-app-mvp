@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 const bcrypt = require("bcryptjs");
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-const { createKey, createCodec } = require("json-crypto");
+const {  createCodec } = require("json-crypto");
 
 export async function POST(request: Request) {
   try {
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
       const userSesion = { isLoggedIn: true, token, ...user };
 
       const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
-      cookies().set("session", encryptedSessionData, {
+      cookies().set("currentUser", encryptedSessionData, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 60 * 60 * 24 * 7, // One week
@@ -44,8 +44,9 @@ export async function POST(request: Request) {
 
       console.log(codec.decrypt(encryptedSessionData));
       return NextResponse.json({
-        success: true,
-        message: "Veri başarıyla alındı",
+        message: "User information error. Authentication failed.",
+        color: "danger",
+        status: 200,
         data: { token: token, type: "Bearer", user: user },
       });
     } else {
