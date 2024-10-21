@@ -6,7 +6,7 @@ import { getResource } from "@/services/service/generalService";
 export default getRequestConfig(async ({ locale }) => {
   if (!routing.locales.includes(locale as any)) notFound();
   const res: any = await getResource(locale);
-
+  console.log("res.data", res.data);
   if (!!res.data) {
     return {
       messages: res.data,

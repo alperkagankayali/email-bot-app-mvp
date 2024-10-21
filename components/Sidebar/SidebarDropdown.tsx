@@ -1,9 +1,11 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 const SidebarDropdown = ({ item }: any) => {
   const pathname = usePathname();
+  const t = useTranslations("pages");
 
   return (
     <>
@@ -16,7 +18,7 @@ const SidebarDropdown = ({ item }: any) => {
                 pathname === item.route ? "text-white" : ""
               }`}
             >
-              {item.label}
+              {t(item.label)}
             </Link>
           </li>
         ))}

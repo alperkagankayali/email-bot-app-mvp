@@ -45,7 +45,7 @@ const fetcResources = createAsyncThunk(
   "resource/get",
   async (code: string) => {
     const response = await getResource(code);
-    return response.data;
+    return !!response.data ? response.data : {};
   }
 );
 

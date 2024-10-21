@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import type { GetRef, InputRef, TableProps } from "antd";
-import { Checkbox, Form, Input, notification, Popconfirm, Table } from "antd";
+import { Checkbox, Form, notification, Table } from "antd";
 import { getLanguage, updateLanguage } from "@/services/service/generalService";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { PaginationType } from "@/types/paginationType";
@@ -21,6 +21,7 @@ interface EditableRowProps {
   index: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
   const [form] = Form.useForm();
   return (
@@ -41,6 +42,7 @@ interface EditableCellProps {
 }
 
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   title,
   editable,
   children,
@@ -72,7 +74,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
       if (res.success) {
         notification.open({
           message: "Başarıyla Kaydedildi",
-          description: res.data.name + " dili alanı güncellendi",
+          description: res?.data?.name + " dili alanı güncellendi",
         });
       }
       toggleEdit();
@@ -119,7 +121,6 @@ interface DataType {
   isActive: boolean;
 }
 
-
 type ColumnTypes = Exclude<TableProps<DataType>["columns"], undefined>;
 
 const Editable: React.FC = () => {
@@ -128,17 +129,18 @@ const Editable: React.FC = () => {
 
   useEffect(() => {
     async function fetchLanguage() {
-      let res = await getLanguage(10, 1, false);
-      setDataSource(
-        res.data.map((e: any) => {
-          return { ...e, key: e._id };
-        })
-      );
-      setPagination(res.pagination);
+      const res: any = await getLanguage(10, 1, false);
+      if (!!res?.data) {
+        setDataSource(
+          res.data.map((e: any) => {
+            return { ...e, key: e._id };
+          })
+        );
+        setPagination(res.pagination);
+      }
     }
     fetchLanguage();
   }, []);
-
 
   const defaultColumns: (ColumnTypes[number] & {
     editable?: boolean;
@@ -200,17 +202,23 @@ const Editable: React.FC = () => {
   });
 
   const onChange: TableProps<DataType>["onChange"] = async (
-    pagination,
+    pagination
     // filters,
     // sorter,
     // extra
   ) => {
-    let res = await getLanguage(pagination.pageSize, pagination.current, false);
-    setDataSource(
-      res.data.map((e: any) => {
-        return { ...e, key: e._id };
-      })
+    const res: any = await getLanguage(
+      pagination.pageSize,
+      pagination.current,
+      false
     );
+    if (!!res?.data) {
+      setDataSource(
+        res.data.map((e: any) => {
+          return { ...e, key: e._id };
+        })
+      );
+    }
   };
 
   return (

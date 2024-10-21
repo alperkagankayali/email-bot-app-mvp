@@ -4,7 +4,10 @@ import finalConfig from "@/lib/config.json";
 import headers from "@/lib/header.json";
 import { IResourceDb } from "@/types/resourcesType";
 
-const servicesBaseUrl = "http://localhost:3000/api";
+const servicesBaseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://email-bot-app-mvp-mx28.vercel.app/api"
+    : `http://localhost:${process.env.PORT || 3000}/api`;
 
 export const getLanguage = async (limit = 10, page = 1, isActive = true) => {
   const queryParams = jsonToQueryString({ isActive, limit, page });

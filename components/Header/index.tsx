@@ -2,11 +2,27 @@ import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
 import DropdownUser from "./DropdownUser";
 import Image from "next/image";
+import { Select } from "antd";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useLocale } from "next-intl";
+import { useRouter } from "@/i18n/routing";
+import { usePathname } from "next/navigation";
 
+const { Option } = Select;
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
+  const languages = useSelector((state: RootState) => state.language.language);
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleMenuClick = (e: any) => {
+    debugger;
+    router.push("/"+pathname.slice(3,pathname.length), { locale: e });
+  };
   return (
     <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
@@ -64,13 +80,20 @@ const Header = (props: {
           </Link>
         </div>
 
-        <div className="hidden sm:block">
-        
-        </div>
+        <div className="hidden sm:block"></div>
 
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
             <DarkModeSwitcher />
+            <Select defaultValue={locale} onChange={handleMenuClick}>
+              {languages.map((e) => {
+                return (
+                  <Option key={e.code} value={e.code}>
+                    {e.name}
+                  </Option>
+                );
+              })}
+            </Select>
           </ul>
 
           <DropdownUser />

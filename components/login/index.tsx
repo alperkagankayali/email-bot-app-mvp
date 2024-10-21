@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { MailOutlined } from "@ant-design/icons";
 import type { FormProps } from "antd";
-import { Form, Input, Select } from "antd";
+import { Form, Input, Select ,notification} from "antd";
 import { Link } from "@/i18n/routing";
 import { Button } from "antd";
 import { useRouter } from "@/i18n/routing";
@@ -10,6 +10,7 @@ import { getLanguage, handleLogin } from "@/services/service/generalService";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { userInfo } from "@/redux/slice/user";
+import { useTranslations } from "next-intl";
 
 type FieldType = {
   username?: string;
@@ -29,6 +30,7 @@ export default function Login({ locale }: IProps) {
   const [language, setLanguage] = useState<any[]>([]);
   const router = useRouter();
   const dispatch = useDispatch();
+  const t = useTranslations("pages");
 
   const handleMenuClick = (e: ISelect) => {
     router.push("/", { locale: e.label });
@@ -38,16 +40,23 @@ export default function Login({ locale }: IProps) {
     if (!!values.password && values.password?.length > 3 && !!values.username) {
       const res = await handleLogin(values.username, values.password);
       if (res.status === 200) {
-        localStorage.setItem("token", JSON.stringify(res.data.token));
+        localStorage.setItem("user", JSON.stringify(res.data));
         dispatch(userInfo(res.data.user));
         router.push("/dashboard");
+      }
+      else{
+        notification.open({
+          type:'error',
+          message: t('login-failed'),
+          description: t('login-failedDesc'),
+        });
       }
     }
   };
 
   useEffect(() => {
     async function fetchResource() {
-      const res :any= await getLanguage();
+      const res: any = await getLanguage();
       const newList = res.data.map((e: any) => {
         const newObj: any = {};
         newObj.label = e.code;
@@ -102,10 +111,7 @@ export default function Login({ locale }: IProps) {
                     />
                   )}
                 </div>
-                <p className="2xl:px-20">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                  suspendisse.
-                </p>
+                <p className="2xl:px-20">{t("login-description")}</p>
 
                 <span className="mt-15 inline-block">
                   <Image
@@ -122,7 +128,7 @@ export default function Login({ locale }: IProps) {
             <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
               <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
                 <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                  Sign In to Email Bot MVP
+                  {t("login-title")}
                 </h2>
 
                 <Form
@@ -134,7 +140,7 @@ export default function Login({ locale }: IProps) {
                 >
                   <div className="mb-4">
                     <label className="mb-2.5 block font-medium text-black dark:text-white">
-                      Email
+                      {t("login-emailInput")}
                     </label>
                     <div className="relative">
                       <Form.Item<FieldType>
@@ -142,7 +148,7 @@ export default function Login({ locale }: IProps) {
                         rules={[
                           {
                             required: true,
-                            message: "Please input your username!",
+                            message: t("login-emailError"),
                           },
                         ]}
                       >
@@ -160,7 +166,7 @@ export default function Login({ locale }: IProps) {
 
                   <div className="mb-6">
                     <label className="mb-2.5 block font-medium text-black dark:text-white">
-                      Password
+                      {t("login-passwordInput")}
                     </label>
 
                     <div className="relative">
@@ -169,13 +175,12 @@ export default function Login({ locale }: IProps) {
                         rules={[
                           {
                             required: true,
-                            message: "Please input your password!",
+                            message: t("login-passwordError"),
                           },
                         ]}
                       >
                         <Input.Password
                           size="large"
-                          // variant="borderless"
                           placeholder="6+ Characters, 1 Capital letter"
                           className="w-full rounded-lg border border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
@@ -185,16 +190,16 @@ export default function Login({ locale }: IProps) {
                           htmlType="submit"
                           className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
                         >
-                          Sign In
+                          {t("login-loginButton")}
                         </Button>
                       </Form.Item>
                     </div>
                   </div>
                   <div className="mt-6 text-center">
                     <p>
-                      Don’t have any account?{" "}
+                      {t("login-otherAccount") + " "}
                       <Link href="/auth/signup" className="text-primary">
-                        Sign Up
+                        {t("login-signUpButton")}
                       </Link>
                     </p>
                   </div>

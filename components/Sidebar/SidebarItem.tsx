@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "@/i18n/routing";
 import SidebarDropdown from "@/components/Sidebar/SidebarDropdown";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const SidebarItem = ({ item, pageName, setPageName }: any) => {
   const handleClick = () => {
@@ -13,7 +14,7 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
   const pathname = usePathname();
 
   const isActive = (item: any) => {
-    if (item.route === pathname) return true;
+    if (item.route === pathname.slice(3,pathname.length)) return true;
     if (item.children) {
       return item.children.some((child: any) => isActive(child));
     }
@@ -21,6 +22,7 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
   };
 
   const isItemActive = isActive(item);
+  const t = useTranslations("pages");
 
   return (
     <>
@@ -28,10 +30,12 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
         <Link
           href={item.route}
           onClick={handleClick}
-          className={`${isItemActive ? "bg-graydark dark:bg-meta-4" : ""} group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4`}
+          className={`${
+            isItemActive ? "bg-graydark dark:bg-meta-4" : ""
+          } group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4`}
         >
           {item.icon}
-          {item.label}
+          {t(item.label)}
           {item.children && (
             <svg
               className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${

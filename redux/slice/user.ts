@@ -9,7 +9,7 @@ interface ICounter {
 }
 
 const initialState: ICounter = {
-  user: null,
+  user: JSON.parse(localStorage.getItem('user') || '')?.user,
   status: "idle",
 };
 
@@ -23,14 +23,14 @@ const resourceSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(fetcResources.pending, (state, action) => {
+      .addCase(fetcResources.pending, (state,) => {
         state.status = "loading";
       })
       .addCase(fetcResources.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload;
       })
-      .addCase(fetcResources.rejected, (state, action) => {
+      .addCase(fetcResources.rejected, (state, ) => {
         state.status = "failed";
       });
   },
@@ -38,7 +38,7 @@ const resourceSlice = createSlice({
 
 const fetcResources = createAsyncThunk(
   "resource/get",
-  async (code: string, thunkAPI) => {
+  async (code: string) => {
     const response = await getResource(code);
     return response.data;
   }

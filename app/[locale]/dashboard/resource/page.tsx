@@ -14,7 +14,7 @@ const Resource: React.FC = async () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="Dil Kaynakları" />
+        <Breadcrumb pageName="menu-resource" />
         <div>
           <ResourceTable />
         </div>

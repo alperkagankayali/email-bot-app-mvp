@@ -1,7 +1,7 @@
 
 import axios from 'axios'
 
-let instance = axios.create({
+const instance = axios.create({
   headers: {
     Authorization: ""
   }

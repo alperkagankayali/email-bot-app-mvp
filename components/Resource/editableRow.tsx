@@ -89,7 +89,7 @@ const ResourceTable: React.FC = () => {
   useEffect(() => {
     async function fetchLanguage() {
       const res: any = await getResourceAll(10, 1, "");
-      const newData = res.data.map((e: any) => {
+      const newData = res?.data.map((e: any) => {
         return {
           ...e,
           langKey: e.key,
@@ -191,7 +191,7 @@ const ResourceTable: React.FC = () => {
   });
   const handleAdd = (newData: DataType) => {
     setIsModalOpen(!isModalOpen);
-    console.log('newdata',[...data, newData])
+    console.log("newdata", [...data, newData]);
     setData([...data, newData]);
   };
   const onChange: TableProps<DataType>["onChange"] = async (
@@ -204,14 +204,16 @@ const ResourceTable: React.FC = () => {
       pagination.pageSize,
       pagination.current
     );
-    const newData = res.data.map((e: any) => {
-      return {
-        ...e,
-        langKey: e.key,
-        key: e._id,
-      };
-    });
-    setData(newData);
+    if (!!res?.data) {
+      const newData = res?.data.map((e: any) => {
+        return {
+          ...e,
+          langKey: e.key,
+          key: e._id,
+        };
+      });
+      setData(newData);
+    }
   };
 
   return (

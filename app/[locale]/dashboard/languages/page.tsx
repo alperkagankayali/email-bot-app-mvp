@@ -14,7 +14,7 @@ const BasicChartPage: React.FC = async () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="Diller" />
+        <Breadcrumb pageName="menu-language" />
         <div>
           <Editable />
         </div>
