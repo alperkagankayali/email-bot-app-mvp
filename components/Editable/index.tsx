@@ -132,7 +132,7 @@ const Editable: React.FC = () => {
       const res: any = await getLanguage(10, 1, false);
       if (!!res?.data) {
         setDataSource(
-          res.data.map((e: any) => {
+          res?.data?.map((e: any) => {
             return { ...e, key: e._id };
           })
         );

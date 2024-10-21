@@ -1,6 +1,6 @@
 const parseError = (result: any) => {
   return {
-    message: result.message || result.message || result.data,
+    message: result.message || result.message || result?.data,
     status: result.status,
     color: "danger",
     errStatus: true,

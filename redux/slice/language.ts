@@ -34,7 +34,7 @@ const languageSlice = createSlice({
 
 export const fetchLanguage = createAsyncThunk("language/get", async () => {
   const response = await getLanguage(10, 1, true);
-  return !!response.data ? response.data : [];
+  return !!response?.data ? response?.data : [];
 });
 
 export const {} = languageSlice.actions;

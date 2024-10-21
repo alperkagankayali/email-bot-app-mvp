@@ -89,7 +89,7 @@ const ResourceTable: React.FC = () => {
   useEffect(() => {
     async function fetchLanguage() {
       const res: any = await getResourceAll(10, 1, "");
-      const newData = res?.data.map((e: any) => {
+      const newData = res?.data?.map((e: any) => {
         return {
           ...e,
           langKey: e.key,
@@ -205,7 +205,7 @@ const ResourceTable: React.FC = () => {
       pagination.current
     );
     if (!!res?.data) {
-      const newData = res?.data.map((e: any) => {
+      const newData = res?.data?.map((e: any) => {
         return {
           ...e,
           langKey: e.key,

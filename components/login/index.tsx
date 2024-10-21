@@ -40,8 +40,8 @@ export default function Login({ locale }: IProps) {
     if (!!values.password && values.password?.length > 3 && !!values.username) {
       const res = await handleLogin(values.username, values.password);
       if (res.status === 200) {
-        localStorage.setItem("user", JSON.stringify(res.data));
-        dispatch(userInfo(res.data.user));
+        localStorage.setItem("user", JSON.stringify(res?.data));
+        dispatch(userInfo(res?.data?.user));
         router.push("/dashboard");
       }
       else{
@@ -57,7 +57,7 @@ export default function Login({ locale }: IProps) {
   useEffect(() => {
     async function fetchResource() {
       const res: any = await getLanguage();
-      const newList = res.data.map((e: any) => {
+      const newList = res?.data?.map((e: any) => {
         const newObj: any = {};
         newObj.label = e.code;
         newObj.value = e.name;

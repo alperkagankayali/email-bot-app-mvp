@@ -22,7 +22,7 @@ instance.interceptors.response.use((response) => {
     console.log(error.response.status)
   }
   if (error.response) {
-    return error.response.data;
+    return error.response?.data;
   } else {
     return Promise.reject(error)
   }

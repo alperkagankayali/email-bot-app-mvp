@@ -7,6 +7,7 @@ import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import { MailOutlined } from "@ant-design/icons";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -47,6 +48,11 @@ const menuGroups = [
         ),
         label: "menu-dashboard",
         route: "/dashboard",
+      },
+      {
+        icon: <MailOutlined />,
+        label: "menu-mail",
+        route: "/dashboard/mail",
       },
       {
         icon: (
