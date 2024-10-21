@@ -52,7 +52,7 @@ const menuGroups = [
       {
         icon: <MailOutlined />,
         label: "menu-mail",
-        route: "/dashboard/mail",
+        route: "/dashboard/scenario",
       },
       {
         icon: (

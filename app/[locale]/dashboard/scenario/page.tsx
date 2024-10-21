@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "This is Next.js Chart page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
 };
 
-const Mail: React.FC = async () => {
+const Scenario: React.FC = async () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
@@ -22,4 +22,4 @@ const Mail: React.FC = async () => {
   );
 };
 
-export default Mail;
+export default Scenario;
