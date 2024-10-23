@@ -1,0 +1,26 @@
+{
+  "pages": {
+    "title1": "Email Bot MVP",
+    "description": "Önder",
+    "login-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit suspendisse.",
+    "login-title": "Sign In to Email Bot MVP",
+    "login-otherAccount": "Don’t have any account?",
+    "login-emailInput": "E-mail",
+    "login-passwordInput": "Password",
+    "login-signUpButton": "Sign Up",
+    "login-loginButton": "Login",
+    "menu-title": "Menu",
+    "menu-dashboard": "Dashboard",
+    "menu-profile": "Profile",
+    "menu-language": "Language",
+    "menu-resource": "Resources",
+    "menu-settings": "Settings",
+    "menu-chart": "Chart",
+    "menu-others": "Others",
+    "login-failed": "Login Failed",
+    "login-failedDesc": "Please check your email or password.",
+    "name": "Email Bot MVP",
+    "menu-mail": "Email Templates",
+    "title": "Email Bot MVP"
+  }
+}
