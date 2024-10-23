@@ -7,7 +7,7 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     serverActions: {
-      allowedOrigins: ["email-bot-app-mvp-mx28.vercel.app","email-bot-app-mvp.vercel.app"],
+      allowedOrigins: ["email-bot-app-mvp-mx28.vercel.app","email-bot-app-mvp.vercel.app","email-bot-app-mvp-evt8.vercel.app"],
     },
   },
   typescript: {

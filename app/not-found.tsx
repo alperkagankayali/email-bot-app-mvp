@@ -1,17 +1,8 @@
-'use client';
 
-import Error from 'next/error';
+// This page renders when a route like `/unknown.txt` is requested.
+// In this case, the layout at `app/[locale]/layout.tsx` receives
+// an invalid value as the `[locale]` param and calls `notFound()`.
 
-// Render the default Next.js 404 page when a route
-// is requested that doesn't match the middleware and
-// therefore doesn't have a locale associated with it.
-
-export default function NotFound() {
-  return (
-    <html lang="en">
-      <body>
-        <Error statusCode={404} />
-      </body>
-    </html>
-  );
+export default function Page() {
+  return <p>Hello world</p>
 }
