@@ -6,6 +6,7 @@
   "CREATE_RESOURCES":"/resource",
   "LOGIN":"/user/login",
   "UPDATE_LANGUAGE":"/language/update",
-  "UPDATE_RESOURCE":"/resource/update"
+  "UPDATE_RESOURCE":"/resource/update",
+  "GET_ALL_USERS": "/user/getAll"
 
 }

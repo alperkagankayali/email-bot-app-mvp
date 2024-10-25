@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 const Resource = async () => {
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="menu-user" />
+      <div className="mx-auto">
+        <Breadcrumb pageName="menu-users" />
         <UserTable />
       </div>
     </DefaultLayout>

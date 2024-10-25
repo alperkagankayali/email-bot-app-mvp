@@ -8,21 +8,30 @@ import {
   InputNumber,
   Popconfirm,
   Table,
+  Tag,
   Typography,
 } from "antd";
 import { PaginationType } from "@/types/paginationType";
 import {
+  getAllUsers,
   getResourceAll,
   updateResource,
 } from "@/services/service/generalService";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import { UserOutlined } from "@ant-design/icons";
 
 export interface DataType {
-  key: string;
-  langKey: string;
-  value: string;
-  code: string;
+  name: string;
+  lastName: string;
+  email: string;
+  language: string;
+  userType: string;
+  department: string;
+  company: string;
+  lisanceStartDate: string;
+  lisanceEndDate: string;
+  _id: string;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -73,11 +82,11 @@ const UserTable: React.FC = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [editingKey, setEditingKey] = useState("");
 
-  const isEditing = (record: DataType) => record.key === editingKey;
+  const isEditing = (record: DataType) => record._id === editingKey;
 
   const edit = (record: Partial<DataType> & { key: React.Key }) => {
     form.setFieldsValue({ name: "", age: "", address: "", ...record });
-    setEditingKey(record.key);
+    setEditingKey(record?._id || "");
   };
 
   const cancel = () => {
@@ -90,7 +99,7 @@ const UserTable: React.FC = () => {
 
   useEffect(() => {
     async function fetchLanguage() {
-      const res: any = await getResourceAll(10, 1, "");
+      const res: any = await getAllUsers();
       const newData = res?.data?.map((e: any) => {
         return {
           ...e,
@@ -107,13 +116,9 @@ const UserTable: React.FC = () => {
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as DataType;
-      const updateRes = await updateResource(key as any, {
-        key: row.langKey,
-        value: row.value,
-      });
-      console.log("key", updateRes);
+
       const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
+      const index = newData.findIndex((item) => key === item._id);
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, {
@@ -134,18 +139,64 @@ const UserTable: React.FC = () => {
 
   const columns = [
     {
-      title: "Key",
-      dataIndex: "langKey",
+      title: "name",
+      dataIndex: "name",
       editable: true,
     },
     {
-      title: "value",
-      dataIndex: "value",
+      title: "lastName",
+      dataIndex: "lastName",
       editable: true,
+    },
+    {
+      title: "department",
+      dataIndex: "department",
+    },
+    {
+      title: "company",
+      dataIndex: "company",
+    },
+    {
+      title: "role",
+      dataIndex: "userType",
+      render: (_: any, record: DataType) => {
+        return (
+          <Tag
+            icon={<UserOutlined />}
+            color={
+              record.userType === "superadmin"
+                ? "#3b5999"
+                : record.userType === "admin"
+                  ? "#55acee"
+                  : "blue"
+            }
+          >
+            {record.userType}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: "email",
+      dataIndex: "email",
     },
     {
       title: "language",
-      dataIndex: "code",
+      dataIndex: "language",
+    },
+    {
+      title: "lisanceStartDate",
+      dataIndex: "lisanceStartDate",
+      render: (_: any, record: DataType) => {
+        return <Tag color="green">{record.lisanceStartDate}</Tag>;
+      },
+    },
+    {
+      title: "lisanceEndDate",
+      dataIndex: "lisanceEndDate",
+      render: (_: any, record: DataType) => {
+        return <Tag color="red">{record.lisanceEndDate}</Tag>;
+      },
     },
     {
       title: "operation",
@@ -155,7 +206,7 @@ const UserTable: React.FC = () => {
         return editable ? (
           <span>
             <Typography.Link
-              onClick={() => save(record.key)}
+              // onClick={() => save(record.key)}
               style={{ marginInlineEnd: 8 }}
             >
               Save
@@ -167,7 +218,7 @@ const UserTable: React.FC = () => {
         ) : (
           <Typography.Link
             disabled={editingKey !== ""}
-            onClick={() => edit(record)}
+            // onClick={() => edit(record._id)}
           >
             Edit
           </Typography.Link>

@@ -11,6 +11,7 @@ import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { userInfo } from "@/redux/slice/user";
 import { useTranslations } from "next-intl";
+import Loader from "../common/Loader";
 
 type FieldType = {
   username?: string;
@@ -40,6 +41,7 @@ export default function Login({ locale }: IProps) {
     if (!!values.password && values.password?.length > 3 && !!values.username) {
       const res = await handleLogin(values.username, values.password);
       if (res.status === 200) {
+        localStorage.setItem("token", JSON.stringify(res?.data?.token));
         localStorage.setItem("user", JSON.stringify(res?.data));
         dispatch(userInfo(res?.data?.user));
         router.push("/dashboard");
@@ -75,7 +77,7 @@ export default function Login({ locale }: IProps) {
     console.log("Failed:", errorInfo);
   };
 
-  if (!language) return <div>Loading...</div>;
+  if (!language) return <Loader />;
 
   return (
     <div className="flex items-center h-screen justify-center">

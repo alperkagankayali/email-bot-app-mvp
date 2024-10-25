@@ -39,6 +39,14 @@ export const getResourceAll = async (limit = 10, page = 1, code = "") => {
   const result = await getRequest(url, config);
   return result;
 };
+
+export const getAllUsers = async (limit = 10, page = 1) => {
+  const queryParams = jsonToQueryString({ limit, page });
+  const url = servicesBaseUrl + finalConfig.GET_ALL_USERS + queryParams;
+  const config = headers.content_type.application_json;
+  const result = await getRequest(url, config);
+  return result;
+};
 export const updateResource = async (id: string, updateData: any) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_RESOURCE;
   const config = headers.content_type.application_json;

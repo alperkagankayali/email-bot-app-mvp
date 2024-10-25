@@ -1,31 +1,43 @@
-
-import axios from 'axios'
+import axios from "axios";
 
 const instance = axios.create({
   headers: {
-    Authorization: ""
+    Authorization: "",
+  },
+});
+
+instance.interceptors.request.use(
+  (config) => {
+    if (typeof window !== "undefined") {
+      const accessToken = JSON.parse(localStorage.getItem("token") || "");
+      if (accessToken) {
+        if (config.headers) config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+      return config;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-})
+);
 
-instance.interceptors.request.use((config) => {
-  return config
-}, error => {
-  return Promise.reject(error)
-})
-
-instance.interceptors.response.use((response) => {
-  return response;
-}, error => {
-
-  console.log('interceptor', error);
-  if (error.response.status === 401) {
-    console.log(error.response.status)
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    console.log("interceptor", error);
+    if (error.response.status === 401) {
+      console.log(error.response.status);
+    }
+    if (error.response) {
+      return error.response?.data;
+    } else {
+      return Promise.reject(error);
+    }
   }
-  if (error.response) {
-    return error.response?.data;
-  } else {
-    return Promise.reject(error)
-  }
-})
+);
 
-export const http = instance
+export const http = instance;
