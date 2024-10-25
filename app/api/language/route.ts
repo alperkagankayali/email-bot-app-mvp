@@ -6,10 +6,6 @@ export async function POST(request: Request) {
   try {
     await connectToDatabase();
     const body = await request.json();
-    
-    const language = new Languages({
-      ...body,
-    });
     const languageCreated = await Languages.insertMany(body);
     return NextResponse.json({
       success: true,

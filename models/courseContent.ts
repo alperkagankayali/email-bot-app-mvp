@@ -16,7 +16,7 @@ const courseContentSchema = new Schema<IContent>({
     required: true,
   },
   created_at: { type: Date, default: Date.now() },
-  author: { type: Types.ObjectId, ref: "User" },
+  author: { type: Types.ObjectId, ref: "Admin" },
 });
 
 const CourseContent =

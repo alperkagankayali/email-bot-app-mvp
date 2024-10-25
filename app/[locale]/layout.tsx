@@ -1,5 +1,4 @@
-import { NextIntlClientProvider } from "next-intl";
-import type { Metadata } from "next";
+import { NextIntlClientProvider, IntlProvider } from "next-intl";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import {
   getMessages,
@@ -8,8 +7,10 @@ import {
 } from "next-intl/server";
 import "../globals.css";
 import StoreProvider from "../StoreProvider";
-import { routing } from "@/i18n/routing";
+import { redirect, routing } from "@/i18n/routing";
 import { ReactNode } from "react";
+import { getLanguage, getResource } from "@/services/service/generalService";
+import { ILanguage } from "@/types/languageType";
 
 type Props = {
   children: ReactNode;
@@ -37,15 +38,14 @@ export default async function LocaleLayout({
   params: { locale: string };
 }) {
   unstable_setRequestLocale(locale);
-  // Providing all messages to the client
-  // side is the easiest way to get started
-  const messages = await getMessages();
+  const messages = await getResource(locale);
+  const i18nmessages = await getMessages();
 
   return (
     <html lang={locale}>
       <body>
         <StoreProvider>
-          <NextIntlClientProvider messages={messages}>
+          <NextIntlClientProvider locale={locale} messages={messages.data}>
             <AntdRegistry>{children}</AntdRegistry>
           </NextIntlClientProvider>
         </StoreProvider>

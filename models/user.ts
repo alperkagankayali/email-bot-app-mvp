@@ -7,15 +7,15 @@ const userSchema = new Schema<IUser>({
   email: { type: String, required: true },
   language: { type: String, required: true },
   department: { type: String },
-  userType: {
-    type: String,
-    enum: ["user", "admin", "superadmin"],
+  relationWithAdmin: {
+    type: Schema.Types.ObjectId,
+    ref: "Admin",
     required: true,
   },
-  password:{ type: String },
+  userType: { type: String, default: "user" },
+  password: { type: String },
 });
 
 const User = models.User || model<IUser>("User", userSchema);
 
 export default User;
-

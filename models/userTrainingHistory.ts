@@ -1,8 +1,8 @@
-import { IUserTrainingHistory } from "@/types/userType";
+import { IUserTrainingHistory } from "@/types/adminType";
 import { Schema, Types, model, models } from "mongoose";
 
 const userTrainingHistorySchema = new Schema<IUserTrainingHistory>({
-  userId: { type: Types.ObjectId, ref: "User", required: true },
+  userId: { type: Types.ObjectId, ref: "Admin", required: true },
   educationId: { type: String, required: true },
   status: {
     type: String,

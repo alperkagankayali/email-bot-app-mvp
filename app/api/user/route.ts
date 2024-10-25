@@ -1,5 +1,5 @@
 import connectToDatabase from "@/lib/mongoose";
-import User from "@/models/user";
+import Admin from "@/models/admin";
 import { NextResponse } from "next/server";
 const bcrypt = require("bcryptjs");
 
@@ -8,8 +8,9 @@ export async function POST(request: Request) {
     await connectToDatabase();
     const body = await request.json();
     const passwordHash = bcrypt.hashSync(body.password, 10);
-    const resourceCreate = new User({
+    const resourceCreate = new Admin({
       ...body,
+      company:body.company,
       password: passwordHash,
     });
     const resourceCreated = await resourceCreate.save();

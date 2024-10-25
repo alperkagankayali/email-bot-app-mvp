@@ -12,7 +12,7 @@ const scenarioSchema = new Schema<IScenario>({
   emailUrl: { type: String, required: true },
   landingPageUrl: { type: String, required: true },
   dataEntryPageUrl: { type: String },
-  author: { type: Types.ObjectId, ref: "User" },
+  author: { type: Types.ObjectId, ref: "Admin" },
   created_at: { type: Date, default: Date.now() },
 });
 

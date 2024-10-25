@@ -1,4 +1,4 @@
-import { IUser } from "./userType"
+import { IAdmin } from "./adminType"
 
 export interface IScenario {
     title: string
@@ -7,7 +7,7 @@ export interface IScenario {
     emailUrl: string
     landingPageUrl: string
     dataEntryPageUrl: string
-    author: IUser
+    author: IAdmin
     created_at: Date
   }
   
