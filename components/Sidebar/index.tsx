@@ -101,7 +101,7 @@ const menuGroups = [
         route: "#",
         children: [
           { label: "menu-users", route: "/dashboard/users" },
-          { label: "menu-add-user", route: "/dashboard/user/add" },
+          { label: "menu-add-user", route: "/dashboard/users/add" },
         ],
       },
       {

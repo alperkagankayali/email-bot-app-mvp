@@ -31,21 +31,27 @@ export async function GET(request: Request) {
           { relationWithAdmin: user.id }
         );
         const findUser = await User.find({ relationWithAdmin: user.id });
-        return NextResponse.json({
-          message: "Success data.",
-          color: "success",
-          status: 200,
-          data: [...findUser],
-          totalItems: userTotal,
-        },{ status: 200 });
+        return NextResponse.json(
+          {
+            message: "Success data.",
+            color: "success",
+            status: 200,
+            data: [...findUser],
+            totalItems: userTotal,
+          },
+          { status: 200 }
+        );
       }
     } else {
-      return NextResponse.json({
-        data: null,
-        status: 401,
-        message: "User information error. Authentication failed.",
-        color: "danger",
-      },{ status: 401 });
+      return NextResponse.json(
+        {
+          data: null,
+          status: 401,
+          message: "User information error. Authentication failed.",
+          color: "danger",
+        },
+        { status: 401 }
+      );
     }
   } catch (error) {
     console.error("Hata:", error);

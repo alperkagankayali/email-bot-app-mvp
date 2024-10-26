@@ -16,6 +16,7 @@ export interface IJWT {
   language: string
   name: string
   lastName: string
+  company?:string
   role: "user" | "admin" | "superadmin"
 }
 
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
           language: user.language,
           name: user.name,
           lastName: user.lastName,
-          role:"user"
+          role:"user",
         },
         jwtKey,
         { expiresIn: "2h" }

@@ -80,6 +80,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 const UserTable: React.FC = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState<DataType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [editingKey, setEditingKey] = useState("");
 
   const isEditing = (record: DataType) => record._id === editingKey;
@@ -98,7 +99,7 @@ const UserTable: React.FC = () => {
   const t = useTranslations("pages");
 
   useEffect(() => {
-    async function fetchLanguage() {
+    async function fetchUsers() {
       const res: any = await getAllUsers();
       const newData = res?.data?.map((e: any) => {
         return {
@@ -107,10 +108,11 @@ const UserTable: React.FC = () => {
           key: e._id,
         };
       });
+      setLoading(false)
       setData(newData);
       setPagination(res.pagination);
     }
-    fetchLanguage();
+    fetchUsers();
   }, []);
 
   const save = async (key: React.Key) => {
@@ -273,7 +275,7 @@ const UserTable: React.FC = () => {
     <div>
       <div className="flex mb-2">
         <Link
-          href={"/dashboard/user/add"}
+          href={"/dashboard/users/add"}
           className="bg-[#1677ff] text-white px-4 py-2 rounded-md"
         >
           {t("menu-add-user")}
@@ -281,6 +283,7 @@ const UserTable: React.FC = () => {
       </div>
       <Form form={form} component={false}>
         <Table<DataType>
+          loading={loading}
           components={{
             body: { cell: EditableCell },
           }}

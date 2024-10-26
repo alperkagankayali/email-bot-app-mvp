@@ -1,16 +1,14 @@
 import { NextIntlClientProvider, IntlProvider } from "next-intl";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import {
-  getMessages,
   getTranslations,
   unstable_setRequestLocale,
 } from "next-intl/server";
 import "../globals.css";
 import StoreProvider from "../StoreProvider";
-import { redirect, routing } from "@/i18n/routing";
+import {  routing } from "@/i18n/routing";
 import { ReactNode } from "react";
-import { getLanguage, getResource } from "@/services/service/generalService";
-import { ILanguage } from "@/types/languageType";
+import {  getResource } from "@/services/service/generalService";
 
 type Props = {
   children: ReactNode;
@@ -39,7 +37,7 @@ export default async function LocaleLayout({
 }) {
   unstable_setRequestLocale(locale);
   const messages = await getResource(locale);
-  const i18nmessages = await getMessages();
+  console.log('layout',messages.data)
 
   return (
     <html lang={locale}>
