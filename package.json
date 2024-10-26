@@ -12,6 +12,8 @@
     "@ant-design/cssinjs": "^1.18.2",
     "@ant-design/icons": "^5.5.1",
     "@ant-design/nextjs-registry": "^1.0.1",
+    "@aws-sdk/client-s3": "^3.679.0",
+    "@aws-sdk/client-ses": "^3.679.0",
     "@reduxjs/toolkit": "^2.3.0",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/uuid": "^10.0.0",
