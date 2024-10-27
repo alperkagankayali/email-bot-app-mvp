@@ -6,10 +6,8 @@ export async function POST(request: Request) {
   try {
     await connectToDatabase();
     const body = await request.json();
-    const resourceCreate = new Resources({
-      ...body,
-    });
-    const resourceCreated = await resourceCreate.save();
+    const resourceCreated = await Resources.insertMany(body);
+
     return NextResponse.json({
       success: true,
       message: "Veri başarıyla alındı",

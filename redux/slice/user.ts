@@ -9,7 +9,7 @@ interface ICounter {
 }
 
 const initialState: ICounter = {
-  user:null,
+  user: typeof window !== "undefined" && JSON.parse(localStorage.getItem("user") || "{}")?.user,
   status: "idle",
 };
 

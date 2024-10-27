@@ -7,12 +7,12 @@ const campaignSchema = new Schema<ICampaign>({
   userList: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Admin",
+      ref: "User",
       required: true,
     },
   ],
   scenario: { type: Schema.Types.ObjectId, ref: "Scenario", required: true },
-  author: { type: Schema.Types.ObjectId, ref: "Admin", required: true },
+  author: { type: Schema.Types.ObjectId, ref: "User", required: true },
   created_at: { type: Date, default: Date.now },
 });
 

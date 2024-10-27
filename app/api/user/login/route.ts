@@ -5,48 +5,64 @@ import { NextResponse } from "next/server";
 const bcrypt = require("bcryptjs");
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import Admin from "@/models/admin";
-import { IAdmin } from "@/types/adminType";
+import { ISuperAdmin } from "@/types/superAdmingType";
+import SuperAdmin from "@/models/superAdmin";
+import { message200, message403, message500 } from "@/constants";
 const { createCodec } = require("json-crypto");
-export interface IJWT {
-  email: string
-  password: string
-  id: string
-  department: string
-  language: string
-  name: string
-  lastName: string
-  company?:string
-  role: "user" | "admin" | "superadmin"
+export interface IUserJWT {
+  email: string;
+  password: string;
+  id: string;
+  department: string;
+  language: string;
+  nameSurname: string;
+  role: "user" | "admin";
+  companyName: string;
+  companyId: string;
+  lisanceStartDate: Date;
+  lisanceEndDate: Date;
+  companyLogo: string;
+}
+
+export interface ISuperAdminJWT {
+  email: string;
+  id: string;
+  language: string;
+  nameSurname: string;
+  role: "superadmin";
 }
 
 export async function POST(request: Request) {
   try {
     await connectToDatabase();
     const body = await request.json();
-    let admin: IAdmin | null = await Admin.findOne({ email: body.email });
+    let superAdmin: ISuperAdmin | null = await SuperAdmin.findOne({
+      email: body.email,
+    });
+    const newDate = new Date();
     let user: IUser | null = await User.findOne({ email: body.email });
     const jwtKey: string = process.env.JWT_SCREET_KEY as string;
     const cookieKey: string = process.env.COOKIE_SCREET_KEY as string;
 
-    if (admin !== null && bcrypt.compareSync(body.password, admin.password)) {
+    //lissans süresine bakacağız ona göre login edeceğiz
+
+    if (
+      superAdmin !== null &&
+      bcrypt.compareSync(body.password, superAdmin.password)
+    ) {
       const codec = createCodec(cookieKey);
       const token = jwt.sign(
         {
-          email: admin?.email,
-          password: admin?.password,
-          id: admin?._id,
-          role: admin.userType,
-          department: admin.department,
-          language: admin.language,
-          name: admin.name,
-          lastName: admin.lastName,
+          email: superAdmin?.email,
+          id: superAdmin?._id,
+          role: "superadmin",
+          language: superAdmin.language,
+          nameSurname: superAdmin.nameSurname,
         },
         jwtKey,
         { expiresIn: "2h" }
       );
       const userSesion = { isLoggedIn: true, token, ...user };
-
       const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
       cookies().set("currentUser", encryptedSessionData, {
         httpOnly: true,
@@ -55,15 +71,20 @@ export async function POST(request: Request) {
         path: "/",
       });
 
-      return NextResponse.json({
-        message: "User information error. Authentication failed.",
-        color: "danger",
-        status: 200,
-        data: { token: token, type: "Bearer", user: admin },
-      });
-    } else if (user !== null && bcrypt.compareSync(body.password, user.password)) {
+      return NextResponse.json(
+        {
+          ...message200,
+          data: { token: token, type: "Bearer", user: superAdmin },
+        },
+        { status: 200, statusText: message200.message }
+      );
+    } else if (
+      user !== null &&
+      newDate > user?.company?.lisanceEndDate &&
+      !user.isDelete &&
+      bcrypt.compareSync(body.password, user.password)
+    ) {
       const codec = createCodec(cookieKey);
-    
       const token = jwt.sign(
         {
           email: user?.email,
@@ -71,16 +92,18 @@ export async function POST(request: Request) {
           id: user?._id,
           department: user.department,
           language: user.language,
-          name: user.name,
-          lastName: user.lastName,
-          role:"user",
+          nameSurname: user.nameSurname,
+          role: user.role,
+          companyName: user.company.companyName,
+          companyId: user.company._id,
+          lisanceStartDate: user.company.lisanceStartDate,
+          lisanceEndDate: user.company.lisanceEndDate,
+          companyLogo: user.company.logo,
         },
         jwtKey,
         { expiresIn: "2h" }
       );
-
       const userSesion = { isLoggedIn: true, token, ...user };
-
       const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
       cookies().set("currentUser", encryptedSessionData, {
         httpOnly: true,
@@ -89,24 +112,25 @@ export async function POST(request: Request) {
         path: "/",
       });
 
-      return NextResponse.json({
-        message: "User information error. Authentication failed.",
-        color: "success",
-        status: 200,
-        data: { token: token, type: "Bearer", user: user },
-      });
+      return NextResponse.json(
+        {
+          ...message200,
+          data: { token: token, type: "Bearer", user: superAdmin },
+        },
+        { status: 200, statusText: message200.message }
+      );
     } else {
-      return NextResponse.json({
-        data: null,
-        status: 403,
-        message: "User information error. Authentication failed.",
-        color: "danger",
-      });
+      return NextResponse.json(
+        {
+          ...message403,
+        },
+        { status: 200, statusText: message200.message }
+      );
     }
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { success: false, message: "Bir hata oluştu" },
-      { status: 500 }
+      { ...message500 },
+      { status: 500, statusText: error?.message || "" }
     );
   }
 }
