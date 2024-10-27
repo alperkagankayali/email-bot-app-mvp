@@ -1,18 +1,20 @@
-import { IAdmin } from "./adminType";
 import { ICampaign } from "./campaignType";
 import { Types } from "mongoose";
+import { ICompany } from "./companyType";
+import { ICourse } from "./courseType";
 export interface IUser {
-  name: string;
-  lastName: string;
+  nameSurname: string;
   email: string;
   language: string;
   department: string;
   password: string;
-  relationWithAdmin: IAdmin;
-  quiz?: any;
-  education?: any;
-  userType: "user";
+  company: ICompany;
+  role: "user" | "admin";
   _id: Types.ObjectId;
+  isDelete: boolean;
+  createdAt: Date;
+  course: ICourse;
+  author?: IUser;
 }
 
 export interface IUserAction {

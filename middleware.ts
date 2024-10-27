@@ -7,7 +7,6 @@ const cache = new Map();
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const [, locale, ...segments] = req.nextUrl.pathname.split("/");
-  console.log("locale", locale, segments.join("/"));
 
   const currentUser = req.cookies.get("currentUser")?.value;
   let defaultLocale = req.headers.get("accept-language") || "en";

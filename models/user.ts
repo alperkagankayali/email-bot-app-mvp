@@ -2,18 +2,24 @@ import { IUser } from "@/types/userType";
 import { Schema, model, models } from "mongoose";
 
 const userSchema = new Schema<IUser>({
-  name: { type: String, required: true },
-  lastName: { type: String, required: true },
+  nameSurname: { type: String, required: true },
   email: { type: String, required: true },
   language: { type: String, required: true },
   department: { type: String },
-  relationWithAdmin: {
+  company: {
     type: Schema.Types.ObjectId,
-    ref: "Admin",
+    ref: "Company",
     required: true,
   },
-  userType: { type: String, default: "user" },
+  role: { type: String, required: true },
   password: { type: String },
+  isDelete: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now() },
+  course: {
+    type: Schema.Types.ObjectId,
+    ref: "Course",
+  },
+  author: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 const User = models.User || model<IUser>("User", userSchema);

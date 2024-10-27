@@ -37,7 +37,6 @@ export default async function LocaleLayout({
 }) {
   unstable_setRequestLocale(locale);
   const messages = await getResource(locale);
-  console.log('layout',messages.data)
 
   return (
     <html lang={locale}>

@@ -3,7 +3,8 @@ import User from "@/models/user";
 import { NextResponse } from "next/server";
 const bcrypt = require("bcryptjs");
 import jwt from "jsonwebtoken";
-import { IJWT } from "../login/route";
+import { IUserJWT, ISuperAdminJWT } from "../login/route";
+import { message201, message401, message403, message500 } from "@/constants";
 
 export async function POST(request: Request) {
   try {
@@ -12,41 +13,61 @@ export async function POST(request: Request) {
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     const jwtKey: string = process.env.JWT_SCREET_KEY as string;
     if (!!token) {
-      const user = jwt.verify(token.split(" ")[1], jwtKey) as IJWT;
-      if (user.role === "admin" || user.role === "superadmin") {
+      const user = jwt.verify(token.split(" ")[1], jwtKey) as IUserJWT;
+      if (user.role === "admin") {
         const passwordHash = bcrypt.hashSync(body.password, 10);
         const userCreate = new User({
           ...body,
-          relationWithAdmin: user.id,
+          company: user.companyId,
           password: passwordHash,
         });
         const userCreated = await userCreate.save();
-        return NextResponse.json({
-          success: true,
-          message: "Veri başarıyla alındı",
-          userCreated,
-        });
+        return NextResponse.json(
+          {
+            ...message201,
+            data: userCreated,
+          },
+          { status: 201, statusText: message201.message }
+        );
       } else {
-        return NextResponse.json({
-          data: null,
-          status: 401,
-          message: "User information error. Authentication failed.",
-          color: "danger",
-        });
+        const jwtSuperAdmin = jwt.verify(
+          token.split(" ")[1],
+          jwtKey
+        ) as ISuperAdminJWT;
+        if (jwtSuperAdmin.role === "superadmin") {
+          const passwordHash = bcrypt.hashSync(body.password, 10);
+          const userCreate = new User({
+            ...body,
+            password: passwordHash,
+          });
+          const userCreated = await userCreate.save();
+          return NextResponse.json(
+            {
+              ...message201,
+              data: userCreated,
+            },
+            { status: 201, statusText: message201.message }
+          );
+        }
+        return NextResponse.json(
+          {
+            ...message401,
+          },
+          { status: 401, statusText: message401.message }
+        );
       }
     } else {
-      return NextResponse.json({
-        data: null,
-        status: 404,
-        message: "User information error. Authentication failed.",
-        color: "danger",
-      });
+      return NextResponse.json(
+        {
+          ...message403,
+        },
+        { status: 403, statusText: message403.message }
+      );
     }
-  } catch (error) {
-    console.error("Hata:", error);
+  } catch (error: any) {
     return NextResponse.json(
-      { success: false, message: "Bir hata oluştu" },
-      { status: 500 }
+      { ...message500 },
+      { status: 500, statusText: error?.message || "" }
     );
   }
 }

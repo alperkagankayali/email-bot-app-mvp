@@ -12,7 +12,7 @@ const newsSchema = new Schema<INews>({
     required: true,
   },
   questionnaireUrl: { type: String, required: true },
-  author: { type: Types.ObjectId, ref: "Admin" },
+  author: { type: Types.ObjectId, ref: "User" },
 });
 
 const News = models.News || model<INews>("News", newsSchema);

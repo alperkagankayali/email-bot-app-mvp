@@ -1,10 +1,10 @@
 import connectToDatabase from "@/lib/mongoose";
-import Admin from "@/models/admin";
 import User from "@/models/user";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic"; // <- add this to force dynamic render
 import jwt from "jsonwebtoken";
-import { IJWT } from "../login/route";
+import { ISuperAdminJWT, IUserJWT } from "../login/route";
+import { message200, message401, message500 } from "@/constants";
 
 export async function GET(request: Request) {
   try {
@@ -12,52 +12,57 @@ export async function GET(request: Request) {
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     const jwtKey: string = process.env.JWT_SCREET_KEY as string;
     if (!!token) {
-      const user = jwt.verify(token.split(" ")[1], jwtKey) as IJWT;
-      if (user.role === "superadmin") {
-        const adminTotal = await Admin.countDocuments();
-        const userTotal = await User.countDocuments();
-        const admin = await Admin.find({});
-        const users = await User.find({});
-        return NextResponse.json({
-          message: "Success data.",
-          color: "success",
-          status: 200,
-          data: [...users, ...admin],
-          totalItems: userTotal + adminTotal,
-        });
-      } else if (user.role === "admin") {
+      const user = jwt.verify(token.split(" ")[1], jwtKey) as IUserJWT;
+      if (user.role === "admin") {
         const userTotal = await User.countDocuments(
           {},
-          { relationWithAdmin: user.id }
+          { company: user.companyId }
         );
-        const findUser = await User.find({ relationWithAdmin: user.id });
+        const users = await User.find({ company: user.companyId });
         return NextResponse.json(
           {
-            message: "Success data.",
-            color: "success",
-            status: 200,
-            data: [...findUser],
+            ...message200,
+            data: [...users],
             totalItems: userTotal,
           },
-          { status: 200 }
+          { status: 200, statusText: message200.message }
+        );
+      } else {
+        const jwtSuperAdmin = jwt.verify(
+          token.split(" ")[1],
+          jwtKey
+        ) as ISuperAdminJWT;
+        if (jwtSuperAdmin.role === "superadmin") {
+          const userTotal = await User.countDocuments();
+          const findUser = await User.find();
+          return NextResponse.json(
+            {
+              ...message200,
+              data: [...findUser],
+              totalItems: userTotal,
+            },
+            { status: 200 }
+          );
+        }
+        return NextResponse.json(
+          {
+            ...message401,
+          },
+          { status: 401, statusText: message401.message }
         );
       }
     } else {
       return NextResponse.json(
         {
-          data: null,
-          status: 401,
-          message: "User information error. Authentication failed.",
-          color: "danger",
+          ...message401,
         },
-        { status: 401 }
+        { status: 401, statusText: message401.message }
       );
     }
-  } catch (error) {
-    console.error("Hata:", error);
+  } catch (error: any) {
     return NextResponse.json(
-      { success: false, message: "Bir hata oluştu" },
-      { status: 500 }
+      { ...message500 },
+      { status: 500, statusText: error?.message || "" }
     );
   }
 }
