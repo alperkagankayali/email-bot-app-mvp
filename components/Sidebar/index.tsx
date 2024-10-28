@@ -7,7 +7,7 @@ import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { MailOutlined } from "@ant-design/icons";
+import { FundViewOutlined, MailOutlined } from "@ant-design/icons";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -76,6 +76,11 @@ const menuGroups = [
         ),
         label: "menu-profile",
         route: "/dashboard/profile",
+      },
+      {
+        icon: <FundViewOutlined />,
+        label: "menu-companies",
+        route: "/dashboard/companies"
       },
       {
         icon: (
@@ -219,7 +224,6 @@ const menuGroups = [
         label: "menu-chart",
         route: "/dashboard/chart",
       },
-      
     ],
   },
 ];

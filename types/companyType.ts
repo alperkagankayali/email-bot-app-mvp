@@ -4,10 +4,10 @@ export interface ICompany {
   companyName: string;
   logo: string;
   emailDomainAddress: string[];
-  isDelete: boolean;
+  isDelete?: boolean;
   lisanceStartDate: Date;
   lisanceEndDate: Date;
-  createdAt: Date;
-  author: ISuperAdmin;
-  _id: Types.ObjectId;
+  createdAt?: Date;
+  author?: ISuperAdmin;
+  _id?: Types.ObjectId;
 }

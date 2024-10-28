@@ -10,49 +10,33 @@ import Company from "@/models/company";
 export async function GET(request: Request) {
   try {
     await connectToDatabase();
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     const jwtKey: string = process.env.JWT_SCREET_KEY as string;
     if (!!token) {
-      const user = jwt.verify(token.split(" ")[1], jwtKey) as IUserJWT;
-      if (user.role === "admin") {
-        const userTotal = await User.countDocuments(
-          {},
-          { company: user.companyId }
-        );
-        const users = await User.find({ company: user.companyId });
+      const jwtSuperAdmin = jwt.verify(
+        token.split(" ")[1],
+        jwtKey
+      ) as ISuperAdminJWT;
+      if (jwtSuperAdmin.role === "superadmin") {
+        const userTotal = await User.countDocuments({}, { company: id });
+        const files = await User.find({ company: id }).populate({ path: "company", model: Company })
         return NextResponse.json(
           {
             ...message200,
-            data: [...users],
+            data: files,
             totalItems: userTotal,
           },
-          { status: 200, statusText: message200.message }
-        );
-      } else {
-        const jwtSuperAdmin = jwt.verify(
-          token.split(" ")[1],
-          jwtKey
-        ) as ISuperAdminJWT;
-        if (jwtSuperAdmin.role === "superadmin") {
-          const userTotal = await User.countDocuments();
-          const findUser = await User.find().populate({ path: "company", model: Company })
-
-          return NextResponse.json(
-            {
-              ...message200,
-              data: [...findUser],
-              totalItems: userTotal,
-            },
-            { status: 200 }
-          );
-        }
-        return NextResponse.json(
-          {
-            ...message401,
-          },
-          { status: 401, statusText: message401.message }
+          { status: 200 }
         );
       }
+      return NextResponse.json(
+        {
+          ...message401,
+        },
+        { status: 401, statusText: message401.message }
+      );
     } else {
       return NextResponse.json(
         {

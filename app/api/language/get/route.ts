@@ -18,7 +18,7 @@ export async function GET(request: Request) {
         : {}
     )
       .sort({
-        created_at: "asc",
+        name: "asc",
       })
       .skip(skip)
       .limit(limit);

@@ -33,8 +33,8 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
       code: values.code,
     });
     handleAdd({
-      ...res.resourceCreated,
-      langKey: res.resourceCreated._id,
+      ...res.data,
+      langKey: res.data?._id
     });
   };
 

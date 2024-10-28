@@ -1,4 +1,4 @@
-import { NextIntlClientProvider, IntlProvider } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import {
   getTranslations,

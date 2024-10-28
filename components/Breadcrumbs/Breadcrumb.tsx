@@ -1,9 +1,11 @@
+"use client"
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 interface BreadcrumbProps {
   pageName: string;
 }
 const Breadcrumb = ({ pageName }: BreadcrumbProps) => {
+
   const t = useTranslations("pages");
 
   return (

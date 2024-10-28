@@ -25,6 +25,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             ...message201,
+            company: body.company,
             data: userCreated,
           },
           { status: 201, statusText: message201.message }
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
           const passwordHash = bcrypt.hashSync(body.password, 10);
           const userCreate = new User({
             ...body,
+            company: body.company,
             password: passwordHash,
           });
           const userCreated = await userCreate.save();
@@ -59,9 +61,9 @@ export async function POST(request: Request) {
     } else {
       return NextResponse.json(
         {
-          ...message403,
+          ...message401,
         },
-        { status: 403, statusText: message403.message }
+        { status: 403, statusText: message401.message }
       );
     }
   } catch (error: any) {

@@ -1,32 +1,16 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
-import { getLanguage } from "./services/service/generalService";
 import { handleAuthControl } from "./middlewares/auth";
+import { routing } from "./i18n/routing";
 const cache = new Map();
+
+const i18nMiddleware = createMiddleware(routing);
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const [, locale, ...segments] = req.nextUrl.pathname.split("/");
 
   const currentUser = req.cookies.get("currentUser")?.value;
-  let defaultLocale = req.headers.get("accept-language") || "en";
-  defaultLocale = defaultLocale.includes("*") ? "en" : defaultLocale;
-  const languageCookie = cache.get("locales");
-
-  if (
-    languageCookie === null ||
-    languageCookie === undefined ||
-    (segments.join("/") === "language/update" && locale === "api")
-  ) {
-    const resLanguage = await getLanguage();
-    const locales: string[] = [];
-    if (!!resLanguage?.data) {
-      resLanguage.data?.forEach((element: any) => {
-        locales.push(element.code);
-      });
-      cache.set("locales", locales);
-    }
-  }
 
   if (pathname.startsWith("/api")) {
     return handleAPIMiddleware(req);
@@ -37,13 +21,7 @@ export async function middleware(req: NextRequest) {
       new URL(`/${locale === "" ? "en" : locale}/dashboard`, req.url)
     );
   }
-  const handleI18nRouting = createMiddleware({
-    locales: !!languageCookie ? languageCookie : ["en", "de", "tr"],
-    defaultLocale,
-  });
-  const response = handleI18nRouting(req);
-
-  return response;
+  return i18nMiddleware(req);
 }
 
 async function handleAPIMiddleware(req: NextRequest) {

@@ -15,20 +15,22 @@ import { PaginationType } from "@/types/paginationType";
 import {
   getAllUsers,
   getResourceAll,
+  getUserById,
   updateResource,
 } from "@/services/service/generalService";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { UserOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 
 export interface DataType {
   name: string;
   lastName: string;
   email: string;
   language: string;
-  userType: string;
+  role: string;
   department: string;
-  company: string;
+  company: any;
   lisanceStartDate: string;
   lisanceEndDate: string;
   _id: string;
@@ -76,8 +78,10 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     </td>
   );
 };
-
-const UserTable: React.FC = () => {
+type IProps = {
+  id?: string;
+};
+const UserTable = ({ id }: IProps) => {
   const [form] = Form.useForm();
   const [data, setData] = useState<DataType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -100,17 +104,32 @@ const UserTable: React.FC = () => {
 
   useEffect(() => {
     async function fetchUsers() {
-      const res: any = await getAllUsers();
-      const newData = res?.data?.map((e: any) => {
-        return {
-          ...e,
-          langKey: e.key,
-          key: e._id,
-        };
-      });
-      setLoading(false)
-      setData(newData);
-      setPagination(res.pagination);
+      if (!!id) {
+        const res: any = await getUserById(id ?? "");
+        const newData = res?.data?.map((e: any) => {
+          return {
+            ...e,
+            langKey: e.key,
+            key: e._id,
+          };
+        });
+        setLoading(false);
+        setData(newData);
+        setPagination(res.pagination);
+      }
+      else{
+        const res: any = await getAllUsers();
+        const newData = res?.data?.map((e: any) => {
+          return {
+            ...e,
+            langKey: e.key,
+            key: e._id,
+          };
+        });
+        setLoading(false);
+        setData(newData);
+        setPagination(res.pagination);
+      }
     }
     fetchUsers();
   }, []);
@@ -141,13 +160,8 @@ const UserTable: React.FC = () => {
 
   const columns = [
     {
-      title: "name",
-      dataIndex: "name",
-      editable: true,
-    },
-    {
-      title: "lastName",
-      dataIndex: "lastName",
+      title: "Adı Soyadı",
+      dataIndex: "nameSurname",
       editable: true,
     },
     {
@@ -157,23 +171,26 @@ const UserTable: React.FC = () => {
     {
       title: "company",
       dataIndex: "company",
+      render: (_: any, record: DataType) => {
+        return <>{record?.company?.companyName}</>;
+      },
     },
     {
       title: "role",
-      dataIndex: "userType",
+      dataIndex: "role",
       render: (_: any, record: DataType) => {
         return (
           <Tag
             icon={<UserOutlined />}
             color={
-              record.userType === "superadmin"
+              record.role === "user"
                 ? "#3b5999"
-                : record.userType === "admin"
+                : record.role === "admin"
                   ? "#55acee"
                   : "blue"
             }
           >
-            {record.userType}
+            {record.role}
           </Tag>
         );
       },
@@ -190,14 +207,22 @@ const UserTable: React.FC = () => {
       title: "lisanceStartDate",
       dataIndex: "lisanceStartDate",
       render: (_: any, record: DataType) => {
-        return <Tag color="green">{record.lisanceStartDate}</Tag>;
+        return (
+          <Tag color="green">
+            {dayjs(record?.company?.lisanceStartDate).format("DD-MM-YYYY")}
+          </Tag>
+        );
       },
     },
     {
       title: "lisanceEndDate",
       dataIndex: "lisanceEndDate",
       render: (_: any, record: DataType) => {
-        return <Tag color="red">{record.lisanceEndDate}</Tag>;
+        return (
+          <Tag color="red">
+            {dayjs(record?.company?.lisanceEndDate).format("DD-MM-YYYY")}
+          </Tag>
+        );
       },
     },
     {
