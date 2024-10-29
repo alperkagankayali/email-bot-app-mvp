@@ -3,17 +3,36 @@ import { Schema, Types, model, models } from "mongoose";
 
 const scenarioSchema = new Schema<IScenario>({
   title: { type: String, required: true },
-  description: { type: String, required: true },
+  img: { type: String, required: true },
   scenarioType: {
-    type: String,
-    enum: ["data_entry", "clickable_link"],
+    type: Types.ObjectId,
+    ref: "ScenarionType",
     required: true,
   },
-  emailUrl: { type: String, required: true },
-  landingPageUrl: { type: String, required: true },
-  dataEntryPageUrl: { type: String },
-  author: { type: Types.ObjectId, ref: "User" },
+  dataEntry: {
+    type: Types.ObjectId,
+    ref: "DataEntry",
+  },
+  emailTemplate: {
+    type: Types.ObjectId,
+    ref: "EmailTemplate",
+  },
+  landingPage: {
+    type: Types.ObjectId,
+    ref: "LandingPage",
+  },
   created_at: { type: Date, default: Date.now() },
+  authorType: {
+    type: String,
+    required: true,
+    enum: ["User", "superadmin"],
+  },
+  author: {
+    type: Types.ObjectId,
+    required: true,
+    refPath: "authorType",
+  },
+  isDelete: { type: Boolean, default: false },
 });
 
 const Scenario =

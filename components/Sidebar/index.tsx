@@ -9,7 +9,6 @@ import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { FundViewOutlined, MailOutlined } from "@ant-design/icons";
 
-
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
@@ -52,8 +51,30 @@ const menuGroups = [
       },
       {
         icon: <MailOutlined />,
-        label: "menu-mail",
-        route: "/dashboard/scenario",
+        label: "menu-scenario",
+        route: "#",
+        children: [
+          {
+            label: "menu-scenario",
+            route: "/dashboard/scenario",
+            role: ["admin", "superadmin"],
+          },
+          {
+            label: "menu-landing-pages",
+            route: "/dashboard/scenario/landing-page-templates",
+            role: ["admin", "superadmin"],
+          },
+          {
+            label: "menu-mail",
+            route: "/dashboard/scenario/email-templates",
+            role: ["admin", "superadmin"],
+          },
+          {
+            label: "menu-data-entry",
+            route: "/dashboard/scenario/data-entry-templates",
+            role: ["superadmin", "admin"],
+          },
+        ],
       },
       {
         icon: (

@@ -137,7 +137,7 @@ export async function POST(request: Request) {
         {
           ...message403,
         },
-        { status: 200, statusText: message200.message }
+        { status: 403, statusText: message403.message }
       );
     }
   } catch (error: any) {
