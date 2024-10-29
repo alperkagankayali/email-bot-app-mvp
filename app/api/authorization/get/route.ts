@@ -1,11 +1,11 @@
 import connectToDatabase from "@/lib/mongoose";
-import User from "@/models/user";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic"; // <- add this to force dynamic render
 import jwt from "jsonwebtoken";
-import { ISuperAdminJWT, IUserJWT } from "../login/route";
 import { message200, message401, message500 } from "@/constants";
-import Company from "@/models/company";
+import { ISuperAdminJWT, IUserJWT } from "../../user/login/route";
+import Authorization from "@/models/authorization";
+import Pages from "@/models/pages";
 
 export async function GET(request: Request) {
   try {
@@ -14,17 +14,19 @@ export async function GET(request: Request) {
     const jwtKey: string = process.env.JWT_SCREET_KEY as string;
     if (!!token) {
       const user = jwt.verify(token.split(" ")[1], jwtKey) as IUserJWT;
-      if (user.role === "admin") {
-        const userTotal = await User.countDocuments(
+      if (user.role === "admin" || user.role === "user") {
+        const authTotal = await Authorization.countDocuments(
           {},
           { company: user.companyId }
         );
-        const users = await User.find({ company: user.companyId }).populate({ path: "company", model: Company });
+        const users = await Authorization.find({
+          company: user.companyId,
+        }).populate({ path: "page", model: Pages });
         return NextResponse.json(
           {
             ...message200,
             data: [...users],
-            totalItems: userTotal,
+            totalItems: authTotal,
           },
           { status: 200, statusText: message200.message }
         );
@@ -34,14 +36,17 @@ export async function GET(request: Request) {
           jwtKey
         ) as ISuperAdminJWT;
         if (jwtSuperAdmin.role === "superadmin") {
-          const userTotal = await User.countDocuments();
-          const findUser = await User.find().populate({ path: "company", model: Company })
+          const authTotal = await Authorization.countDocuments();
+          const findUser = await Authorization.find().populate({
+            path: "page",
+            model: Pages,
+          });
 
           return NextResponse.json(
             {
               ...message200,
               data: [...findUser],
-              totalItems: userTotal,
+              totalItems: authTotal,
             },
             { status: 200 }
           );

@@ -7,7 +7,11 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     serverActions: {
-      allowedOrigins: ["email-bot-app-mvp-mx28.vercel.app","email-bot-app-mvp.vercel.app","email-bot-app-mvp-evt8.vercel.app"],
+      allowedOrigins: [
+        "email-bot-app-mvp-mx28.vercel.app",
+        "email-bot-app-mvp.vercel.app",
+        "email-bot-app-mvp-evt8.vercel.app",
+      ],
     },
   },
   typescript: {
@@ -18,8 +22,29 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['upload.wikimedia.org',"test-bucket-emails-577638362157.s3.eu-north-1.amazonaws.com"],
-},
+    domains: [
+      "upload.wikimedia.org",
+      "test-bucket-emails-577638362157.s3.eu-north-1.amazonaws.com",
+    ],
+  },
+  async headers() {
+    return [
+      {
+        source: '/api/user/get-csv-format',
+        headers: [
+          {
+            key: "Content-Type",
+            value: 'application/octet-stream',
+          },
+          {
+            key: "Content-disposition",
+            value: 'attachment; filename=userList.xlsx',
+          },
+        ],
+      },
+      
+    ]
+  },
 };
 
 export default withNextIntl(nextConfig);

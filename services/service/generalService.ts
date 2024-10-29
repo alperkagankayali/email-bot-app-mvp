@@ -3,8 +3,8 @@ import { getRequest, postRequest } from "../client/client";
 import finalConfig from "@/lib/config.json";
 import headers from "@/lib/header.json";
 import { IResourceDb } from "@/types/resourcesType";
-import { ICompany } from "@/types/companyType";
 import { IResponseType } from "@/types/responseType";
+import { IUser } from "@/types/userType";
 
 export const servicesBaseUrl =
   process.env.NODE_ENV === "production"
@@ -101,7 +101,7 @@ export const updateCompany = async (updateData: any) => {
   const config = headers.content_type.application_json;
   const result: IResponseType = await postRequest(
     url,
-    { id:updateData?.id, updateData },
+    { id: updateData?.id, updateData },
     config
   );
   return result;
@@ -112,5 +112,43 @@ export const getUserById = async (id: string) => {
   const url = servicesBaseUrl + finalConfig.GET_USER_BY_ID + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
+  return result;
+};
+
+export const getAuthorization = async (limit = 10, page = 1) => {
+  const queryParams = jsonToQueryString({ limit, page });
+  const url = servicesBaseUrl + finalConfig.GET_AUTHORIZATION + queryParams;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url, config);
+  return result;
+};
+
+export const createUser = async (data: IUser) => {
+  const url = servicesBaseUrl + finalConfig.CREATE_USER;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, data, config);
+  return result;
+};
+
+export const getUserFormat = async () => {
+  const url = servicesBaseUrl + finalConfig.GET_EXEL_FORMAT;
+  const config = headers.content_type["octet-stream"];
+  const result: IResponseType = await getRequest(url, config);
+  return result;
+};
+
+export const fileUploadAws = async (formData: any, file: string) => {
+  const queryParams = jsonToQueryString({ file });
+  const url = servicesBaseUrl + finalConfig.FILE_UPLOAD + queryParams;
+  const config = headers.content_type.form_data;
+  const result: IResponseType = await postRequest(url, formData, config);
+  return result;
+};
+
+
+export const createUserExel = async (formData: any) => {
+  const url = servicesBaseUrl + finalConfig.CREATE_USER_WITH_EXCEL ;
+  const config = headers.content_type.form_data;
+  const result: IResponseType = await postRequest(url, formData, config);
   return result;
 };

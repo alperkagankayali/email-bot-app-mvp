@@ -25,7 +25,12 @@ const DropdownUser = () => {
             {!!user && user.nameSurname}
           </span>
           <span className="block text-xs">
-          {!!user && user.department}
+            {!!user && user.role === "superadmin"
+              ? "Super Admin"
+              : user?.department}
+          </span>
+          <span className="block text-xs">
+            {!!user && user.role !== "superadmin" && user?.role}
           </span>
         </span>
 
@@ -33,7 +38,12 @@ const DropdownUser = () => {
           <Image
             width={112}
             height={112}
-            src={"/images/user/user-01.png"}
+            className="rounded-full"
+            src={
+              user?.role !== "superadmin"
+                ? (user?.companyLogo ?? "")
+                : "/images/user/user-01.png"
+            }
             style={{
               width: "auto",
               height: "auto",
@@ -139,8 +149,8 @@ const DropdownUser = () => {
           </ul>
           <button
             className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
-            onClick={() => {
-              logoutUser();
+            onClick={async () => {
+              await logoutUser();
               router.push("/");
             }}
           >

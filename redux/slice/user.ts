@@ -1,10 +1,12 @@
 "use client";
+import { IUserJWT } from "@/app/api/user/login/route";
 import { getResource } from "@/services/service/generalService";
-import { IUser } from "@/types/userType";
+import { ISuperAdmin } from "@/types/superAdmingType";
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface ICounter {
-  user: IUser | null;
+  user:  null | ISuperAdmin | IUserJWT;
   status: "loading" | "succeeded" | "failed" | "idle";
 }
 

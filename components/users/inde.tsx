@@ -16,12 +16,17 @@ import {
   getAllUsers,
   getResourceAll,
   getUserById,
+  getUserFormat,
   updateResource,
 } from "@/services/service/generalService";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { UserOutlined } from "@ant-design/icons";
+import { DownloadOutlined, UserOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { downloadFile } from "@/constants";
+import AddUserExel from "./addUserExel";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export interface DataType {
   name: string;
@@ -86,6 +91,7 @@ const UserTable = ({ id }: IProps) => {
   const [data, setData] = useState<DataType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [editingKey, setEditingKey] = useState("");
+  const user = useSelector((state: RootState) => state.user.user);
 
   const isEditing = (record: DataType) => record._id === editingKey;
 
@@ -116,8 +122,7 @@ const UserTable = ({ id }: IProps) => {
         setLoading(false);
         setData(newData);
         setPagination(res.pagination);
-      }
-      else{
+      } else {
         const res: any = await getAllUsers();
         const newData = res?.data?.map((e: any) => {
           return {
@@ -296,15 +301,35 @@ const UserTable = ({ id }: IProps) => {
     }
   };
 
+  const [isAddUserModal, setIsAddUserModal] = useState(false);
+
   return (
     <div>
-      <div className="flex mb-2">
+      <div className="flex mb-2 items-center justify-between">
         <Link
           href={"/dashboard/users/add"}
           className="bg-[#1677ff] text-white px-4 py-2 rounded-md"
         >
           {t("menu-add-user")}
         </Link>
+        <div>
+          <Button
+            onClick={() => downloadFile(id ?? "")}
+            type="primary"
+            style={{ marginBottom: 16 }}
+          >
+            <DownloadOutlined /> Exel Formatını Indir
+          </Button>
+          <Button
+            onClick={() => setIsAddUserModal(true)}
+            type="primary"
+            size="middle"
+            className="ml-2 "
+            style={{ marginBottom: 16 }}
+          >
+            Kullanıcı Yükle
+          </Button>
+        </div>
       </div>
       <Form form={form} component={false}>
         <Table<DataType>
@@ -325,6 +350,10 @@ const UserTable = ({ id }: IProps) => {
           }}
         />
       </Form>
+      <AddUserExel
+        isAddUserModal={isAddUserModal}
+        setIsAddUserModal={setIsAddUserModal}
+      />
     </div>
   );
 };

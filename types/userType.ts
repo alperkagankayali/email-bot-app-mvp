@@ -8,12 +8,12 @@ export interface IUser {
   language: string;
   department: string;
   password: string;
-  company: ICompany;
+  company?: ICompany;
   role: "user" | "admin";
-  _id: Types.ObjectId;
-  isDelete: boolean;
-  createdAt: Date;
-  course: ICourse;
+  _id?: Types.ObjectId;
+  isDelete?: boolean;
+  createdAt?: Date;
+  course?: ICourse;
   author?: IUser;
 }
 

@@ -80,7 +80,7 @@ const menuGroups = [
       {
         icon: <FundViewOutlined />,
         label: "menu-companies",
-        route: "/dashboard/companies"
+        route: "/dashboard/companies",
       },
       {
         icon: (
@@ -182,7 +182,14 @@ const menuGroups = [
           </svg>
         ),
         label: "menu-settings",
-        route: "/dashboard/settings",
+        route: "#",
+        children: [
+          { label: "menu-settings", route: "/dashboard/settings" },
+          {
+            label: "menu-user-authorization",
+            route: "/dashboard/authorization",
+          },
+        ],
       },
     ],
   },

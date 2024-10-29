@@ -5,6 +5,8 @@ const bcrypt = require("bcryptjs");
 import jwt from "jsonwebtoken";
 import { IUserJWT, ISuperAdminJWT } from "../login/route";
 import { message201, message401, message403, message500 } from "@/constants";
+import { v4 as uuidv4 } from "uuid";
+import Company from "@/models/company";
 
 export async function POST(request: Request) {
   try {
@@ -15,7 +17,23 @@ export async function POST(request: Request) {
     if (!!token) {
       const user = jwt.verify(token.split(" ")[1], jwtKey) as IUserJWT;
       if (user.role === "admin") {
-        const passwordHash = bcrypt.hashSync(body.password, 10);
+        const passwordHash = bcrypt.hashSync(
+          !!body.password ? body.password : uuidv4().slice(0, 10),
+          10
+        );
+        const findCompany = await Company.findOne({ _id: user.companyId });
+        const some = findCompany.emailDomainAddress?.includes(
+          body?.email?.split("@")[1]
+        );
+        if (!some) {
+          return NextResponse.json(
+            {
+              ...message403,
+              message: "Excel'deki email adresleri şirketinizde ekli değil",
+            },
+            { status: 403, statusText: "Email address not supported" }
+          );
+        }
         const userCreate = new User({
           ...body,
           company: user.companyId,
@@ -36,7 +54,23 @@ export async function POST(request: Request) {
           jwtKey
         ) as ISuperAdminJWT;
         if (jwtSuperAdmin.role === "superadmin") {
-          const passwordHash = bcrypt.hashSync(body.password, 10);
+          const passwordHash = bcrypt.hashSync(
+            !!body.password ? body.password : uuidv4().slice(0, 10),
+            10
+          );
+          const findCompany = await Company.findOne({ _id: body.company });
+          const some = findCompany?.emailDomainAddress?.includes(
+            body?.email?.split("@")[1]
+          );
+          if (!some) {
+            return NextResponse.json(
+              {
+                ...message403,
+                message: "email adresleri şirketinizde ekli değil",
+              },
+              { status: 403, statusText: "Email address not supported" }
+            );
+          }
           const userCreate = new User({
             ...body,
             company: body.company,

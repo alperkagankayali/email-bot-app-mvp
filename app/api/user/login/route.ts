@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import { ISuperAdmin } from "@/types/superAdmingType";
 import SuperAdmin from "@/models/superAdmin";
 import { message200, message403, message500 } from "@/constants";
+import Company from "@/models/company";
 const { createCodec } = require("json-crypto");
 export interface IUserJWT {
   email: string;
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
       email: body.email,
     });
     const newDate = new Date();
-    let user: IUser | null = await User.findOne({ email: body.email });
+    let user: IUser | null = await User.findOne({ email: body.email }).populate({ path: "company", model: Company });
     const jwtKey: string = process.env.JWT_SCREET_KEY as string;
     const cookieKey: string = process.env.COOKIE_SCREET_KEY as string;
 
@@ -80,7 +81,6 @@ export async function POST(request: Request) {
       );
     } else if (
       user !== null &&
-      newDate > user?.company?.lisanceEndDate &&
       !user.isDelete &&
       bcrypt.compareSync(body.password, user.password)
     ) {
@@ -94,11 +94,11 @@ export async function POST(request: Request) {
           language: user.language,
           nameSurname: user.nameSurname,
           role: user.role,
-          companyName: user.company.companyName,
-          companyId: user.company._id,
-          lisanceStartDate: user.company.lisanceStartDate,
-          lisanceEndDate: user.company.lisanceEndDate,
-          companyLogo: user.company.logo,
+          companyName: user?.company?.companyName,
+          companyId: user?.company?._id,
+          lisanceStartDate: user?.company?.lisanceStartDate,
+          lisanceEndDate: user?.company?.lisanceEndDate,
+          companyLogo: user?.company?.logo,
         },
         jwtKey,
         { expiresIn: "2h" }
@@ -115,7 +115,20 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           ...message200,
-          data: { token: token, type: "Bearer", user: superAdmin },
+          data: { token: token, type: "Bearer", user: {
+            email: user?.email,
+            password: user?.password,
+            id: user?._id,
+            department: user.department,
+            language: user.language,
+            nameSurname: user.nameSurname,
+            role: user.role,
+            companyName: user?.company?.companyName,
+            companyId: user?.company?._id,
+            lisanceStartDate: user?.company?.lisanceStartDate,
+            lisanceEndDate: user?.company?.lisanceEndDate,
+            companyLogo: user?.company?.logo,
+          } },
         },
         { status: 200, statusText: message200.message }
       );

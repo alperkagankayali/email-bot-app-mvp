@@ -2,10 +2,16 @@ import { configureStore } from "@reduxjs/toolkit";
 import resourceSlice from "@/redux/slice/resource";
 import user from "@/redux/slice/user";
 import language from "@/redux/slice/language";
+import companies from "@/redux/slice/companies";
 
 export const makeStore = () => {
   return configureStore({
-    reducer: { resource: resourceSlice, user, language },
+    reducer: {
+      resource: resourceSlice,
+      user,
+      language,
+      companies,
+    },
   });
 };
 

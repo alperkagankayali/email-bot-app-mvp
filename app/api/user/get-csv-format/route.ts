@@ -1,12 +1,41 @@
 import connectToDatabase from "@/lib/mongoose";
-import User from "@/models/user";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic"; // <- add this to force dynamic render
 import jwt from "jsonwebtoken";
 import { ISuperAdminJWT, IUserJWT } from "../login/route";
-import { message200, message401, message500 } from "@/constants";
-import Company from "@/models/company";
+import {  message401, message500 } from "@/constants";
+import xlsx, { IJsonSheet, ISettings } from "json-as-xlsx";
 
+const data: IJsonSheet[] = [
+  {
+    sheet: "Adults",
+    columns: [
+      { label: "Name", value: "name" },
+      { label: "Age", value: "age", format: '# "years"' },
+    ],
+    content: [
+      { name: "Monserrat", age: 21, more: { phone: "11111111" } },
+      { name: "Luis", age: 22, more: { phone: "12345678" } },
+    ],
+  },
+  {
+    sheet: "Pets",
+    columns: [
+      { label: "Name", value: "name" },
+      { label: "Age", value: "age" },
+    ],
+    content: [
+      { name: "Malteada", age: 4, more: { phone: "99999999" } },
+      { name: "Picadillo", age: 1, more: { phone: "87654321" } },
+    ],
+  },
+];
+const settings: ISettings = {
+  writeOptions: {
+    type: "buffer",
+    bookType: "xlsx",
+  },
+};
 export async function GET(request: Request) {
   try {
     await connectToDatabase();
@@ -15,36 +44,16 @@ export async function GET(request: Request) {
     if (!!token) {
       const user = jwt.verify(token.split(" ")[1], jwtKey) as IUserJWT;
       if (user.role === "admin") {
-        const userTotal = await User.countDocuments(
-          {},
-          { company: user.companyId }
-        );
-        const users = await User.find({ company: user.companyId }).populate({ path: "company", model: Company });
-        return NextResponse.json(
-          {
-            ...message200,
-            data: [...users],
-            totalItems: userTotal,
-          },
-          { status: 200, statusText: message200.message }
-        );
+        const buffer = xlsx(data, settings);
+        return NextResponse.json(buffer);
       } else {
         const jwtSuperAdmin = jwt.verify(
           token.split(" ")[1],
           jwtKey
         ) as ISuperAdminJWT;
         if (jwtSuperAdmin.role === "superadmin") {
-          const userTotal = await User.countDocuments();
-          const findUser = await User.find().populate({ path: "company", model: Company })
-
-          return NextResponse.json(
-            {
-              ...message200,
-              data: [...findUser],
-              totalItems: userTotal,
-            },
-            { status: 200 }
-          );
+          const buffer = xlsx(data, settings);
+          return NextResponse.json(buffer);
         }
         return NextResponse.json(
           {

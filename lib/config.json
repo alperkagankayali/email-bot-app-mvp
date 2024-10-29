@@ -12,6 +12,10 @@
   "FILE_UPLOAD":"/upload/aws",
   "CREATE_COMPANY":"/company/add",
   "UPDATE_COMPANY":"/company/update",
-  "GET_USER_BY_ID":"/user/get"
+  "GET_USER_BY_ID":"/user/get",
+  "GET_AUTHORIZATION":"/authorization/get",
+  "CREATE_USER":"/user/create-user",
+  "GET_EXEL_FORMAT":"/user/get-csv-format",
+  "CREATE_USER_WITH_EXCEL":"/user/create-user-excel"
 
 }

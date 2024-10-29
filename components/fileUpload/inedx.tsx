@@ -29,19 +29,18 @@ const FileUpload = ({ handleUploadFile, defaultValue }: IProps) => {
   const props: UploadProps = {
     name: "file",
     multiple: false,
-    action: servicesBaseUrl + finalConfig.FILE_UPLOAD,
+    action: servicesBaseUrl + finalConfig.FILE_UPLOAD + "?file=upload",
     beforeUpload: beforeUpload,
     defaultFileList: !!defaultValue
       ? [{ url: defaultValue, name: "logo", uid: uuidv4(), status: "done" }]
       : [],
     onChange(info) {
-      debugger;
       const { status } = info.file;
       if (status !== "uploading") {
         console.log(info.file, info.fileList);
       }
       if (status === "done") {
-        handleUploadFile(info.file.response.url);
+        handleUploadFile(info.file.response.data.url);
         message.success(`${info.file.name} file uploaded successfully.`);
       } else if (status === "error") {
         message.error(`${info.file.name} file upload failed.`);
