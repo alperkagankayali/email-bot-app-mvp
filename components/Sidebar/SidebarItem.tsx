@@ -1,10 +1,14 @@
+"use client";
 import React from "react";
 import { Link } from "@/i18n/routing";
 import SidebarDropdown from "@/components/Sidebar/SidebarDropdown";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const SidebarItem = ({ item, pageName, setPageName }: any) => {
+  const user = useSelector((state: RootState) => state.user.user);
   const handleClick = () => {
     const updatedPageName =
       pageName !== item.label.toLowerCase() ? item.label.toLowerCase() : "";
@@ -14,7 +18,7 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
   const pathname = usePathname();
 
   const isActive = (item: any) => {
-    if (item.route === pathname.slice(3,pathname.length)) return true;
+    if (item.route === pathname.slice(3, pathname.length)) return true;
     if (item.children) {
       return item.children.some((child: any) => isActive(child));
     }
@@ -23,7 +27,9 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
 
   const isItemActive = isActive(item);
   const t = useTranslations("pages");
-
+  if (!!item.role && !item.role.includes(user?.role)) {
+    return <></>
+  }
   return (
     <>
       <li>

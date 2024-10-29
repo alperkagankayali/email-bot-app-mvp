@@ -9,6 +9,7 @@ import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { FundViewOutlined, MailOutlined } from "@ant-design/icons";
 
+
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
@@ -81,6 +82,7 @@ const menuGroups = [
         icon: <FundViewOutlined />,
         label: "menu-companies",
         route: "/dashboard/companies",
+        role: ["superadmin"],
       },
       {
         icon: (
@@ -105,8 +107,12 @@ const menuGroups = [
         label: "menu-users",
         route: "#",
         children: [
-          { label: "menu-users", route: "/dashboard/users" },
-          { label: "menu-add-user", route: "/dashboard/users/add" },
+          { label: "menu-users", route: "/dashboard/users", role: ["admin"] },
+          {
+            label: "menu-add-user",
+            route: "/dashboard/users/add",
+            role: ["superadmin", "admin"],
+          },
         ],
       },
       {
@@ -143,6 +149,7 @@ const menuGroups = [
         ),
         label: "menu-language",
         route: "#",
+        role: ["superadmin"],
         children: [
           { label: "menu-language", route: "/dashboard/languages" },
           { label: "menu-resource", route: "/dashboard/resource" },
@@ -238,7 +245,6 @@ const menuGroups = [
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
   const t = useTranslations("pages");
-
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
       <aside
