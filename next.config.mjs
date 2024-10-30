@@ -34,11 +34,11 @@ const nextConfig = {
         headers: [
           {
             key: "Content-Type",
-            value: 'application/octet-stream',
+            value: 'text/csv',
           },
           {
             key: "Content-disposition",
-            value: 'attachment; filename=userList.xlsx',
+            value: 'attachment; filename=userlist.csv',
           },
         ],
       },

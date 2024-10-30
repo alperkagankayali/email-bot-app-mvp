@@ -16,14 +16,11 @@ import {
   getAllUsers,
   getResourceAll,
   getUserById,
-  getUserFormat,
-  updateResource,
 } from "@/services/service/generalService";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { DownloadOutlined, UserOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
-import { downloadFile } from "@/constants";
 import AddUserExel from "./addUserExel";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -138,30 +135,6 @@ const UserTable = ({ id }: IProps) => {
     }
     fetchUsers();
   }, []);
-
-  const save = async (key: React.Key) => {
-    try {
-      const row = (await form.validateFields()) as DataType;
-
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item._id);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        setData(newData);
-        setEditingKey("");
-      } else {
-        newData.push(row);
-        setData(newData);
-        setEditingKey("");
-      }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
-    }
-  };
 
   const columns = [
     {
@@ -314,13 +287,6 @@ const UserTable = ({ id }: IProps) => {
         </Link>
         <div>
           <Button
-            onClick={() => downloadFile(id ?? "")}
-            type="primary"
-            style={{ marginBottom: 16 }}
-          >
-            <DownloadOutlined /> Exel Formatını Indir
-          </Button>
-          <Button
             onClick={() => setIsAddUserModal(true)}
             type="primary"
             size="middle"
@@ -351,6 +317,7 @@ const UserTable = ({ id }: IProps) => {
         />
       </Form>
       <AddUserExel
+        id={!!id ? id : !!user?.companyId ? user.companyId : ""}
         isAddUserModal={isAddUserModal}
         setIsAddUserModal={setIsAddUserModal}
       />

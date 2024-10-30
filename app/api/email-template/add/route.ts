@@ -1,7 +1,7 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
-import {  message201, message401, message500 } from "@/constants";
+import { message201, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import EmailTemplate from "@/models/emailTemplate";
 
@@ -11,12 +11,15 @@ export async function GET(request: Request) {
     const body = await request.json();
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     if (!!token) {
-      const verificationResult = await verifyToken(token.split(" ")[1]);
+      const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
       } else {
         const emailTemplateCreate = new EmailTemplate({
           ...body,
+          authorType:
+            verificationResult?.role === "superadmin" ? "superadmin" : "User",
+          author: verificationResult?.id,
         });
         const emailTemplate = await emailTemplateCreate.save();
         return NextResponse.json(

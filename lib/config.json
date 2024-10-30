@@ -16,6 +16,7 @@
   "GET_AUTHORIZATION":"/authorization/get",
   "CREATE_USER":"/user/create-user",
   "GET_EXEL_FORMAT":"/user/get-csv-format",
-  "CREATE_USER_WITH_EXCEL":"/user/create-user-excel"
+  "CREATE_USER_WITH_EXCEL":"/user/create-user-excel",
+  "GET_USER_WITH_EXCEL":"/user/get-csv-format"
 
 }

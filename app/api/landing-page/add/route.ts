@@ -1,6 +1,6 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
-export const dynamic = "force-dynamic"; 
+export const dynamic = "force-dynamic";
 import { message200, message201, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import LandingPage from "@/models/landingPage";
@@ -11,18 +11,21 @@ export async function GET(request: Request) {
     const body = await request.json();
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     if (!!token) {
-      const verificationResult = await verifyToken(token.split(" ")[1]);
+      const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
       } else {
         const landingCreate = new LandingPage({
           ...body,
+          authorType:
+            verificationResult?.role === "superadmin" ? "superadmin" : "User",
+          author: verificationResult?.id,
         });
         const landingPage = await landingCreate.save();
         return NextResponse.json(
           {
             ...message201,
-            data: landingPage
+            data: landingPage,
           },
           { status: 201, statusText: message201.message }
         );

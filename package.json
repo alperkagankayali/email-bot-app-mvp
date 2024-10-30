@@ -24,8 +24,10 @@
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
+    "csv-parse": "^5.5.6",
     "flatpickr": "^4.6.13",
     "jodit-react": "^4.1.2",
+    "json-2-csv": "^5.5.6",
     "json-as-xlsx": "^2.5.6",
     "json-crypto": "^1.0.5",
     "jsonwebtoken": "^9.0.2",
@@ -36,10 +38,8 @@
     "react": "^18",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18",
-    "react-quill": "^2.0.0",
     "react-redux": "^9.1.2",
-    "uuid": "^10.0.0",
-    "xlsx": "^0.18.5"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",

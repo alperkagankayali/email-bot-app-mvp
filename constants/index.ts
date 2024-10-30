@@ -1,5 +1,4 @@
 import { IResponseType } from "@/types/responseType";
-import xlsx from "json-as-xlsx";
 
 export function jsonToQueryString(json: any) {
   return (
@@ -53,33 +52,4 @@ export const message403: IResponseType = {
   data: null,
   message: "danger-403",
   success: false,
-};
-
-export const downloadFile = (company: string) => {
-  let data = [
-    {
-      columns: [
-        { label: "nameSurname", value: "nameSurname" }, // Top level data
-        { label: "email", value: "email" }, // Custom format
-        { label: "language", value: "language" }, // Custom format
-        { label: "department", value: "department" }, // Custom format
-        { label: "company", value: "company" }, // Custom format
-        { label: "role", value: "role" }, // Custom format
-      ],
-      content: [
-        {
-          nameSurname: "",
-          email: "",
-          language: "",
-          department: "",
-          company: company,
-          role: "",
-        },
-      ],
-    },
-  ];
-  let settings = {
-    fileName: "UserExel",
-  };
-  xlsx(data, settings);
 };

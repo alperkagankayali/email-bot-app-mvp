@@ -152,3 +152,11 @@ export const createUserExel = async (formData: any) => {
   const result: IResponseType = await postRequest(url, formData, config);
   return result;
 };
+
+export const getUserCsv = async (id: string) => {
+  const queryParams = jsonToQueryString({ id });
+  const url = servicesBaseUrl + finalConfig.GET_USER_WITH_EXCEL + queryParams ;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url,  config);
+  return result;
+};

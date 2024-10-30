@@ -38,7 +38,6 @@ const AddUser = () => {
   }, [companyStatus, dispatch, user]);
 
   const onFinish: FormProps<IUser>["onFinish"] = async (values) => {
-    debugger
     const res = await createUser(values);
     if (res.success) {
       message.info(res.message);

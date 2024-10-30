@@ -5,19 +5,15 @@ import { Button, message, Modal, Tag, Upload } from "antd";
 import { useTranslations } from "next-intl";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState } from "react";
-import {
-  createUserExel,
-  fileUploadAws,
-  servicesBaseUrl,
-} from "@/services/service/generalService";
-import finalConfig from "@/lib/config.json";
+import { createUserExel } from "@/services/service/generalService";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type IProps = {
   isAddUserModal: boolean;
   setIsAddUserModal: (x: boolean) => void;
+  id: string;
 };
-const AddUserExel = ({ isAddUserModal, setIsAddUserModal }: IProps) => {
+const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
   const t = useTranslations("pages");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -25,7 +21,7 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal }: IProps) => {
     const formData = new FormData();
     formData.append("file", fileList[0] as FileType);
     setUploading(true);
-   const res = createUserExel(formData);
+    const res = createUserExel(formData);
   };
 
   const props: UploadProps = {
@@ -36,6 +32,16 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal }: IProps) => {
       setFileList(newFileList);
     },
     beforeUpload: (file) => {
+      const isJpgOrPng = file.type === "text/csv";
+      if (!isJpgOrPng) {
+        message.error("You can only upload JPG/PNG file!");
+        return false;
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        message.error("Image must smaller than 2MB!");
+        return false;
+      }
       setFileList([...fileList, file]);
 
       return false;
@@ -43,22 +49,60 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal }: IProps) => {
     fileList,
   };
 
-  const handleOk = () => {
-    console.log("test");
-  };
   return (
     <>
       <Modal
         title={t("user-exel-modal-title")}
         open={isAddUserModal}
         onOk={handleUpload}
+        centered
+        width={800}
         onCancel={() => setIsAddUserModal(false)}
       >
         <div className="flex items-start">
-          {" "}
-          <Tag color="#f50">**</Tag>
           <p>{t("user-exel-modal-rules")}</p>
         </div>
+        <ul className="list-disc mt-4">
+          <li className="ml-6">
+            Oluşturduğunuz csv formatında company alanına tabloda gördünüğüz
+            değeri yazınız
+          </li>
+          <li className="ml-6">
+            Oluşturduğunuz csv formatında role admin yada user yazmalısınız.
+          </li>
+          <li className="ml-6">
+            Oluşturduğunuz csv formatında language alanına dil code yazınız iki
+            haneli olacak şekilde en-tr-de
+          </li>
+        </ul>
+        <p></p>
+        <p></p>
+        <table className="w-full mt-4">
+          <tr>
+            <th className="border border-gray-200 text-center p-2">
+              nameSurname
+            </th>
+            <th className="border border-gray-200 text-center p-2">email</th>
+            <th className="border border-gray-200 text-center p-2">language</th>
+            <th className="border border-gray-200 text-center p-2">
+              department
+            </th>
+            <th className="border border-gray-200 text-center p-2">company</th>
+            <th className="border border-gray-200 text-center p-2">role</th>
+          </tr>
+          <tr>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2"></td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2"></td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2"></td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2"></td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2">
+              {id}
+            </td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2">
+              admin | user
+            </td>
+          </tr>
+        </table>
         <div className="mt-6">
           <Upload {...props} className="">
             <Button icon={<UploadOutlined />}>Select File</Button>

@@ -35,3 +35,19 @@ export interface IUserTrainingHistory {
   status: "not_completed" | "in_progress" | "completed";
   created_at: Date;
 }
+
+export interface IUSerLogin {
+  email: string
+  password: string
+  id: string
+  department: string
+  language: string
+  nameSurname: string
+  role: "user"|"superadmin"|"admin"
+  companyName: string
+  companyId: string
+  lisanceStartDate: string
+  lisanceEndDate: string
+  companyLogo: string
+}
+

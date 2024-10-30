@@ -2,16 +2,19 @@
 import { IUserJWT } from "@/app/api/user/login/route";
 import { getResource } from "@/services/service/generalService";
 import { ISuperAdmin } from "@/types/superAdmingType";
+import { IUSerLogin } from "@/types/userType";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface ICounter {
-  user:  null | ISuperAdmin | IUserJWT;
+  user: null | IUSerLogin;
   status: "loading" | "succeeded" | "failed" | "idle";
 }
 
 const initialState: ICounter = {
-  user: typeof window !== "undefined" && JSON.parse(localStorage.getItem("user") || "{}")?.user,
+  user:
+    typeof window !== "undefined" &&
+    JSON.parse(localStorage.getItem("user") || "{}")?.user,
   status: "idle",
 };
 
