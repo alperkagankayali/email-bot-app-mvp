@@ -14,11 +14,10 @@ const newsSchema = new Schema<ILandingPage>({
   },
   author: {
     type: Types.ObjectId,
-    required: true,
     refPath: "authorType", 
   },
 });
 
-const LandingPage = models.DataEntry || model<ILandingPage>("LandingPage", newsSchema);
+const LandingPage = models.LandingPage || model<ILandingPage>("LandingPage", newsSchema);
 
 export default LandingPage;

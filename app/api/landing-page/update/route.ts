@@ -5,7 +5,7 @@ import { message201, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import LandingPage from "@/models/landingPage";
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   try {
     await connectToDatabase();
     const { id, updateData } = await request.json();

@@ -16,7 +16,7 @@ type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const FileUpload = ({ handleUploadFile, defaultValue }: IProps) => {
   const beforeUpload = (file: FileType) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/webp";
     if (!isJpgOrPng) {
       message.error("You can only upload JPG/PNG file!");
     }
@@ -32,7 +32,7 @@ const FileUpload = ({ handleUploadFile, defaultValue }: IProps) => {
     action: servicesBaseUrl + finalConfig.FILE_UPLOAD + "?file=upload",
     beforeUpload: beforeUpload,
     defaultFileList: !!defaultValue
-      ? [{ url: defaultValue, name: "logo", uid: uuidv4(), status: "done" }]
+      ? [{ url: defaultValue, name: "image", uid: uuidv4(), status: "done" }]
       : [],
     onChange(info) {
       const { status } = info.file;
@@ -40,6 +40,7 @@ const FileUpload = ({ handleUploadFile, defaultValue }: IProps) => {
         console.log(info.file, info.fileList);
       }
       if (status === "done") {
+        debugger
         handleUploadFile(info.file.response.data.url);
         message.success(`${info.file.name} file uploaded successfully.`);
       } else if (status === "error") {

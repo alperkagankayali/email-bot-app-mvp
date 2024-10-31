@@ -1,6 +1,6 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
-export const dynamic = "force-dynamic"; 
+export const dynamic = "force-dynamic";
 import { message200, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import LandingPage from "@/models/landingPage";
@@ -13,21 +13,39 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get("page") || "1"); // Varsayılan 1. sayfa
     const limit = parseInt(searchParams.get("limit") || "10"); // Varsayılan limit 10
     const skip = (page - 1) * limit; //
+    const id = searchParams.get("id");
     if (!!token) {
       const verificationResult = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
       } else {
-        const landingPageTotal = await LandingPage.countDocuments({},{isDelete:false});
-        const landingPage = await LandingPage.find({isDelete:false}).skip(skip).limit(limit);
-        return NextResponse.json(
-          {
-            ...message200,
-            data: landingPage,
-            totalItems: landingPageTotal,
-          },
-          { status: 200, statusText: message200.message }
-        );
+        if (!!id) {
+          const landingPage = await LandingPage.findById(id)
+          return NextResponse.json(
+            {
+              ...message200,
+              data: landingPage,
+              totalItems: 1,
+            },
+            { status: 200, statusText: message200.message }
+          );
+        } else {
+          const landingPageTotal = await LandingPage.countDocuments(
+            {},
+            { isDelete: false }
+          );
+          const landingPage = await LandingPage.find({ isDelete: false })
+            .skip(skip)
+            .limit(limit);
+          return NextResponse.json(
+            {
+              ...message200,
+              data: landingPage,
+              totalItems: landingPageTotal,
+            },
+            { status: 200, statusText: message200.message }
+          );
+        }
       }
     } else {
       return NextResponse.json(

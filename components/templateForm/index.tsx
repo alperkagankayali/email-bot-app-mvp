@@ -1,52 +1,31 @@
 "use client";
-
-import { useRouter } from "@/i18n/routing";
-import { fetchCompanies } from "@/redux/slice/companies";
-import { fetchLanguage } from "@/redux/slice/language";
-import { AppDispatch, RootState } from "@/redux/store";
-import { createUser } from "@/services/service/generalService";
 import { ILandingPage } from "@/types/scenarioType";
 import { Button, Form, Input, message, Select } from "antd";
 import type { FormProps } from "antd";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import RinchTextEditor from "../rinchTextEditor";
 import FileUpload from "../fileUpload/inedx";
-const { Option } = Select;
+import { useState } from "react";
 
-const TemplateForm = () => {
-  const router = useRouter();
-  const languages = useSelector((state: RootState) => state.language.language);
-  const status = useSelector((state: RootState) => state.language.status);
-  const companies = useSelector(
-    (state: RootState) => state.companies.companies
-  );
-  const companyStatus = useSelector(
-    (state: RootState) => state.companies.status
-  );
-  const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.user.user);
-
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchLanguage());
-    }
-  }, [status, dispatch]);
-
-  useEffect(() => {
-    if (!!user && user.role === "superadmin" && companyStatus === "idle") {
-      dispatch(fetchCompanies());
-    }
-  }, [companyStatus, dispatch, user]);
+type IProps = {
+  handleSave: (x: ILandingPage) => void;
+  title?: string;
+  img?: string;
+  defaultContent?: string;
+};
+const TemplateForm = ({
+  handleSave,
+  title = "",
+  img = "",
+  defaultContent = "",
+}: IProps) => {
+  const [fileUrl, setFileUrl] = useState(img);
+  const [content, setContent] = useState(defaultContent);
+  const handleUploadFile = (img: string) => {
+    setFileUrl(img);
+  };
 
   const onFinish: FormProps<ILandingPage>["onFinish"] = async (values) => {
-    // const res = await createUser(values);
-    // if (res.success) {
-    //   message.info(res.message);
-    //   router.push("/dashboard/users/" + res.data.company);
-    // } else {
-    //   message.error(res.message);
-    // }
+    await handleSave({ ...values, img: fileUrl, content });
   };
 
   return (
@@ -64,6 +43,7 @@ const TemplateForm = () => {
           <div className="relative">
             <Form.Item<ILandingPage> name="title">
               <Input
+                defaultValue={title}
                 size="large"
                 type="text"
                 placeholder="Title"
@@ -80,7 +60,7 @@ const TemplateForm = () => {
 
           <div className="relative">
             <Form.Item<ILandingPage> name="img">
-              <FileUpload handleUploadFile={(img) => console.log("img", img)} />
+              <FileUpload handleUploadFile={handleUploadFile} defaultValue={img} />
             </Form.Item>
           </div>
         </div>
@@ -90,7 +70,7 @@ const TemplateForm = () => {
           </label>
           <div className="relative">
             <Form.Item<ILandingPage> name="content">
-              <RinchTextEditor />
+              <RinchTextEditor content={content} setContent={setContent} />
             </Form.Item>
             <Form.Item>
               <Button
