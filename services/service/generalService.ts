@@ -197,7 +197,12 @@ export const createEmailTemplate = async (data: ILandingPage) => {
   const result: IResponseType = await postRequest(url, data, config);
   return result;
 };
-
+export const createDataEntry = async (data: ILandingPage) => {
+  const url = servicesBaseUrl + finalConfig.CREATE_DATA_ENTRY;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, data, config);
+  return result;
+};
 
 export const updateLandingPage = async (id: string, updateData: any) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_LANDING_PAGE;
@@ -210,6 +215,16 @@ export const updateLandingPage = async (id: string, updateData: any) => {
   return result;
 };
 
+export const updateDataEntry = async (id: string, updateData: any) => {
+  const url = servicesBaseUrl + finalConfig.UPDATE_DATA_ENTRY;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(
+    url,
+    { id, updateData },
+    config
+  );
+  return result;
+};
 export const updateEmailTemplate = async (id: string, updateData: any) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_EMAIL_TEMPLATE;
   const config = headers.content_type.application_json;

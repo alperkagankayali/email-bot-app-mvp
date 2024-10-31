@@ -70,8 +70,8 @@ const menuGroups = [
             role: ["admin", "superadmin"],
           },
           {
-            label: "menu-data-entry",
-            route: "/dashboard/scenario/data-entry",
+            label: "menu-data-entries",
+            route: "/dashboard/scenario/data-entries",
             role: ["superadmin", "admin"],
           },
         ],

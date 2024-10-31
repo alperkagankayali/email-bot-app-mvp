@@ -24,5 +24,7 @@
   "CREATE_LANDING_PAGE":"/landing-page/add",
   "UPDATE_LANDING_PAGE":"/landing-page/update",
   "CREATE_EMAIL_TEMPLATE":"/email-template/add",
-  "UPDATE_EMAIL_TEMPLATE":"/email-template/update"
+  "UPDATE_EMAIL_TEMPLATE":"/email-template/update",
+  "CREATE_DATA_ENTRY":"/data-entry/add",
+  "UPDATE_DATA_ENTRY":"/data-entry/update"
 }

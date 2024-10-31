@@ -5,7 +5,7 @@ import {  message201, message401, message500 } from "@/constants";
 import DataEntry from "@/models/dataEntry";
 import { verifyToken } from "@/lib/jwt";
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   try {
     await connectToDatabase();
     const token = request.headers.get("authorization");
