@@ -19,6 +19,6 @@ const newsSchema = new Schema<IEmailTemplate>({
   },
 });
 
-const EmailTemplate = models.DataEntry || model<IEmailTemplate>("EmailTemplate", newsSchema);
+const EmailTemplate = models.EmailTemplate || model<IEmailTemplate>("EmailTemplate", newsSchema);
 
 export default EmailTemplate;

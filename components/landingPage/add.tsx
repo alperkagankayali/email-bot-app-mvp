@@ -7,6 +7,7 @@ import { message } from "antd";
 import { useRouter } from "@/i18n/routing";
 import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
+import { fetchLandingPage } from "@/redux/slice/scenario";
 
 const AddLandingPageForm: React.FC = () => {
   const router = useRouter();
@@ -16,6 +17,7 @@ const AddLandingPageForm: React.FC = () => {
     console.log(JSON.stringify(data))
     const res = await createLandingPage(data);
     if(res.success) {
+      dispatch(fetchLandingPage())
       router.push("/dashboard/scenario/landing-page")
     } 
     else {

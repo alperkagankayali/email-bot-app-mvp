@@ -22,6 +22,7 @@
   "GET_EMAIL_TEMPLATE":"/email-template",
   "GET_DATA_ENTRY":"/data-entry",
   "CREATE_LANDING_PAGE":"/landing-page/add",
-  "UPDATE_LANDING_PAGE":"/landing-page/update"
-
+  "UPDATE_LANDING_PAGE":"/landing-page/update",
+  "CREATE_EMAIL_TEMPLATE":"/email-template/add",
+  "UPDATE_EMAIL_TEMPLATE":"/email-template/update"
 }
