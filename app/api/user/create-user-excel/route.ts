@@ -120,9 +120,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
-export const config = {
-  api: {
-    bodyParser: false, // Disable bodyParser for file handling
-  },
-};
