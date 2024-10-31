@@ -61,7 +61,7 @@ const menuGroups = [
           },
           {
             label: "menu-landing-pages",
-            route: "/dashboard/scenario/landing-page-templates",
+            route: "/dashboard/scenario/landing-page",
             role: ["admin", "superadmin"],
           },
           {
@@ -71,7 +71,7 @@ const menuGroups = [
           },
           {
             label: "menu-data-entry",
-            route: "/dashboard/scenario/data-entry-templates",
+            route: "/dashboard/scenario/data-entry",
             role: ["superadmin", "admin"],
           },
         ],

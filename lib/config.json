@@ -17,6 +17,9 @@
   "CREATE_USER":"/user/create-user",
   "GET_EXEL_FORMAT":"/user/get-csv-format",
   "CREATE_USER_WITH_EXCEL":"/user/create-user-excel",
-  "GET_USER_WITH_EXCEL":"/user/get-csv-format"
+  "GET_USER_WITH_EXCEL":"/user/get-csv-format",
+  "GET_LANDING_PAGE":"/landing-page",
+  "GET_EMAIL_TEMPLATE":"/email-template",
+  "GET_DATA_ENTRY":"/data-entry"
 
 }

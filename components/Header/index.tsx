@@ -20,7 +20,6 @@ const Header = (props: {
   const pathname = usePathname();
 
   const handleMenuClick = (e: any) => {
-    debugger;
     router.push("/"+pathname.slice(3,pathname.length), { locale: e });
   };
   return (

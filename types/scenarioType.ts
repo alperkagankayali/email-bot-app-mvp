@@ -29,6 +29,7 @@ export interface IDataEntry {
   author: IUser | ISuperAdmin;
   created_at: Date;
   authorType: string;
+  _id:string
 }
 export interface IEmailTemplate {
   title: string;
@@ -38,6 +39,7 @@ export interface IEmailTemplate {
   author: IUser | ISuperAdmin;
   created_at: Date;
   authorType: string;
+  _id:string
 }
 export interface ILandingPage {
   title: string;
@@ -47,6 +49,7 @@ export interface ILandingPage {
   author: IUser | ISuperAdmin;
   created_at: Date;
   authorType: string;
+  _id?:string
 }
 export interface IScenarioType {
   title: string;
@@ -55,4 +58,5 @@ export interface IScenarioType {
   author: IUser | ISuperAdmin;
   created_at: Date;
   authorType: string;
+  _id:string
 }

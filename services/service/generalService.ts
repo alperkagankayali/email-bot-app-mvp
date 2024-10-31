@@ -160,3 +160,26 @@ export const getUserCsv = async (id: string) => {
   const result: IResponseType = await getRequest(url,  config);
   return result;
 };
+
+export const getLandingPage = async (id: string) => {
+  const queryParams = jsonToQueryString({ id });
+  const url = servicesBaseUrl + finalConfig.GET_LANDING_PAGE + queryParams ;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url,  config);
+  return result;
+};
+
+export const getDataEntries = async (id: string) => {
+  const queryParams = jsonToQueryString({ id });
+  const url = servicesBaseUrl + finalConfig.GET_DATA_ENTRY + queryParams ;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url,  config);
+  return result;
+};
+export const getEmailTemplate = async (id: string) => {
+  const queryParams = jsonToQueryString({ id });
+  const url = servicesBaseUrl + finalConfig.GET_EMAIL_TEMPLATE + queryParams ;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url,  config);
+  return result;
+};

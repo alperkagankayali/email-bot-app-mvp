@@ -3,6 +3,7 @@ import resourceSlice from "@/redux/slice/resource";
 import user from "@/redux/slice/user";
 import language from "@/redux/slice/language";
 import companies from "@/redux/slice/companies";
+import scenario from "@/redux/slice/scenario";
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () => {
       user,
       language,
       companies,
+      scenario,
     },
   });
 };
