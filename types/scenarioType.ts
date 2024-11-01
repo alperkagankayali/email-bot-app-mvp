@@ -39,6 +39,7 @@ export interface IEmailTemplate {
   author: IUser | ISuperAdmin;
   created_at: Date;
   authorType: string;
+  scenarioType:IScenarioType;
   _id:string
 }
 export interface ILandingPage {

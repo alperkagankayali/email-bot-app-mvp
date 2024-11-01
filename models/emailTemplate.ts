@@ -17,6 +17,11 @@ const newsSchema = new Schema<IEmailTemplate>({
     required: true,
     refPath: "authorType", 
   },
+  scenarioType: {
+    type: Types.ObjectId,
+    ref: "ScenarionType",
+    required: true,
+  },
 });
 
 const EmailTemplate = models.EmailTemplate || model<IEmailTemplate>("EmailTemplate", newsSchema);

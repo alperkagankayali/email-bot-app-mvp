@@ -18,6 +18,6 @@ const newsSchema = new Schema<IScenarioType>({
   },
 });
 
-const ScenarionType = models.DataEntry || model<IScenarioType>("ScenarionType", newsSchema);
+const ScenarioType = models.ScenarioType || model<IScenarioType>("ScenarioType", newsSchema);
 
-export default ScenarionType;
+export default ScenarioType;

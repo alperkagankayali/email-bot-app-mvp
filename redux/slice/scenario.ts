@@ -3,8 +3,14 @@ import {
   getDataEntries,
   getEmailTemplate,
   getLandingPage,
+  getScenarioType,
 } from "@/services/service/generalService";
-import { IDataEntry, IEmailTemplate, ILandingPage } from "@/types/scenarioType";
+import {
+  IDataEntry,
+  IEmailTemplate,
+  ILandingPage,
+  IScenarioType,
+} from "@/types/scenarioType";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -12,6 +18,8 @@ interface ICounter {
   landingPageStatus: "loading" | "succeeded" | "failed" | "idle";
   emailTemplateStatus: "loading" | "succeeded" | "failed" | "idle";
   dataEntryStatus: "loading" | "succeeded" | "failed" | "idle";
+  scenarioTypeStatus: "loading" | "succeeded" | "failed" | "idle";
+  scenarioType: IScenarioType[] | null;
   landingPage: ILandingPage[] | null;
   emailTemplate: IEmailTemplate[] | null;
   dataEntries: IDataEntry[] | null;
@@ -24,6 +32,8 @@ const initialState: ICounter = {
   dataEntries: null,
   dataEntryStatus: "idle",
   landingPageStatus: "idle",
+  scenarioType: null,
+  scenarioTypeStatus: "idle",
 };
 
 const resourceSlice = createSlice({
@@ -64,6 +74,17 @@ const resourceSlice = createSlice({
       .addCase(fetchDataEntry.rejected, (state) => {
         state.dataEntryStatus = "failed";
       });
+    builder
+      .addCase(fetchScenarioType.pending, (state) => {
+        state.scenarioTypeStatus = "loading";
+      })
+      .addCase(fetchScenarioType.fulfilled, (state, action) => {
+        state.scenarioTypeStatus = "succeeded";
+        state.scenarioType = action.payload;
+      })
+      .addCase(fetchScenarioType.rejected, (state) => {
+        state.scenarioTypeStatus = "failed";
+      });
   },
 });
 
@@ -87,6 +108,13 @@ export const fetchDataEntry = createAsyncThunk("/data-entry", async () => {
   const response = await getDataEntries("");
   return response?.data;
 });
+export const fetchScenarioType = createAsyncThunk(
+  "/scenario-type",
+  async () => {
+    const response = await getScenarioType();
+    return response?.data;
+  }
+);
 export const {} = resourceSlice.actions;
 
 export default resourceSlice.reducer;

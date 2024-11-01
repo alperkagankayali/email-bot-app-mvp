@@ -39,3 +39,5 @@ const Scenario =
   models.Scenario || model<IScenario>("Scenario", scenarioSchema);
 
 export default Scenario;
+
+// adına ve type dile göre filtrele yukarıda totalCount gözükecek (20-28-36 limit - pagination)

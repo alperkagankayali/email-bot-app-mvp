@@ -1,6 +1,6 @@
 "use client";
 
-import { ILandingPage } from "@/types/scenarioType";
+import { IEmailTemplate, ILandingPage } from "@/types/scenarioType";
 import {
   getEmailTemplate,
   updateEmailTemplate,
@@ -10,18 +10,20 @@ import { useRouter } from "@/i18n/routing";
 import TemplateForm from "../templateForm";
 import { useEffect, useState } from "react";
 import Loader from "../common/Loader";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-import { fetchEmailTemplate } from "@/redux/slice/scenario";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { fetchEmailTemplate, fetchScenarioType } from "@/redux/slice/scenario";
 
 type IProps = {
   id: string;
 };
 const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
   const router = useRouter();
-  const [data, setData] = useState<ILandingPage | null>(null);
-  const dispatch= useDispatch<AppDispatch>()
-
+  const [data, setData] = useState<IEmailTemplate | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const status = useSelector(
+    (state: RootState) => state.scenario.scenarioTypeStatus
+  );
   useEffect(() => {
     async function fetchEmailTemplate() {
       const res = await getEmailTemplate(id);
@@ -37,13 +39,17 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
   const handleSave = async (data: ILandingPage) => {
     const res = await updateEmailTemplate(id, data);
     if (res.success) {
-      dispatch(fetchEmailTemplate())
+      dispatch(fetchEmailTemplate());
       router.push("/dashboard/scenario/email-templates");
     } else {
       message.error(res.message);
     }
   };
-
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchScenarioType());
+    }
+  }, [status, dispatch]);
   if (data === null) {
     return <Loader />;
   }
@@ -55,6 +61,8 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
         title={data?.title}
         img={data?.img}
         defaultContent={data?.content}
+        defaultScenarioType={data.scenarioType._id}
+        istType={true}
       />
     </div>
   );

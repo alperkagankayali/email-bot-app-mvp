@@ -46,7 +46,7 @@ const AddUser = () => {
       message.error(res.message);
     }
   };
-
+  // Deperment dışındaki alanlar zorunlu olacak
   return (
     <Form
       name="resource"

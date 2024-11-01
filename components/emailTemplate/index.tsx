@@ -66,14 +66,14 @@ const EmailTemplateList: React.FC = () => {
               cover={
                 <Image
                   width={240}
-                  height={150}
-                  className="min-h-50 object-cover"
+                  height={100}
+                  className="h-30 object-cover"
                   alt={emailTemplate.title}
                   src={status === "loading" ? noImage : emailTemplate.img}
                 />
               }
             >
-              <Meta title={emailTemplate.title} />
+              <Meta title={emailTemplate.title} description={emailTemplate.scenarioType.title}/>
             </Card>
           );
         })}

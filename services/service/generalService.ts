@@ -177,6 +177,12 @@ export const getDataEntries = async (id: string) => {
   const result: IResponseType = await getRequest(url,  config);
   return result;
 };
+export const getScenarioType = async () => {
+  const url = servicesBaseUrl + finalConfig.GET_SCENARIO_TYPE ;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url,  config);
+  return result;
+};
 export const getEmailTemplate = async (id: string) => {
   const queryParams = jsonToQueryString({ id });
   const url = servicesBaseUrl + finalConfig.GET_EMAIL_TEMPLATE + queryParams ;

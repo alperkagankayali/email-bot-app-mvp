@@ -13,7 +13,7 @@ const Scenario: React.FC = async () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="menu-mail" />
+        <Breadcrumb pageName="menu-scenario" />
         <div>
          
         </div>

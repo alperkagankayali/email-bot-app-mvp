@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { message200, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import EmailTemplate from "@/models/emailTemplate";
+import ScenarioType from "@/models/scenarioType";
 
 export async function GET(request: Request) {
   try {
@@ -21,7 +22,7 @@ export async function GET(request: Request) {
         return verificationResult; // 401 döndürecek
       } else {
         if (!!id) {
-          const landingPage = await EmailTemplate.findById(id);
+          const landingPage = await EmailTemplate.findById(id).populate({ path: "scenarioType", model: ScenarioType });
           return NextResponse.json(
             {
               ...message200,
@@ -35,7 +36,7 @@ export async function GET(request: Request) {
             {},
             { isDelete: false }
           );
-          const emailTemplate = await EmailTemplate.find({ isDelete: false })
+          const emailTemplate = await EmailTemplate.find({ isDelete: false }).populate({ path: "scenarioType", model: ScenarioType })
             .skip(skip)
             .limit(limit);
           return NextResponse.json(
