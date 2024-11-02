@@ -1,12 +1,14 @@
-import { IScenario } from "./scenarioType"
-import { IUser } from "./userType"
+import { IScenario } from "./scenarioType";
+import { ISuperAdmin } from "./superAdmingType";
+import { IUser } from "./userType";
 
 export interface ICampaign {
-    title: string
-    description: string
-    userList: IUser[]
-    scenario: IScenario
-    author: IUser
-    created_at: Date
-  }
-  
+  title: string;
+  description: string;
+  userList: IUser[];
+  scenario: IScenario;
+  author: IUser | ISuperAdmin;
+  created_at: Date;
+  authorType: "admin" | "superadmin";
+  isDelete?: boolean;
+}
