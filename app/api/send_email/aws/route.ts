@@ -2,13 +2,13 @@ import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from 'next/server';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import User from '../../../../models/user';
-import Scenario from '../../../../models/scenario';
+import EmailTemplate from '../../../../models/emailTemplate';
 import { getS3Object } from "@/lib/aws/s3/getS3Object";
 
 const sesClient = new SESClient({ region: 'eu-north-1' });
 
 export async function POST(request: Request) {
-  const { userId, scenarioId } = await request.json(); // Parse JSON body
+  const { userId, emailId, senderAddress } = await request.json(); // Parse JSON body
 
   try {
     await connectToDatabase();
@@ -19,13 +19,11 @@ export async function POST(request: Request) {
     const toEmail = user.email;
 
     // Step 2: Get the subject from MongoDB
-    const emailContent = await Scenario.findById(scenarioId);
+    const emailContent = await EmailTemplate.findById(emailId);
     if (!emailContent) return NextResponse.json({ message: 'Email content not found' }, { status: 404 });
     const subject = emailContent.title;
-
-    // Step 3: Get the HTML body from your existing API
-    const htmlBodyUrl = emailContent.emailUrl;
-    const htmlBody = await getS3Object(htmlBodyUrl);
+  
+    const htmlBody = emailContent.content;
     // SES SendEmailCommand setup
     const emailParams = {
       Destination: { ToAddresses: [toEmail] },
@@ -33,7 +31,7 @@ export async function POST(request: Request) {
         Body: { Html: { Charset: 'UTF-8', Data: htmlBody } },
         Subject: { Charset: 'UTF-8', Data: subject },
       },
-      Source: 'alperkayali@klinikermed.com', // TODO: Change this later as an optional parameter.
+      Source: senderAddress, // TODO: Change this later as an optional parameter.
     };
 
     // Send email
