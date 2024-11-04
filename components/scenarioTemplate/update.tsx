@@ -17,7 +17,7 @@ import { fetchEmailTemplate, fetchScenarioType } from "@/redux/slice/scenario";
 type IProps = {
   id: string;
 };
-const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
+const UpdateScenarioTemplate: React.FC<IProps> = ({ id }) => {
   const router = useRouter();
   const [data, setData] = useState<IEmailTemplate | null>(null);
   const dispatch = useDispatch<AppDispatch>();
@@ -68,4 +68,4 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
   );
 };
 
-export default UpdateEmailTemplateForm;
+export default UpdateScenarioTemplate;

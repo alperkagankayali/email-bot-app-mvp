@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import UpdateEmailTemplateForm from "@/components/emailTemplate/update";
+import AddScenarioTemplate from "@/components/scenarioTemplate/add";
 
 export const metadata: Metadata = {
   title: "Next.js Chart | TailAdmin - Next.js Dashboard Template",
@@ -10,20 +10,17 @@ export const metadata: Metadata = {
     "This is Next.js Chart page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
 };
 
-type Props = {
-  params: { id: string };
-};
-const UpdateLandingPage: React.FC<Props> = async ({ params: { id } }) => {
+const AddScenario: React.FC = async () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="email-template-update" />
+        <Breadcrumb pageName="landing-page-add" />
         <div>
-          <UpdateEmailTemplateForm id={id}/>
+          <AddScenarioTemplate />
         </div>
       </div>
     </DefaultLayout>
   );
 };
 
-export default UpdateLandingPage;
+export default AddScenario;

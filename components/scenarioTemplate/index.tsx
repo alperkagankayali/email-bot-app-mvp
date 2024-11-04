@@ -12,7 +12,7 @@ import { EditOutlined, EyeOutlined, SettingOutlined } from "@ant-design/icons";
 
 const { Meta } = Card;
 
-const EmailTemplateList: React.FC = () => {
+const ScenarioList: React.FC = () => {
   const status = useSelector(
     (state: RootState) => state.scenario.emailTemplateStatus
   );
@@ -92,4 +92,4 @@ const EmailTemplateList: React.FC = () => {
   );
 };
 
-export default EmailTemplateList;
+export default ScenarioList;

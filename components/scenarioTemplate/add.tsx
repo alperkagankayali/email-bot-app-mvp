@@ -11,7 +11,7 @@ import { fetchEmailTemplate, fetchScenarioType } from "@/redux/slice/scenario";
 import { useEffect } from "react";
 import Loader from "../common/Loader";
 
-const AddEmailTemplateForm: React.FC = () => {
+const AddScenarioList: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector(
@@ -42,4 +42,4 @@ const AddEmailTemplateForm: React.FC = () => {
   );
 };
 
-export default AddEmailTemplateForm;
+export default AddScenarioList;

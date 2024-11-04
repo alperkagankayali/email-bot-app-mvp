@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import AddEmailTemplateForm from "@/components/emailTemplate/add";
+import ScenarioList from "@/components/scenarioTemplate";
 
 export const metadata: Metadata = {
   title: "Next.js Chart | TailAdmin - Next.js Dashboard Template",
@@ -10,17 +10,17 @@ export const metadata: Metadata = {
     "This is Next.js Chart page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
 };
 
-const AddLandingPage: React.FC = async () => {
+const EmailTemplates: React.FC = async () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="landing-page-add" />
+        <Breadcrumb pageName="menu-mail" />
         <div>
-          <AddEmailTemplateForm />
+          <ScenarioList />
         </div>
       </div>
     </DefaultLayout>
   );
 };
 
-export default AddLandingPage;
+export default EmailTemplates;
