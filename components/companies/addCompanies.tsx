@@ -21,6 +21,7 @@ import {
 } from "@/services/service/generalService";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useRouter } from "@/i18n/routing";
 
 dayjs.extend(customParseFormat);
 const { RangePicker } = DatePicker;
@@ -56,6 +57,7 @@ const AddCompanies = ({
   const [licanceDate, setLicanceDate] = useState<Date[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const [form] = Form.useForm();
+  const router = useRouter();
 
   useEffect(() => {
     if (status === "idle") {
@@ -107,8 +109,11 @@ const AddCompanies = ({
       const res = await createCompany(body);
       if (res.success) {
         message.info(res.message);
-        setIsModalOpen(false);
         form.resetFields();
+        router.push(
+          "/dashboard/uses/add?company=" + res?.data?._id + "&role=admin"
+        );
+        setIsModalOpen(false);
         handleAdd({
           ...res.data,
           langKey: res.data._id,
@@ -122,10 +127,6 @@ const AddCompanies = ({
     setLogo(x);
   };
   const options: SelectProps["options"] = [];
-  console.log("logo", licanceDate, [
-    dayjs(licanceDate[0]),
-    dayjs(licanceDate[1]),
-  ]);
 
   return (
     <div>

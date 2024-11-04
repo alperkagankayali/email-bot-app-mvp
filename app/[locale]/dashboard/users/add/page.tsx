@@ -9,7 +9,6 @@ export const metadata: Metadata = {
   description:
     "This is Next.js Chart page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
 };
-
 const Resource = async () => {
   return (
     <DefaultLayout>

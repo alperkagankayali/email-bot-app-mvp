@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import ScenarioList from "@/components/scenario";
 
 export const metadata: Metadata = {
   title: "Next.js Chart | TailAdmin - Next.js Dashboard Template",
@@ -15,7 +16,7 @@ const Scenario: React.FC = async () => {
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="menu-scenario" />
         <div>
-         
+          <ScenarioList />
         </div>
       </div>
     </DefaultLayout>

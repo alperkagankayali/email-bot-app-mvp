@@ -1,6 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import JoditEditor from "jodit-react";
+import { servicesBaseUrl } from "@/services/service/generalService";
+import finalConfig from "@/lib/config.json";
 
 type ImageHandlerProps = {
   onUpload?: (file: File) => Promise<string>;
@@ -15,7 +17,7 @@ const config: any = {
     withCredentials: false,
     format: "json",
     method: "POST",
-    url: "http://localhost:3000/files",
+    url: servicesBaseUrl + finalConfig.FILE_UPLOAD + "?file=emailtemplate",
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -47,7 +49,10 @@ const config: any = {
     },
   },
 };
-const RinchTextEditor: React.FC<ImageHandlerProps> = ({content,setContent}) => {
+const RinchTextEditor: React.FC<ImageHandlerProps> = ({
+  content,
+  setContent,
+}) => {
   const uploadToServer = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
@@ -64,7 +69,6 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({content,setContent}) => {
     const data = await response.json();
     return data.imageUrl; // Sunucudan dönen görüntü URL'si
   };
-
 
   return (
     <div>

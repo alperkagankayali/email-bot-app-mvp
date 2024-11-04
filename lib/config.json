@@ -27,5 +27,6 @@
   "CREATE_EMAIL_TEMPLATE":"/email-template/add",
   "UPDATE_EMAIL_TEMPLATE":"/email-template/update",
   "CREATE_DATA_ENTRY":"/data-entry/add",
-  "UPDATE_DATA_ENTRY":"/data-entry/update"
+  "UPDATE_DATA_ENTRY":"/data-entry/update",
+  "UPDATE_PASSWORD":"/user/update-password"
 }

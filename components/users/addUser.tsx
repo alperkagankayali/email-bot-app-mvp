@@ -10,7 +10,10 @@ import { Button, Form, Input, message, Select } from "antd";
 import type { FormProps } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from 'next/navigation'
+
 const { Option } = Select;
+
 
 const AddUser = () => {
   const router = useRouter();
@@ -24,7 +27,10 @@ const AddUser = () => {
   );
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
-
+  const searchParams = useSearchParams()
+  const company = searchParams.get("company");
+  const role = searchParams.get("role")
+  
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchLanguage());
@@ -108,7 +114,7 @@ const AddUser = () => {
           </label>
           <div className="relative">
             <Form.Item<IUser> name="company">
-              <Select size="large">
+              <Select size="large" defaultValue={company}>
                 {companies?.map((company) => {
                   return (
                     <Option
@@ -130,7 +136,7 @@ const AddUser = () => {
         </label>
         <div className="relative">
           <Form.Item<IUser> name="role">
-            <Select size="large">
+            <Select size="large" defaultValue={role}>
               <Option value="user">Kullanıcı</Option>
               <Option value="admin">Admin</Option>
             </Select>

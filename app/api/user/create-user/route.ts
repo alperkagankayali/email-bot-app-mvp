@@ -58,31 +58,43 @@ export async function POST(request: Request) {
             !!body.password ? body.password : uuidv4().slice(0, 10),
             10
           );
-          const findCompany = await Company.findOne({ _id: body.company });
-          const some = findCompany?.emailDomainAddress?.includes(
-            body?.email?.split("@")[1]
-          );
-          if (!some) {
+          const findUser = await User.find({
+            company: body.company,
+            role: "admin",
+          });
+          if (findUser.length > 0 || body.role === "admin") {
+            const findCompany = await Company.findOne({ _id: body.company });
+            const some = findCompany?.emailDomainAddress?.includes(
+              body?.email?.split("@")[1]
+            );
+            if (!some) {
+              return NextResponse.json(
+                {
+                  ...message403,
+                  message: "email adresleri şirketinizde ekli değil",
+                },
+                { status: 403, statusText: "Email address not supported" }
+              );
+            }
+            const userCreate = new User({
+              ...body,
+              company: body.company,
+              password: passwordHash,
+            });
+            const userCreated = await userCreate.save();
             return NextResponse.json(
               {
-                ...message403,
-                message: "email adresleri şirketinizde ekli değil",
+                ...message201,
+                data: userCreated,
               },
-              { status: 403, statusText: "Email address not supported" }
+              { status: 201, statusText: message201.message }
             );
           }
-          const userCreate = new User({
-            ...body,
-            company: body.company,
-            password: passwordHash,
-          });
-          const userCreated = await userCreate.save();
           return NextResponse.json(
             {
-              ...message201,
-              data: userCreated,
+              ...message403,
             },
-            { status: 201, statusText: message201.message }
+            { status: 403, statusText: message403.message }
           );
         }
         return NextResponse.json(
