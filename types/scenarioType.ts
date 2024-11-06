@@ -19,6 +19,7 @@ export interface IScenario {
   // dataEntryPageUrl: string;
   // author: IUser;
   // created_at: Date;
+  _id:string
 }
 
 export interface IDataEntry {
@@ -39,7 +40,6 @@ export interface IEmailTemplate {
   author: IUser | ISuperAdmin;
   created_at: Date;
   authorType: string;
-  scenarioType:IScenarioType;
   _id:string
 }
 export interface ILandingPage {

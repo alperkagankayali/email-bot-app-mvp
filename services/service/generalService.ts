@@ -146,9 +146,8 @@ export const fileUploadAws = async (formData: any, file: string) => {
   return result;
 };
 
-
 export const createUserExel = async (formData: any) => {
-  const url = servicesBaseUrl + finalConfig.CREATE_USER_WITH_EXCEL ;
+  const url = servicesBaseUrl + finalConfig.CREATE_USER_WITH_EXCEL;
   const config = headers.content_type.form_data;
   const result: IResponseType = await postRequest(url, formData, config);
   return result;
@@ -156,38 +155,45 @@ export const createUserExel = async (formData: any) => {
 
 export const getUserCsv = async (id: string) => {
   const queryParams = jsonToQueryString({ id });
-  const url = servicesBaseUrl + finalConfig.GET_USER_WITH_EXCEL + queryParams ;
+  const url = servicesBaseUrl + finalConfig.GET_USER_WITH_EXCEL + queryParams;
   const config = headers.content_type.application_json;
-  const result: IResponseType = await getRequest(url,  config);
+  const result: IResponseType = await getRequest(url, config);
   return result;
 };
 
 export const getLandingPage = async (id: string) => {
   const queryParams = jsonToQueryString({ id });
-  const url = servicesBaseUrl + finalConfig.GET_LANDING_PAGE + queryParams ;
+  const url = servicesBaseUrl + finalConfig.GET_LANDING_PAGE + queryParams;
   const config = headers.content_type.application_json;
-  const result: IResponseType = await getRequest(url,  config);
+  const result: IResponseType = await getRequest(url, config);
   return result;
 };
 
 export const getDataEntries = async (id: string) => {
   const queryParams = jsonToQueryString({ id });
-  const url = servicesBaseUrl + finalConfig.GET_DATA_ENTRY + queryParams ;
+  const url = servicesBaseUrl + finalConfig.GET_DATA_ENTRY + queryParams;
   const config = headers.content_type.application_json;
-  const result: IResponseType = await getRequest(url,  config);
+  const result: IResponseType = await getRequest(url, config);
   return result;
 };
 export const getScenarioType = async () => {
-  const url = servicesBaseUrl + finalConfig.GET_SCENARIO_TYPE ;
+  const url = servicesBaseUrl + finalConfig.GET_SCENARIO_TYPE;
   const config = headers.content_type.application_json;
-  const result: IResponseType = await getRequest(url,  config);
+  const result: IResponseType = await getRequest(url, config);
+  return result;
+};
+export const getScenario = async (limit = 10, page = 1) => {
+  const queryParams = jsonToQueryString({ limit, page });
+  const url = servicesBaseUrl + finalConfig.GET_SCENARIO + queryParams;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url, config);
   return result;
 };
 export const getEmailTemplate = async (id: string) => {
   const queryParams = jsonToQueryString({ id });
-  const url = servicesBaseUrl + finalConfig.GET_EMAIL_TEMPLATE + queryParams ;
+  const url = servicesBaseUrl + finalConfig.GET_EMAIL_TEMPLATE + queryParams;
   const config = headers.content_type.application_json;
-  const result: IResponseType = await getRequest(url,  config);
+  const result: IResponseType = await getRequest(url, config);
   return result;
 };
 

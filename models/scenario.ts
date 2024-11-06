@@ -6,7 +6,7 @@ const scenarioSchema = new Schema<IScenario>({
   img: { type: String, required: true },
   scenarioType: {
     type: Types.ObjectId,
-    ref: "ScenarionType",
+    ref: "ScenarioType",
     required: true,
   },
   dataEntry: {
@@ -15,6 +15,7 @@ const scenarioSchema = new Schema<IScenario>({
   },
   emailTemplate: {
     type: Types.ObjectId,
+    required: true,
     ref: "EmailTemplate",
   },
   landingPage: {

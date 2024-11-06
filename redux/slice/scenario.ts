@@ -3,12 +3,14 @@ import {
   getDataEntries,
   getEmailTemplate,
   getLandingPage,
+  getScenario,
   getScenarioType,
 } from "@/services/service/generalService";
 import {
   IDataEntry,
   IEmailTemplate,
   ILandingPage,
+  IScenario,
   IScenarioType,
 } from "@/types/scenarioType";
 
@@ -23,6 +25,8 @@ interface ICounter {
   landingPage: ILandingPage[] | null;
   emailTemplate: IEmailTemplate[] | null;
   dataEntries: IDataEntry[] | null;
+  scenario: IScenario[] | null;
+  status: "loading" | "succeeded" | "failed" | "idle";
 }
 
 const initialState: ICounter = {
@@ -34,6 +38,8 @@ const initialState: ICounter = {
   landingPageStatus: "idle",
   scenarioType: null,
   scenarioTypeStatus: "idle",
+  scenario: null,
+  status: "idle",
 };
 
 const resourceSlice = createSlice({
@@ -85,13 +91,24 @@ const resourceSlice = createSlice({
       .addCase(fetchScenarioType.rejected, (state) => {
         state.scenarioTypeStatus = "failed";
       });
+    builder
+      .addCase(fetchScenario.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchScenario.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.scenario = action.payload;
+      })
+      .addCase(fetchScenario.rejected, (state) => {
+        state.status = "failed";
+      });
   },
 });
 
-// const fetchScenario = createAsyncThunk("resource/get", async () => {
-//   const response = await getResource(code);
-//   return response?.data;
-// });
+export const fetchScenario = createAsyncThunk("/scenario", async () => {
+  const response = await getScenario();
+  return response?.data;
+});
 
 export const fetchLandingPage = createAsyncThunk("/landing-page", async () => {
   const response = await getLandingPage("");

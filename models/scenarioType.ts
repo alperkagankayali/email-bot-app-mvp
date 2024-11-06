@@ -1,7 +1,7 @@
 import { IScenarioType } from "@/types/scenarioType";
 import { Schema, Types, model, models } from "mongoose";
 
-const newsSchema = new Schema<IScenarioType>({
+const scenarioTypeSchema = new Schema<IScenarioType>({
   title: { type: String },
   description: { type: String },
   created_at: { type: Date, default: Date.now },
@@ -18,6 +18,6 @@ const newsSchema = new Schema<IScenarioType>({
   },
 });
 
-const ScenarioType = models.ScenarioType || model<IScenarioType>("ScenarioType", newsSchema);
+const ScenarioType = models.ScenarioType || model<IScenarioType>("ScenarioType", scenarioTypeSchema);
 
 export default ScenarioType;

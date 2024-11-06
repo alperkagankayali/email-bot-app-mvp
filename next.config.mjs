@@ -15,10 +15,6 @@ const nextConfig = {
     },
   },
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!https://upload.wikimedia.org/
     ignoreBuildErrors: true,
   },
   images: {
@@ -26,6 +22,14 @@ const nextConfig = {
       "upload.wikimedia.org",
       "test-bucket-emails-577638362157.s3.eu-north-1.amazonaws.com",
     ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'test-bucket-emails-577638362157.s3.eu-north-1.amazonaws.com',
+        pathname: '**',
+      },
+    ],
+
   },
   async headers() {
     return [

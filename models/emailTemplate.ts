@@ -1,7 +1,7 @@
 import { IEmailTemplate } from "@/types/scenarioType";
 import { Schema, Types, model, models } from "mongoose";
 
-const newsSchema = new Schema<IEmailTemplate>({
+const emailTemplateSchema = new Schema<IEmailTemplate>({
   title: { type: String },
   img: { type: String },
   content: { type: String },
@@ -16,14 +16,9 @@ const newsSchema = new Schema<IEmailTemplate>({
     type: Types.ObjectId,
     required: true,
     refPath: "authorType", 
-  },
-  scenarioType: {
-    type: Types.ObjectId,
-    ref: "ScenarionType",
-    required: true,
-  },
+  }
 });
 
-const EmailTemplate = models.EmailTemplate || model<IEmailTemplate>("EmailTemplate", newsSchema);
+const EmailTemplate = models.EmailTemplate || model<IEmailTemplate>("EmailTemplate", emailTemplateSchema);
 
 export default EmailTemplate;

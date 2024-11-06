@@ -60,7 +60,7 @@ const TemplateForm = ({
             </Form.Item>
           </div>
         </div>
-        {istType && !!scenarioType && scenarioType?.length > 0 && (
+        {/* {istType && !!scenarioType && scenarioType?.length > 0 && (
           <div className="mb-4">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
               Scenario Type
@@ -82,7 +82,7 @@ const TemplateForm = ({
               </Form.Item>
             </div>
           </div>
-        )}
+        )} */}
         <div className="mb-6">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
             Image

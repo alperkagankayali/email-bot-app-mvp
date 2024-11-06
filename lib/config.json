@@ -22,6 +22,7 @@
   "GET_EMAIL_TEMPLATE":"/email-template",
   "GET_DATA_ENTRY":"/data-entry",
   "GET_SCENARIO_TYPE":"/scenario-type",
+  "GET_SCENARIO":"/scenario",
   "CREATE_LANDING_PAGE":"/landing-page/add",
   "UPDATE_LANDING_PAGE":"/landing-page/update",
   "CREATE_EMAIL_TEMPLATE":"/email-template/add",

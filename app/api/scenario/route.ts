@@ -25,36 +25,32 @@ export async function GET(request: Request) {
         return verificationResult; // 401 döndürecek
       } else {
         if (!!id) {
-          const compaing = await Scenario.findById(id)
-            .populate({ path: "ScenarioType", model: ScenarioType })
-            .populate({ path: "DataEntry", model: DataEntry })
-            .populate({ path: "EmailTemplate", model: EmailTemplate })
-            .populate({ path: "LandingPage", model: LandingPage });
+          const scenario = await Scenario.findById(id).populate({
+            path: "ScenarioType",
+            model: ScenarioType,
+          });
           return NextResponse.json(
             {
               ...message200,
-              data: compaing,
+              data: scenario,
               totalItems: 1,
             },
             { status: 200, statusText: message200.message }
           );
         } else {
-          const compaingTotal = await Scenario.countDocuments(
+          const scenarioTotal = await Scenario.countDocuments(
             {},
             { isDelete: false }
           );
-          const compaing = await Scenario.find({ isDelete: false })
-            .populate({ path: "ScenarioType", model: ScenarioType })
-            .populate({ path: "DataEntry", model: DataEntry })
-            .populate({ path: "EmailTemplate", model: EmailTemplate })
-            .populate({ path: "LandingPage", model: LandingPage })
+          const scenario = await Scenario.find({ isDelete: false })
+            .populate("scenarioType")
             .skip(skip)
             .limit(limit);
           return NextResponse.json(
             {
               ...message200,
-              data: compaing,
-              totalItems: compaingTotal,
+              data: scenario,
+              totalItems: scenarioTotal,
             },
             { status: 200, statusText: message200.message }
           );
