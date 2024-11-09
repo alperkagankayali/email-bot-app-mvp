@@ -5,6 +5,7 @@
   "CREATE_LANGUAGE":"/language",
   "CREATE_RESOURCES":"/resource",
   "LOGIN":"/user/login",
+  "OTHER_LOGIN":"/user/login/other",
   "UPDATE_LANGUAGE":"/language/update",
   "UPDATE_RESOURCE":"/resource/update",
   "GET_ALL_USERS": "/user/get-all",

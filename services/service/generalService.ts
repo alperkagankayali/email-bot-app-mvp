@@ -81,6 +81,12 @@ export const handleLogin = async (email: string, password: string) => {
   );
   return result;
 };
+export const handleOtherLogin = async (id: string) => {
+  const url = servicesBaseUrl + finalConfig.OTHER_LOGIN;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};
 
 export const getAllCamponies = async (limit = 10, page = 1) => {
   const queryParams = jsonToQueryString({ limit, page });

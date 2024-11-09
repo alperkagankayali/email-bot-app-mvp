@@ -16,14 +16,18 @@ import {
   getAllUsers,
   getResourceAll,
   getUserById,
+  handleOtherLogin,
 } from "@/services/service/generalService";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { DownloadOutlined, UserOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import AddUserExel from "./addUserExel";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { userInfo } from "@/redux/slice/user";
+import useLocalStorage from "@/hooks/useLocalStorage";
+import { IUserJWT } from "@/app/api/user/login/route";
 
 export interface DataType {
   name: string;
@@ -85,13 +89,14 @@ type IProps = {
 };
 const UserTable = ({ id }: IProps) => {
   const [form] = Form.useForm();
+  const [users, setUsers] = useLocalStorage<any>("users", "[]");
   const [data, setData] = useState<DataType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [editingKey, setEditingKey] = useState("");
   const user = useSelector((state: RootState) => state.user.user);
-
+  const router = useRouter();
   const isEditing = (record: DataType) => record._id === editingKey;
-
+  const dispatch = useDispatch<AppDispatch>();
   const edit = (record: Partial<DataType> & { key: React.Key }) => {
     form.setFieldsValue({ name: "", age: "", address: "", ...record });
     setEditingKey(record?._id || "");
@@ -118,7 +123,7 @@ const UserTable = ({ id }: IProps) => {
         });
         setLoading(false);
         setData(newData);
-        setPagination(res.pagination);
+        setPagination(res?.pagination);
       } else {
         const res: any = await getAllUsers();
         const newData = res?.data?.map((e: any) => {
@@ -130,12 +135,28 @@ const UserTable = ({ id }: IProps) => {
         });
         setLoading(false);
         setData(newData);
-        setPagination(res.pagination);
+        setPagination(res?.pagination);
       }
     }
     fetchUsers();
   }, []);
-
+  const handleLogin = async (id: string) => {
+    const res = await handleOtherLogin(id);
+    debugger
+    if (res.success) {
+      localStorage.setItem("token", JSON.stringify(res?.data?.token));
+      localStorage.setItem("user", JSON.stringify(res?.data));
+      const arrUser: any[] = users
+      const findUser = arrUser?.some((e) => e.user.id === id);
+      if (!findUser) {
+        setUsers([...arrUser, res.data]);
+        dispatch(userInfo(res?.data?.user));
+        router.push("/dashboard");
+      }
+      dispatch(userInfo(res?.data?.user));
+      router.push("/dashboard");
+    }
+  };
   const columns = [
     {
       title: "Adı Soyadı",
@@ -208,25 +229,39 @@ const UserTable = ({ id }: IProps) => {
       dataIndex: "operation",
       render: (_: any, record: DataType) => {
         const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              // onClick={() => save(record.key)}
-              style={{ marginInlineEnd: 8 }}
-            >
-              Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
-            </Popconfirm>
-          </span>
-        ) : (
-          <Typography.Link
-            disabled={editingKey !== ""}
-            // onClick={() => edit(record._id)}
-          >
-            Edit
-          </Typography.Link>
+        return (
+          <>
+            {editable ? (
+              <span>
+                <Typography.Link
+                  // onClick={() => save(record.key)}
+                  style={{ marginInlineEnd: 8 }}
+                >
+                  Save
+                </Typography.Link>
+                <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                  <a>Cancel</a>
+                </Popconfirm>
+              </span>
+            ) : (
+              <Typography.Link
+                disabled={editingKey !== ""}
+                // onClick={() => edit(record._id)}
+              >
+                Edit
+              </Typography.Link>
+            )}
+            {user?.role === "superadmin" && (
+              <Button
+                color="primary"
+                variant="text"
+                className="ml-3"
+                onClick={() => handleLogin(record._id)}
+              >
+                Login
+              </Button>
+            )}
+          </>
         );
       },
     },

@@ -65,8 +65,8 @@ const ScenarioList: React.FC = () => {
               cover={
                 <Image
                   width={240}
-                  height={100}
-                  className="h-30 object-cover"
+                  height={120}
+                  className="h-30 object-contain bg-[#03162b]"
                   alt={scenario.title}
                   src={status === "loading" ? noImage : scenario.img}
                 />

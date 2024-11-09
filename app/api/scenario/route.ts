@@ -43,10 +43,9 @@ export async function GET(request: Request) {
             { isDelete: false }
           );
           const scenario = await Scenario.find({ isDelete: false })
-            .populate("scenarioType")
             .populate("emailTemplate")
-            .skip(skip)
-            .limit(limit);
+            .populate("scenarioType");
+          // .populate({ path: "emailTemplate", model: EmailTemplate })
           return NextResponse.json(
             {
               ...message200,

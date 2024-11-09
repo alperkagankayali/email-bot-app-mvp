@@ -1,73 +1,153 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ClickOutside from "@/components/ClickOutside";
 import { logoutUser } from "@/app/actions";
 import { useRouter } from "@/i18n/routing";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { UserSwitchOutlined } from "@ant-design/icons";
+import { Button, Popover } from "antd";
+import useLocalStorage from "@/hooks/useLocalStorage";
+import { userInfo } from "@/redux/slice/user";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
   const user = useSelector((state: RootState) => state.user.user);
+  const [open, setOpen] = useState(false);
+  const [users, setUsers] = useLocalStorage<any>("users", "[]");
+  const dispatch = useDispatch<AppDispatch>();
+  const hide = () => {
+    setOpen(false);
+  };
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+  };
+
+  const changeUser = (user: any) => {
+    localStorage.setItem("token", JSON.stringify(user.token));
+    localStorage.setItem("user", JSON.stringify(user));
+    dispatch(userInfo(user.user));
+    hide();
+    router.push("/dashboard");
+  };
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
-      <Link
-        onClick={() => setDropdownOpen(!dropdownOpen)}
-        className="flex items-center gap-4"
-        href="#"
-      >
-        <span className="hidden text-right lg:block">
-          <span className="block text-sm font-medium text-black dark:text-white">
-            {!!user && user.nameSurname}
-          </span>
-          <span className="block text-xs">
-            {!!user && user.role === "superadmin"
-              ? "Super Admin"
-              : user?.department}
-          </span>
-          <span className="block text-xs">
-            {!!user && user.role !== "superadmin" && user?.role}
-          </span>
-        </span>
-
-        <span className="h-12 w-12 rounded-full">
-          <Image
-            width={112}
-            height={112}
-            className="rounded-full"
-            src={
-              user?.role !== "superadmin"
-                ? (user?.companyLogo ?? "")
-                : "/images/user/user-01.png"
-            }
-            style={{
-              width: "auto",
-              height: "auto",
-            }}
-            alt="User"
-          />
-        </span>
-
-        <svg
-          className="hidden fill-current sm:block"
-          width="12"
-          height="8"
-          viewBox="0 0 12 8"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      <div className="flex items-center">
+        <Link
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          className="flex items-center gap-4"
+          href="#"
         >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M0.410765 0.910734C0.736202 0.585297 1.26384 0.585297 1.58928 0.910734L6.00002 5.32148L10.4108 0.910734C10.7362 0.585297 11.2638 0.585297 11.5893 0.910734C11.9147 1.23617 11.9147 1.76381 11.5893 2.08924L6.58928 7.08924C6.26384 7.41468 5.7362 7.41468 5.41077 7.08924L0.410765 2.08924C0.0853277 1.76381 0.0853277 1.23617 0.410765 0.910734Z"
-            fill=""
-          />
-        </svg>
-      </Link>
+          <span className="hidden text-right lg:block">
+            <span className="block text-sm font-medium text-black dark:text-white">
+              {!!user && user.nameSurname}
+            </span>
+            <span className="block text-xs">
+              {!!user && user.role === "superadmin"
+                ? "Super Admin"
+                : user?.department}
+            </span>
+            <span className="block text-xs">
+              {!!user && user.role !== "superadmin" && user?.role}
+            </span>
+          </span>
+
+          <span className="bg-slate-200 rounded-full w-12">
+            <Image
+              width={48}
+              height={48}
+              className="rounded-full bg-slate-200 h-12 object-contain mr-2"
+              src={
+                user?.role !== "superadmin"
+                  ? (user?.companyLogo ?? "")
+                  : "/images/user/user-01.png"
+              }
+              alt="User"
+            />
+          </span>
+
+          <svg
+            className="hidden fill-current sm:block"
+            width="12"
+            height="8"
+            viewBox="0 0 12 8"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M0.410765 0.910734C0.736202 0.585297 1.26384 0.585297 1.58928 0.910734L6.00002 5.32148L10.4108 0.910734C10.7362 0.585297 11.2638 0.585297 11.5893 0.910734C11.9147 1.23617 11.9147 1.76381 11.5893 2.08924L6.58928 7.08924C6.26384 7.41468 5.7362 7.41468 5.41077 7.08924L0.410765 2.08924C0.0853277 1.76381 0.0853277 1.23617 0.410765 0.910734Z"
+              fill=""
+            />
+          </svg>
+        </Link>
+        {!!users && users?.length > 1 && (
+          <div className="ml-2">
+            <Popover
+              content={users.map((element: any) => {
+                const localUser = element.user;
+                if (localUser.id === user?.id) {
+                  return <React.Fragment key={localUser.id}></React.Fragment>;
+                }
+                return (
+                  <div
+                    className="grid grid-cols-2 gap-8 justify-between hover:bg-slate-200 p-2 rounded-lg cursor-pointer"
+                    key={localUser.id}
+                    onClick={() => changeUser(element)}
+                  >
+                    <div className="flex">
+                      <Image
+                        width={32}
+                        height={32}
+                        className="rounded-full bg-slate-200 h-8 object-contain mr-2"
+                        src={
+                          localUser?.role !== "superadmin"
+                            ? (localUser?.companyLogo ?? "")
+                            : "/images/user/user-01.png"
+                        }
+                        alt="User"
+                      />
+                      <div>
+                        <span className="block text-sm font-medium text-black dark:text-white">
+                          {!!localUser && localUser.nameSurname}
+                        </span>
+
+                        <span className="block text-xs ml-1">
+                          ({!!localUser && localUser?.role})
+                        </span>
+                      </div>
+                    </div>
+                    <Button
+                      color="default"
+                      variant="solid"
+                      className="ml-2"
+                      onClick={() => {
+                        setUsers(
+                          users.filter((e: any) => e.user.id === localUser.id)
+                        );
+                      }}
+                    >
+                      Logout
+                    </Button>
+                  </div>
+                );
+              })}
+              title="Switch Account"
+              trigger="click"
+              open={open}
+              onOpenChange={handleOpenChange}
+            >
+              <UserSwitchOutlined className="cursor-pointer" />
+            </Popover>
+          </div>
+        )}
+      </div>
 
       {/* <!-- Dropdown Start --> */}
       {dropdownOpen && (
@@ -150,6 +230,7 @@ const DropdownUser = () => {
           <button
             className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             onClick={async () => {
+              localStorage.clear();
               await logoutUser();
               router.push("/");
             }}

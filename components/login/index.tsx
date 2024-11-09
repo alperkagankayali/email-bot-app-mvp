@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { MailOutlined } from "@ant-design/icons";
 import type { FormProps } from "antd";
-import { Form, Input, Select ,notification} from "antd";
+import { Form, Input, Select, notification } from "antd";
 import { Link } from "@/i18n/routing";
 import { Button } from "antd";
 import { useRouter } from "@/i18n/routing";
@@ -41,16 +41,23 @@ export default function Login({ locale }: IProps) {
     if (!!values.password && values.password?.length > 3 && !!values.username) {
       const res = await handleLogin(values.username, values.password);
       if (res.status === 200) {
-        localStorage.setItem("token", JSON.stringify(res?.data?.token));
-        localStorage.setItem("user", JSON.stringify(res?.data));
-        dispatch(userInfo(res?.data?.user));
-        router.push("/dashboard");
-      }
-      else{
+        if (res.data.user.role === "superadmin") {
+          localStorage.setItem("users", JSON.stringify([res?.data]));
+          localStorage.setItem("token", JSON.stringify(res?.data?.token));
+          localStorage.setItem("user", JSON.stringify(res?.data));
+          dispatch(userInfo(res?.data?.user));
+          router.push("/dashboard");
+        } else {
+          localStorage.setItem("token", JSON.stringify(res?.data?.token));
+          localStorage.setItem("user", JSON.stringify(res?.data));
+          dispatch(userInfo(res?.data?.user));
+          router.push("/dashboard");
+        }
+      } else {
         notification.open({
-          type:'error',
-          message: t('login-failed'),
-          description: t('login-failedDesc'),
+          type: "error",
+          message: t("login-failed"),
+          description: t("login-failedDesc"),
         });
       }
     }
