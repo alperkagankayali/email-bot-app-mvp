@@ -5,7 +5,7 @@ import headers from "@/lib/header.json";
 import { IResourceDb } from "@/types/resourcesType";
 import { IResponseType } from "@/types/responseType";
 import { IUser } from "@/types/userType";
-import { ILandingPage } from "@/types/scenarioType";
+import { ILandingPage, IScenario } from "@/types/scenarioType";
 
 export const servicesBaseUrl =
   process.env.NODE_ENV === "production"
@@ -211,6 +211,12 @@ export const createEmailTemplate = async (data: ILandingPage) => {
 };
 export const createDataEntry = async (data: ILandingPage) => {
   const url = servicesBaseUrl + finalConfig.CREATE_DATA_ENTRY;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, data, config);
+  return result;
+};
+export const createScenario = async (data: IScenario | null) => {
+  const url = servicesBaseUrl + finalConfig.CREATE_SCENARIO;
   const config = headers.content_type.application_json;
   const result: IResponseType = await postRequest(url, data, config);
   return result;

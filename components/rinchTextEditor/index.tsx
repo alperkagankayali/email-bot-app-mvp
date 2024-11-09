@@ -17,7 +17,6 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({
     () => ({
       readonly: false,
       placeholder: "Start typings...",
-      beautyHTML: true,
       extraButtons: [
         {
           name: "uploadToAws",

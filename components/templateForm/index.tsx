@@ -1,12 +1,10 @@
 "use client";
-import { IEmailTemplate, ILandingPage } from "@/types/scenarioType";
+import { ILandingPage } from "@/types/scenarioType";
 import { Button, Form, Input, Select } from "antd";
 import type { FormProps } from "antd";
 import RinchTextEditor from "../rinchTextEditor";
 import FileUpload from "../fileUpload/inedx";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 const { Option } = Select;
 type IProps = {
   handleSave: (x: ILandingPage) => void;
@@ -20,18 +18,14 @@ const TemplateForm = ({
   handleSave,
   title = "",
   img = "",
-  istType = false,
   defaultContent = "",
-  defaultScenarioType = "",
 }: IProps) => {
   const [fileUrl, setFileUrl] = useState(img);
   const [content, setContent] = useState(defaultContent);
   const handleUploadFile = (img: string) => {
     setFileUrl(img);
   };
-  const scenarioType = useSelector(
-    (state: RootState) => state.scenario.scenarioType
-  );
+
   const onFinish: FormProps<ILandingPage>["onFinish"] = async (values) => {
     await handleSave({ ...values, img: fileUrl, content });
   };
@@ -60,29 +54,6 @@ const TemplateForm = ({
             </Form.Item>
           </div>
         </div>
-        {/* {istType && !!scenarioType && scenarioType?.length > 0 && (
-          <div className="mb-4">
-            <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Scenario Type
-            </label>
-            <div className="relative">
-              <Form.Item<IEmailTemplate> name="scenarioType">
-                <Select size="large" defaultValue={defaultScenarioType}>
-                  {scenarioType?.map((scenario) => {
-                    return (
-                      <Option
-                        key={scenario._id + scenario.title}
-                        value={scenario._id}
-                      >
-                        {scenario.title}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </div>
-          </div>
-        )} */}
         <div className="mb-6">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
             Image

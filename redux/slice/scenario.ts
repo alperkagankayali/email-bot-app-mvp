@@ -27,6 +27,7 @@ interface ICounter {
   dataEntries: IDataEntry[] | null;
   scenario: IScenario[] | null;
   status: "loading" | "succeeded" | "failed" | "idle";
+  creteScenario: IScenario | null;
 }
 
 const initialState: ICounter = {
@@ -40,12 +41,17 @@ const initialState: ICounter = {
   scenarioTypeStatus: "idle",
   scenario: null,
   status: "idle",
+  creteScenario: null,
 };
 
 const resourceSlice = createSlice({
   name: "counter",
   initialState,
-  reducers: {},
+  reducers: {
+    handleChangeScenarioData: (state, action) => {
+      state.creteScenario = action.payload;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchLandingPage.pending, (state) => {
@@ -132,6 +138,6 @@ export const fetchScenarioType = createAsyncThunk(
     return response?.data;
   }
 );
-export const {} = resourceSlice.actions;
+export const { handleChangeScenarioData } = resourceSlice.actions;
 
 export default resourceSlice.reducer;

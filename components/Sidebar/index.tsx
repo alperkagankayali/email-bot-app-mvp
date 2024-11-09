@@ -55,18 +55,13 @@ const menuGroups = [
         route: "#",
         children: [
           {
-            label: "menu-scenario",
+            label: "menu-scenario-template",
             route: "/dashboard/scenario",
             role: ["admin", "superadmin"],
           },
           {
             label: "menu-landing-pages",
             route: "/dashboard/scenario/landing-page",
-            role: ["admin", "superadmin"],
-          },
-          {
-            label: "menu-mail",
-            route: "/dashboard/scenario/email-templates",
             role: ["admin", "superadmin"],
           },
           {

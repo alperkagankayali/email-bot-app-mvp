@@ -25,10 +25,10 @@ export async function GET(request: Request) {
         return verificationResult; // 401 döndürecek
       } else {
         if (!!id) {
-          const scenario = await Scenario.findById(id).populate({
-            path: "ScenarioType",
-            model: ScenarioType,
-          });
+          const scenario = await Scenario.findById(id)
+            .populate("scenarioType")
+            .populate("emailTemplate");
+
           return NextResponse.json(
             {
               ...message200,
@@ -44,6 +44,7 @@ export async function GET(request: Request) {
           );
           const scenario = await Scenario.find({ isDelete: false })
             .populate("scenarioType")
+            .populate("emailTemplate")
             .skip(skip)
             .limit(limit);
           return NextResponse.json(

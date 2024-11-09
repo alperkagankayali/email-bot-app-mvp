@@ -39,6 +39,7 @@ export interface IEmailTemplate {
   isDelete?: boolean;
   author: IUser | ISuperAdmin;
   created_at: Date;
+  scenarioType: IScenarioType;
   authorType: string;
   _id:string
 }
