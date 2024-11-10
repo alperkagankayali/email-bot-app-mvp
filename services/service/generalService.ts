@@ -188,8 +188,8 @@ export const getScenarioType = async () => {
   const result: IResponseType = await getRequest(url, config);
   return result;
 };
-export const getScenario = async (limit = 10, page = 1) => {
-  const queryParams = jsonToQueryString({ limit, page });
+export const getScenario = async (filter: any) => {
+  const queryParams = jsonToQueryString(filter);
   const url = servicesBaseUrl + finalConfig.GET_SCENARIO + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);

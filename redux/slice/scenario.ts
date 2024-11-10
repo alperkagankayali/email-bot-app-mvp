@@ -30,6 +30,7 @@ interface ICounter {
   status: "loading" | "succeeded" | "failed" | "idle";
   creteScenario: IScenario | null;
   emailTemplateTotalItem: number;
+  scenarioTotalItem: number;
 }
 
 const initialState: ICounter = {
@@ -45,6 +46,7 @@ const initialState: ICounter = {
   status: "idle",
   creteScenario: null,
   emailTemplateTotalItem: 0,
+  scenarioTotalItem: 0,
 };
 
 const resourceSlice = createSlice({
@@ -110,7 +112,8 @@ const resourceSlice = createSlice({
       })
       .addCase(fetchScenario.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.scenario = action.payload;
+        state.scenarioTotalItem = action.payload?.totalItems ?? 0;
+        state.scenario = action.payload.data;
       })
       .addCase(fetchScenario.rejected, (state) => {
         state.status = "failed";
@@ -118,10 +121,13 @@ const resourceSlice = createSlice({
   },
 });
 
-export const fetchScenario = createAsyncThunk("/scenario", async () => {
-  const response = await getScenario();
-  return response?.data;
-});
+export const fetchScenario = createAsyncThunk(
+  "/scenario",
+  async (filter: any) => {
+    const response = await getScenario(filter);
+    return response;
+  }
+);
 
 export const fetchLandingPage = createAsyncThunk("/landing-page", async () => {
   const response = await getLandingPage("");
@@ -146,6 +152,7 @@ export const fetchScenarioType = createAsyncThunk(
     return response?.data;
   }
 );
-export const { handleChangeScenarioData,handleChangeEmailData } = resourceSlice.actions;
+export const { handleChangeScenarioData, handleChangeEmailData } =
+  resourceSlice.actions;
 
 export default resourceSlice.reducer;

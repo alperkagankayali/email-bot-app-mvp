@@ -49,10 +49,8 @@ const EmailTemplateList: React.FC = () => {
   }, [status, dispatch]);
 
   const handleDeleteEmailTemplate = async (id:string) => {
-    debugger
     const res = await deleteEmailTemplate(id);
     dispatch(handleChangeEmailData(data?.filter((e) => e._id !== res.data?._id)));
-
   }
 
   return (

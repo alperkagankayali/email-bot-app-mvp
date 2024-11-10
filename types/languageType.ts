@@ -1,7 +1,7 @@
-
 export type ILanguage = {
-    code: string,
-    name: string,
-    isActive:  boolean,
-    created_at: Date,
-}
+  code: string;
+  name: string;
+  isActive: boolean;
+  created_at: Date;
+  _id: string;
+};

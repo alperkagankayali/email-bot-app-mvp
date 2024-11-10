@@ -26,6 +26,14 @@ body {
   }
 }
 
+.card-meta .ant-card-meta-title {
+  white-space:normal !important;
+  height: auto !important;
+  @apply !line-clamp-3
+}
+.ant-card-actions {
+  @apply !mt-auto
+}
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 

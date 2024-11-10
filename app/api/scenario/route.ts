@@ -8,6 +8,7 @@ import ScenarioType from "@/models/scenarioType";
 import DataEntry from "@/models/dataEntry";
 import EmailTemplate from "@/models/emailTemplate";
 import LandingPage from "@/models/landingPage";
+import Languages from "@/models/languages";
 
 export async function GET(request: Request) {
   try {
@@ -16,6 +17,9 @@ export async function GET(request: Request) {
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     const page = parseInt(searchParams.get("page") || "1"); // Varsayılan 1. sayfa
     const limit = parseInt(searchParams.get("limit") || "10"); // Varsayılan limit 10
+    const name = searchParams.get("name") ?? "";
+    const language = searchParams.get("language") ?? "";
+    const scenarioType = searchParams.get("scenarioType") ?? "";
     const skip = (page - 1) * limit; //
     const id = searchParams.get("id");
 
@@ -42,9 +46,16 @@ export async function GET(request: Request) {
             {},
             { isDelete: false }
           );
-          const scenario = await Scenario.find({ isDelete: false })
-            .populate("emailTemplate")
-            .populate("scenarioType");
+          const filter: any = {};
+          filter.isDelete = false;
+          !!scenarioType && (filter.scenarioType = scenarioType);
+          !!language && (filter.language = language);
+          !!name && (filter.title = { $regex: name, $options: "i" });
+          const scenario = await Scenario.find(filter).populate([
+            { path: "emailTemplate", model: EmailTemplate },
+            { path: "scenarioType", model: ScenarioType },
+            { path: "language", model: Languages, select: ["code", "name"] },
+          ]);
           // .populate({ path: "emailTemplate", model: EmailTemplate })
           return NextResponse.json(
             {

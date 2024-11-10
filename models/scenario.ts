@@ -34,6 +34,7 @@ const scenarioSchema = new Schema<IScenario>({
     refPath: "authorType",
   },
   isDelete: { type: Boolean, default: false },
+  language: { type: Types.ObjectId, ref: "Languages" },
 });
 
 const Scenario =

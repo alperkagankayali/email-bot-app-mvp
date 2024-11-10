@@ -1,3 +1,4 @@
+import { ILanguage } from "./languageType";
 import { ISuperAdmin } from "./superAdmingType";
 import { IUser } from "./userType";
 
@@ -19,7 +20,8 @@ export interface IScenario {
   // dataEntryPageUrl: string;
   // author: IUser;
   // created_at: Date;
-  _id:string
+  _id: string;
+  language: ILanguage;
 }
 
 export interface IDataEntry {
@@ -30,7 +32,7 @@ export interface IDataEntry {
   author: IUser | ISuperAdmin;
   created_at: Date;
   authorType: string;
-  _id:string
+  _id: string;
 }
 export interface IEmailTemplate {
   title: string;
@@ -41,7 +43,7 @@ export interface IEmailTemplate {
   created_at: Date;
   scenarioType: IScenarioType;
   authorType: string;
-  _id:string
+  _id: string;
 }
 export interface ILandingPage {
   title: string;
@@ -51,7 +53,7 @@ export interface ILandingPage {
   author: IUser | ISuperAdmin;
   created_at: Date;
   authorType: string;
-  _id?:string
+  _id?: string;
 }
 export interface IScenarioType {
   title: string;
@@ -60,5 +62,5 @@ export interface IScenarioType {
   author: IUser | ISuperAdmin;
   created_at: Date;
   authorType: string;
-  _id:string
+  _id: string;
 }
