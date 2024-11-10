@@ -1,37 +1,28 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, Modal, Radio } from "antd";
+import { Card, Modal } from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import {
-  fetchEmailTemplate,
-  handleChangeScenarioData,
-} from "@/redux/slice/scenario";
+import { fetchEmailTemplate } from "@/redux/slice/scenario";
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { EyeOutlined } from "@ant-design/icons";
-import useLocalStorage from "@/hooks/useLocalStorage";
+import { EditOutlined, EyeOutlined, SettingOutlined } from "@ant-design/icons";
 
 const { Meta } = Card;
-type IProps = {
-  next: () => void;
-};
-const EmailTemplateList: React.FC<IProps> = ({ next }) => {
+
+const EmailTemplateList: React.FC = () => {
   const status = useSelector(
     (state: RootState) => state.scenario.emailTemplateStatus
   );
   const data = useSelector((state: RootState) => state.scenario.emailTemplate);
   const dispatch = useDispatch<AppDispatch>();
+  const t = useTranslations("pages");
   const [open, setOpen] = useState({
     show: false,
     data: "",
   });
-  const scenarioData = useSelector(
-    (state: RootState) => state.scenario.creteScenario
-  );
-  const [selectedEmailTemplate, setSelectedEmailTemplate] = useState(
-    scenarioData?.emailTemplate ?? ""
-  );
 
   useEffect(() => {
     if (status === "idle") {
@@ -41,9 +32,23 @@ const EmailTemplateList: React.FC<IProps> = ({ next }) => {
 
   return (
     <div className="flex flex-col items-start">
-      <div className="grid grid-cols-3 gap-8 mt-4">
+      <Link
+        href={"/dashboard/scenario/email-templates/add"}
+        className="bg-[#1677ff] text-white px-4 py-2 rounded-md"
+      >
+        {t("email-template-add")}
+      </Link>
+
+      <div className="grid grid-cols-4 gap-8 mt-4">
         {data?.map((emailTemplate) => {
           const actions: React.ReactNode[] = [
+            <Link
+              href={
+                "/dashboard/scenario/email-templates/update/" + emailTemplate._id
+              }
+            >
+              <EditOutlined key="edit" />
+            </Link>,
             <EyeOutlined
               key="ellipsis"
               onClick={() =>
@@ -52,55 +57,27 @@ const EmailTemplateList: React.FC<IProps> = ({ next }) => {
             />,
           ];
           return (
-            <Radio.Group
-              onChange={(e) => {
-                dispatch(
-                  handleChangeScenarioData({
-                    ...scenarioData,
-                    emailTemplate: e.target.value,
-                  })
-                );
-                setSelectedEmailTemplate(e.target.value);
-              }}
+            <Card
+              actions={actions}
               key={emailTemplate._id}
-              defaultValue={scenarioData?.emailTemplate}
-              buttonStyle="solid"
-              value={selectedEmailTemplate}
+              hoverable
+              loading={status === "loading"}
+              style={{ width: 240 }}
+              cover={
+                <Image
+                  width={240}
+                  height={100}
+                  className="h-30 object-cover"
+                  alt={emailTemplate.title}
+                  src={status === "loading" ? noImage : emailTemplate.img}
+                />
+              }
             >
-              <Radio value={emailTemplate._id} className="">
-                <Card
-                  actions={actions}
-                  key={emailTemplate._id}
-                  hoverable
-                  loading={status === "loading"}
-                  style={{ width: 240 }}
-                  cover={
-                    <Image
-                      width={240}
-                      height={120}
-                      className="bg-[#03162b] h-30 object-contain "
-                      alt={emailTemplate.title}
-                      src={status === "loading" ? noImage : emailTemplate.img}
-                    />
-                  }
-                >
-                  <Meta title={emailTemplate.title} />
-                </Card>
-              </Radio>
-            </Radio.Group>
+              <Meta title={emailTemplate.title} />
+            </Card>
           );
         })}
       </div>
-      <Button
-        onClick={() => {
-          if (!!selectedEmailTemplate) {
-            next();
-          }
-        }}
-        className="w-full mt-10 cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
-      >
-        Kaydet ve Devam Et
-      </Button>
       <Modal
         title=""
         centered

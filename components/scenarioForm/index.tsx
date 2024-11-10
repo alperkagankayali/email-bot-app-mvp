@@ -1,13 +1,10 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Form, message, notification, Steps, Tabs, theme } from "antd";
+import { Button, notification, Steps, Tabs, theme } from "antd";
 import FirstTabForm from "./firstTab";
 import { fetchScenarioType } from "@/redux/slice/scenario";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import EmailTemplateSelect from "../emailTemplate";
-import AddEmailTemplateForm from "../emailTemplate/add";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import TemplateAddForm from "./templateAddForm";
 import TemplateList from "./templateList";
 import { createScenario } from "@/services/service/generalService";

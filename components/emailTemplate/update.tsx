@@ -61,7 +61,6 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
         title={data?.title}
         img={data?.img}
         defaultContent={data?.content}
-        defaultScenarioType={data.scenarioType._id}
         istType={true}
       />
     </div>

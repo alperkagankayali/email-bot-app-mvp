@@ -60,6 +60,11 @@ const menuGroups = [
             role: ["admin", "superadmin"],
           },
           {
+            label: "menu-mail",
+            route: "/dashboard/scenario/email-templates",
+            role: ["admin", "superadmin"],
+          },
+          {
             label: "menu-landing-pages",
             route: "/dashboard/scenario/landing-page",
             role: ["admin", "superadmin"],
