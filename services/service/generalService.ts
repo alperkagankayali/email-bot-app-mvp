@@ -259,6 +259,12 @@ export const updateEmailTemplate = async (id: string, updateData: any) => {
   );
   return result;
 };
+export const deleteEmailTemplate = async (id: string) => {
+  const url = servicesBaseUrl + finalConfig.DELETE_EMAIL_TEMPLATE;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};
 
 export const updatePassword = async (id: string, password: string) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_PASSWORD;

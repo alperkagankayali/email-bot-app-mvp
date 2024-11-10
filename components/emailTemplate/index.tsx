@@ -11,9 +11,9 @@ import {
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Pagination } from "antd";
-import { getEmailTemplate } from "@/services/service/generalService";
+import { deleteEmailTemplate, getEmailTemplate } from "@/services/service/generalService";
 
 const { Meta } = Card;
 
@@ -48,6 +48,13 @@ const EmailTemplateList: React.FC = () => {
     }
   }, [status, dispatch]);
 
+  const handleDeleteEmailTemplate = async (id:string) => {
+    debugger
+    const res = await deleteEmailTemplate(id);
+    dispatch(handleChangeEmailData(data?.filter((e) => e._id !== res.data?._id)));
+
+  }
+
   return (
     <div className="flex flex-col items-start">
       <Link
@@ -74,6 +81,7 @@ const EmailTemplateList: React.FC = () => {
                 setOpen({ show: true, data: emailTemplate.content })
               }
             />,
+            <DeleteOutlined onClick={() =>handleDeleteEmailTemplate(emailTemplate._id)}/>,
           ];
           return (
             <Card
@@ -86,7 +94,7 @@ const EmailTemplateList: React.FC = () => {
                 <Image
                   width={240}
                   height={100}
-                  className="h-30 object-cover"
+                  className="h-30 object-contain bg-[#03162b]"
                   alt={emailTemplate.title}
                   src={status === "loading" ? noImage : emailTemplate.img}
                 />
