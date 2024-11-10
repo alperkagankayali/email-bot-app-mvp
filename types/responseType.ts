@@ -4,4 +4,5 @@ export type IResponseType = {
   status: number;
   data: any;
   success:boolean;
+  totalItems?:number
 };

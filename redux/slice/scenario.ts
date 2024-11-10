@@ -15,7 +15,8 @@ import {
 } from "@/types/scenarioType";
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
+import { AppDispatch } from "../store";
+import { State } from "aws-sdk/clients/cloudwatchlogs";
 interface ICounter {
   landingPageStatus: "loading" | "succeeded" | "failed" | "idle";
   emailTemplateStatus: "loading" | "succeeded" | "failed" | "idle";
@@ -28,6 +29,7 @@ interface ICounter {
   scenario: IScenario[] | null;
   status: "loading" | "succeeded" | "failed" | "idle";
   creteScenario: IScenario | null;
+  emailTemplateTotalItem: number;
 }
 
 const initialState: ICounter = {
@@ -42,6 +44,7 @@ const initialState: ICounter = {
   scenario: null,
   status: "idle",
   creteScenario: null,
+  emailTemplateTotalItem: 0,
 };
 
 const resourceSlice = createSlice({
@@ -50,6 +53,9 @@ const resourceSlice = createSlice({
   reducers: {
     handleChangeScenarioData: (state, action) => {
       state.creteScenario = action.payload;
+    },
+    handleChangeEmailData: (state, action) => {
+      state.emailTemplate = action.payload;
     },
   },
   extraReducers(builder) {
@@ -70,7 +76,8 @@ const resourceSlice = createSlice({
       })
       .addCase(fetchEmailTemplate.fulfilled, (state, action) => {
         state.emailTemplateStatus = "succeeded";
-        state.emailTemplate = action.payload;
+        state.emailTemplateTotalItem = action.payload?.totalItems ?? 0;
+        state.emailTemplate = action.payload.data;
       })
       .addCase(fetchEmailTemplate.rejected, (state) => {
         state.emailTemplateStatus = "failed";
@@ -120,13 +127,14 @@ export const fetchLandingPage = createAsyncThunk("/landing-page", async () => {
   const response = await getLandingPage("");
   return response?.data;
 });
-export const fetchEmailTemplate = createAsyncThunk(
+export const fetchEmailTemplate = createAsyncThunk<any>(
   "/email-template",
   async () => {
     const response = await getEmailTemplate("");
-    return response?.data;
+    return response;
   }
 );
+
 export const fetchDataEntry = createAsyncThunk("/data-entry", async () => {
   const response = await getDataEntries("");
   return response?.data;
@@ -138,6 +146,6 @@ export const fetchScenarioType = createAsyncThunk(
     return response?.data;
   }
 );
-export const { handleChangeScenarioData } = resourceSlice.actions;
+export const { handleChangeScenarioData,handleChangeEmailData } = resourceSlice.actions;
 
 export default resourceSlice.reducer;

@@ -195,8 +195,8 @@ export const getScenario = async (limit = 10, page = 1) => {
   const result: IResponseType = await getRequest(url, config);
   return result;
 };
-export const getEmailTemplate = async (id: string) => {
-  const queryParams = jsonToQueryString({ id });
+export const getEmailTemplate = async (id: string, limit = 8, page = 1) => {
+  const queryParams = jsonToQueryString({ id, limit, page });
   const url = servicesBaseUrl + finalConfig.GET_EMAIL_TEMPLATE + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);

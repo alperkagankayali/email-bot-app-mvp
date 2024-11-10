@@ -1,14 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Modal } from "antd";
+import { Card, Modal, PaginationProps } from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchEmailTemplate } from "@/redux/slice/scenario";
+import {
+  fetchEmailTemplate,
+  handleChangeEmailData,
+} from "@/redux/slice/scenario";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { EditOutlined, EyeOutlined, SettingOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { Pagination } from "antd";
+import { getEmailTemplate } from "@/services/service/generalService";
 
 const { Meta } = Card;
 
@@ -17,12 +22,25 @@ const EmailTemplateList: React.FC = () => {
     (state: RootState) => state.scenario.emailTemplateStatus
   );
   const data = useSelector((state: RootState) => state.scenario.emailTemplate);
+  const totalItems = useSelector(
+    (state: RootState) => state.scenario.emailTemplateTotalItem
+  );
+
   const dispatch = useDispatch<AppDispatch>();
   const t = useTranslations("pages");
   const [open, setOpen] = useState({
     show: false,
     data: "",
   });
+  const [pageSize, setPageSize] = useState(8);
+
+  const onChange: PaginationProps["onChange"] = async (page, pageNumber) => {
+    const res = await getEmailTemplate("", pageNumber, page);
+    if (res.success && !!data) {
+      dispatch(handleChangeEmailData(res.data));
+    }
+    setPageSize(pageNumber);
+  };
 
   useEffect(() => {
     if (status === "idle") {
@@ -44,7 +62,8 @@ const EmailTemplateList: React.FC = () => {
           const actions: React.ReactNode[] = [
             <Link
               href={
-                "/dashboard/scenario/email-templates/update/" + emailTemplate._id
+                "/dashboard/scenario/email-templates/update/" +
+                emailTemplate._id
               }
             >
               <EditOutlined key="edit" />
@@ -77,6 +96,20 @@ const EmailTemplateList: React.FC = () => {
             </Card>
           );
         })}
+      </div>
+      <div className="mt-10 mb-20 w-full">
+        {!!totalItems && (
+          <Pagination
+            onChange={onChange}
+            total={totalItems}
+            pageSize={pageSize}
+            showTotal={(total) => `Total ${total} items`}
+            showSizeChanger
+            defaultPageSize={8}
+            align="center"
+            pageSizeOptions={[8, 16, 24]}
+          />
+        )}
       </div>
       <Modal
         title=""
