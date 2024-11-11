@@ -32,5 +32,6 @@
   "CREATE_DATA_ENTRY":"/data-entry/add",
   "CREATE_SCENARIO":"/scenario/add",
   "UPDATE_DATA_ENTRY":"/data-entry/update",
-  "UPDATE_PASSWORD":"/user/update-password"
+  "UPDATE_PASSWORD":"/user/update-password",
+  "DELETE_SCENARIO":"/scenario/delete"
 }

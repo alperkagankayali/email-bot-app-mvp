@@ -1,5 +1,5 @@
 "use client";
-import {  IScenario } from "@/types/scenarioType";
+import { IScenario } from "@/types/scenarioType";
 import { Button, Form, FormProps, Input, notification, Select } from "antd";
 import FileUpload from "../fileUpload/inedx";
 import { useState } from "react";
@@ -28,6 +28,7 @@ const FirstTabForm = ({
   );
   const dispatch = useDispatch<AppDispatch>();
   const [fileUrl, setFileUrl] = useState(img);
+  const languages = useSelector((state: RootState) => state.language.language);
   const handleUploadFile = (img: string) => {
     dispatch(handleChangeScenarioData({ ...scenarioData, img }));
     setFileUrl(img);
@@ -41,7 +42,6 @@ const FirstTabForm = ({
       notification.error({ message: "Please upload your logo" });
     }
   };
-  console.log("scenarioData", scenarioData);
 
   return (
     <>
@@ -83,7 +83,7 @@ const FirstTabForm = ({
                   },
                 ]}
               >
-                <Select size="large" defaultValue={scenarioData?.scenarioType}>
+                <Select size="large" defaultValue={scenarioData?.scenarioType} placeholder="scenario type">
                   {data?.map((scenario) => {
                     return (
                       <Option
@@ -100,6 +100,39 @@ const FirstTabForm = ({
             </div>
           </div>
         )}
+        {!!languages && languages?.length > 0 && (
+          <div className="mb-4">
+            <label className="mb-2.5 block font-medium text-black dark:text-white">
+              Language
+            </label>
+            <div className="relative">
+              <Form.Item<IScenario>
+                name="language"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your language!",
+                  },
+                ]}
+              >
+                <Select
+                  size="large"
+                  className=""
+                  placeholder="language"
+                >
+                  {languages.map((e) => {
+                    return (
+                      <Option key={e.code} value={e._id}>
+                        {e.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </div>
+          </div>
+        )}
+
         <div className="mb-6">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
             Image

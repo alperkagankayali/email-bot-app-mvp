@@ -1,15 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Modal, Popover } from "antd";
+import { Card, Modal, notification, Popconfirm, Popover } from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchScenario, fetchScenarioType } from "@/redux/slice/scenario";
+import {
+  changeNewScenarioData,
+  fetchScenario,
+  fetchScenarioType,
+} from "@/redux/slice/scenario";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import {
   DeleteFilled,
+  DeleteOutlined,
   EditOutlined,
   EyeOutlined,
   SettingOutlined,
@@ -17,6 +22,8 @@ import {
 import { Input, Select } from "antd";
 import type { GetProps } from "antd";
 import { useSearchParams } from "next/navigation";
+import { deleteScenario } from "@/services/service/generalService";
+import type { PopconfirmProps } from "antd";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -90,6 +97,17 @@ const ScenarioList: React.FC = () => {
       })
     );
   }, [searchParams]);
+
+  const handleDeleteEmailTemplate = async (id: string) => {
+    const res = await deleteScenario(id);
+    if(res.success){
+      notification.success({message:res.data?.title + " deleted"})
+      dispatch(changeNewScenarioData(data?.filter((e) => e._id !== id)));
+    }
+    else {
+      notification.error({message:res.data?.title + " could not be deleted"})
+    }
+  };
 
   return (
     <div className="flex flex-col items-start">
@@ -167,7 +185,7 @@ const ScenarioList: React.FC = () => {
           const actions: React.ReactNode[] = [
             <Link
               href={
-                "/dashboard/scenario/email-templates/update/" + scenario._id
+                "/dashboard/scenario/update/" + scenario._id
               }
             >
               <EditOutlined key="edit" />
@@ -181,6 +199,16 @@ const ScenarioList: React.FC = () => {
                 })
               }
             />,
+            <Popconfirm
+              title="Delete the scenario"
+              description="Are you sure to delete this scenario?"
+              onConfirm={() => handleDeleteEmailTemplate(scenario._id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <DeleteOutlined
+              />
+            </Popconfirm>,
           ];
           return (
             <Card

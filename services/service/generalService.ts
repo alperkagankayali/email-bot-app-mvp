@@ -167,16 +167,16 @@ export const getUserCsv = async (id: string) => {
   return result;
 };
 
-export const getLandingPage = async (id: string) => {
-  const queryParams = jsonToQueryString({ id });
+export const getLandingPage = async (id: string, limit = 8, page = 1) => {
+  const queryParams = jsonToQueryString({ id, limit, page });
   const url = servicesBaseUrl + finalConfig.GET_LANDING_PAGE + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
   return result;
 };
 
-export const getDataEntries = async (id: string) => {
-  const queryParams = jsonToQueryString({ id });
+export const getDataEntries = async (id: string, limit = 8, page = 1) => {
+  const queryParams = jsonToQueryString({ id, limit, page });
   const url = servicesBaseUrl + finalConfig.GET_DATA_ENTRY + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
@@ -265,7 +265,12 @@ export const deleteEmailTemplate = async (id: string) => {
   const result: IResponseType = await postRequest(url, { id }, config);
   return result;
 };
-
+export const deleteScenario = async (id: string) => {
+  const url = servicesBaseUrl + finalConfig.DELETE_SCENARIO;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};
 export const updatePassword = async (id: string, password: string) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_PASSWORD;
   const config = headers.content_type.application_json;

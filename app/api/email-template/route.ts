@@ -22,7 +22,7 @@ export async function GET(request: Request) {
         return verificationResult; // 401 döndürecek
       } else {
         if (!!id) {
-          const landingPage = await EmailTemplate.findById(id)
+          const landingPage = await EmailTemplate.findById(id);
           return NextResponse.json(
             {
               ...message200,
@@ -32,10 +32,9 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
-          const emailTemplateTotal = await EmailTemplate.countDocuments(
-            {},
-            { isDelete: false }
-          );
+          const emailTemplateTotal = await EmailTemplate.countDocuments({
+            isDelete: false,
+          });
           const emailTemplate = await EmailTemplate.find({ isDelete: false })
             .skip(skip)
             .limit(limit);

@@ -17,7 +17,7 @@ import {
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch } from "../store";
 import { State } from "aws-sdk/clients/cloudwatchlogs";
-interface ICounter {
+interface IScenarioSlice {
   landingPageStatus: "loading" | "succeeded" | "failed" | "idle";
   emailTemplateStatus: "loading" | "succeeded" | "failed" | "idle";
   dataEntryStatus: "loading" | "succeeded" | "failed" | "idle";
@@ -31,9 +31,11 @@ interface ICounter {
   creteScenario: IScenario | null;
   emailTemplateTotalItem: number;
   scenarioTotalItem: number;
+  landingPageTotalItem: number;
+  dataEntryTotalItem: number;
 }
 
-const initialState: ICounter = {
+const initialState: IScenarioSlice = {
   landingPage: null,
   emailTemplate: null,
   emailTemplateStatus: "idle",
@@ -47,6 +49,8 @@ const initialState: ICounter = {
   creteScenario: null,
   emailTemplateTotalItem: 0,
   scenarioTotalItem: 0,
+  landingPageTotalItem: 1,
+  dataEntryTotalItem: 2,
 };
 
 const resourceSlice = createSlice({
@@ -59,6 +63,15 @@ const resourceSlice = createSlice({
     handleChangeEmailData: (state, action) => {
       state.emailTemplate = action.payload;
     },
+    handleChangeLandingPage: (state, action) => {
+      state.landingPage = action.payload;
+    },
+    handleChangeDataEntry: (state, action) => {
+      state.dataEntries = action.payload;
+    },
+    changeNewScenarioData: (state, action) => {
+      state.scenario = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
@@ -67,7 +80,8 @@ const resourceSlice = createSlice({
       })
       .addCase(fetchLandingPage.fulfilled, (state, action) => {
         state.landingPageStatus = "succeeded";
-        state.landingPage = action.payload;
+        state.landingPageTotalItem = action.payload.totalItems ?? 0;
+        state.landingPage = action.payload.data;
       })
       .addCase(fetchLandingPage.rejected, (state) => {
         state.landingPageStatus = "failed";
@@ -90,7 +104,8 @@ const resourceSlice = createSlice({
       })
       .addCase(fetchDataEntry.fulfilled, (state, action) => {
         state.dataEntryStatus = "succeeded";
-        state.dataEntries = action.payload;
+        state.dataEntryTotalItem = action.payload.totalItems ?? 0;
+        state.dataEntries = action.payload.data;
       })
       .addCase(fetchDataEntry.rejected, (state) => {
         state.dataEntryStatus = "failed";
@@ -130,20 +145,20 @@ export const fetchScenario = createAsyncThunk(
 );
 
 export const fetchLandingPage = createAsyncThunk("/landing-page", async () => {
-  const response = await getLandingPage("");
-  return response?.data;
+  const response = await getLandingPage("", 6, 1);
+  return response;
 });
 export const fetchEmailTemplate = createAsyncThunk<any>(
   "/email-template",
   async () => {
-    const response = await getEmailTemplate("");
+    const response = await getEmailTemplate("", 6, 1);
     return response;
   }
 );
 
 export const fetchDataEntry = createAsyncThunk("/data-entry", async () => {
-  const response = await getDataEntries("");
-  return response?.data;
+  const response = await getDataEntries("", 6, 1);
+  return response;
 });
 export const fetchScenarioType = createAsyncThunk(
   "/scenario-type",
@@ -152,7 +167,12 @@ export const fetchScenarioType = createAsyncThunk(
     return response?.data;
   }
 );
-export const { handleChangeScenarioData, handleChangeEmailData } =
-  resourceSlice.actions;
+export const {
+  handleChangeScenarioData,
+  changeNewScenarioData,
+  handleChangeEmailData,
+  handleChangeDataEntry,
+  handleChangeLandingPage,
+} = resourceSlice.actions;
 
 export default resourceSlice.reducer;

@@ -1,6 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, Modal, Radio } from "antd";
+import {
+  Button,
+  Card,
+  Modal,
+  notification,
+  Pagination,
+  PaginationProps,
+  Radio,
+} from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -8,12 +16,20 @@ import {
   fetchDataEntry,
   fetchEmailTemplate,
   fetchLandingPage,
+  handleChangeDataEntry,
+  handleChangeEmailData,
+  handleChangeLandingPage,
   handleChangeScenarioData,
 } from "@/redux/slice/scenario";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { EyeOutlined } from "@ant-design/icons";
-
+import {
+  getDataEntries,
+  getEmailTemplate,
+  getLandingPage,
+} from "@/services/service/generalService";
+import clsx from "clsx";
 const { Meta } = Card;
 type IProps = {
   type: "emailTemplate" | "landingPage" | "dataEntry";
@@ -23,7 +39,8 @@ type IProps = {
 
 const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
   console.log("ttype", type);
-
+  const itemName = type + "TotalItem";
+  const [pageSize, setPageSize] = useState(6);
   const emailTemplateStatus = useSelector(
     (state: RootState) => state.scenario.emailTemplateStatus
   );
@@ -45,6 +62,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
   const scenarioData = useSelector(
     (state: RootState) => state.scenario.creteScenario
   );
+  const allstate: any = useSelector((state: RootState) => state.scenario);
 
   const dispatch = useDispatch<AppDispatch>();
   const t = useTranslations("pages");
@@ -59,6 +77,27 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
         ? scenarioData?.dataEntry
         : scenarioData?.landingPage
   );
+  const onChange: PaginationProps["onChange"] = async (page, pageNumber) => {
+    if (type === "emailTemplate") {
+      const res = await getEmailTemplate("", pageNumber, page);
+      if (res.success && !!emailTemplate) {
+        dispatch(handleChangeEmailData(res.data));
+      }
+    } else if (type === "landingPage") {
+      const res = await getLandingPage("", pageNumber, page);
+      if (res.success && !!landingPage) {
+        dispatch(handleChangeLandingPage(res.data));
+      }
+    } else if (type === "dataEntry") {
+      const res = await getDataEntries("", pageNumber, page);
+      if (res.success && !!dataEntries) {
+        dispatch(handleChangeDataEntry(res.data));
+      }
+    } else {
+      notification.error({ message: "type is not defined" });
+    }
+    setPageSize(pageNumber);
+  };
 
   useEffect(() => {
     if (type === "emailTemplate" && emailTemplateStatus === "idle") {
@@ -106,15 +145,33 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
               }}
               key={list._id}
               buttonStyle="solid"
+              className={
+                selected === list._id
+                  ? "template-list selected"
+                  : "template-list"
+              }
               value={selected}
             >
               <Radio value={list._id} className="">
                 <Card
                   actions={actions}
+                  className={clsx("", {
+                    "!border !border-blue-700": selected === list._id,
+                  })}
                   key={list._id}
                   hoverable
-                  loading={status === "loading"}
-                  style={{ width: 240 }}
+                  loading={
+                    emailTemplateStatus === "loading" ||
+                    dataEntryStatus === "loading" ||
+                    landingPageStatus === "loading"
+                  }
+                  style={{
+                    width: 240,
+                    boxShadow:
+                      selected === list._id
+                        ? "0 1px 2px -2px rgba(0, 0, 0, 0.16),0 3px 6px 0 rgba(0, 0, 0, 0.12),0 5px 12px 4px rgba(0, 0, 0, 0.09)"
+                        : "inherit",
+                  }}
                   cover={
                     <Image
                       width={240}
@@ -137,6 +194,20 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
             </Radio.Group>
           );
         })}
+      </div>
+      <div className="mt-10 mb-20 w-full">
+        {!!allstate[itemName] && (
+          <Pagination
+            onChange={onChange}
+            total={allstate[itemName]}
+            pageSize={pageSize}
+            showTotal={(total) => `Total ${total} items`}
+            showSizeChanger
+            defaultPageSize={6}
+            align="center"
+            pageSizeOptions={[6, 12, 18]}
+          />
+        )}
       </div>
       <Button
         onClick={() => {

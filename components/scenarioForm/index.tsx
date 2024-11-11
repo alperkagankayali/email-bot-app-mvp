@@ -12,7 +12,7 @@ import { useRouter } from "@/i18n/routing";
 
 const ScenarioForm: React.FC = () => {
   const { token } = theme.useToken();
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(1);
   const [tabKey, setTabKey] = useState("1");
   const router = useRouter();
   const status = useSelector(
