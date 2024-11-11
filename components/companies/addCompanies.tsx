@@ -198,7 +198,6 @@ const AddCompanies = ({
                   }}
                   onChange={(date: any, dateString: string[]) => {
                     setLicanceDate(date);
-                    console.log("date", date);
                   }}
                 />
               </Form.Item>

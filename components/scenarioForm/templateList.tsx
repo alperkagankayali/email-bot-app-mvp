@@ -38,7 +38,6 @@ type IProps = {
 };
 
 const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
-  console.log("ttype", type);
   const itemName = type + "TotalItem";
   const [pageSize, setPageSize] = useState(6);
   const emailTemplateStatus = useSelector(

@@ -25,7 +25,6 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
   }, [status, dispatch]);
 
   const onFinish: FormProps<DataType>["onFinish"] = async (values) => {
-    console.log("values", values);
     values.key = values.langKey;
     const res = await createResource({
       key: values.langKey,

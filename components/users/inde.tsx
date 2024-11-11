@@ -284,7 +284,6 @@ const UserTable = ({ id }: IProps) => {
   });
   const handleAdd = (newData: DataType) => {
     setIsModalOpen(!isModalOpen);
-    console.log("newdata", [...data, newData]);
     setData([...data, newData]);
   };
   const onChange: TableProps<DataType>["onChange"] = async (

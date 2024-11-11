@@ -29,9 +29,7 @@ instance.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.log("interceptor", error);
     if (error.response.status === 401) {
-      console.log(error.response.status);
     }
     if (error.response) {
       return error.response?.data;

@@ -99,7 +99,6 @@ const CompaniesTable: React.FC = () => {
   useEffect(() => {
     async function fetchLanguage() {
       const res: any = await getAllCamponies(10, 1);
-      console.log("res", res);
       if (!!res?.data) {
         setDataSource(
           res?.data?.map((e: any) => {

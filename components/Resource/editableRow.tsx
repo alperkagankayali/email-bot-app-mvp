@@ -109,7 +109,6 @@ const ResourceTable: React.FC = () => {
         key: row.langKey,
         value: row.value,
       });
-      console.log("key", updateRes);
       const newData = [...data];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -191,7 +190,6 @@ const ResourceTable: React.FC = () => {
   });
   const handleAdd = (newData: DataType) => {
     setIsModalOpen(!isModalOpen);
-    console.log("newdata", [...data, newData]);
     setData([...data, newData]);
   };
   const onChange: TableProps<DataType>["onChange"] = async (

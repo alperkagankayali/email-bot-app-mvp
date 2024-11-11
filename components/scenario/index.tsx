@@ -73,7 +73,6 @@ const ScenarioList: React.FC = () => {
       params.delete("name");
     }
     replace(`${pathname}?${params.toString()}`);
-    console.log(info?.source, value);
   };
 
   const handleSelect = (value: string, type: string) => {

@@ -80,7 +80,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
-      console.log("Save failed:", errInfo);
+      notification.error({ message:"Bir hata oluştu" });
     }
   };
 

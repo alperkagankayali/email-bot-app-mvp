@@ -14,7 +14,6 @@ const AddLandingPageForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleSave = async (data:ILandingPage) =>{
-    console.log(JSON.stringify(data))
     const res = await createLandingPage(data);
     if(res.success) {
       dispatch(fetchLandingPage())
