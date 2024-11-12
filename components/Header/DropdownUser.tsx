@@ -87,10 +87,10 @@ const DropdownUser = () => {
             />
           </svg>
         </Link>
-        {!!users && users?.length > 1 && (
+        {!!users && Array.isArray(users) && users?.length > 1 && (
           <div className="ml-2">
             <Popover
-              content={!!user && users?.map((element: any) => {
+              content={users?.map((element: any) => {
                 const localUser = element.user;
                 if (localUser.id === user?.id) {
                   return <React.Fragment key={localUser.id}></React.Fragment>;
@@ -99,9 +99,8 @@ const DropdownUser = () => {
                   <div
                     className="grid grid-cols-2 gap-8 justify-between hover:bg-slate-200 p-2 rounded-lg cursor-pointer"
                     key={localUser.id}
-                    onClick={() => changeUser(element)}
                   >
-                    <div className="flex">
+                    <div className="flex" onClick={() => changeUser(element)}>
                       <Image
                         width={32}
                         height={32}
@@ -128,8 +127,14 @@ const DropdownUser = () => {
                       variant="solid"
                       className="ml-2"
                       onClick={() => {
+                        console.log(
+                          "filter",
+                          users.filter((e: any) => e.user.id !== localUser.id),
+                          localUser
+                        );
+                        debugger;
                         setUsers(
-                          users.filter((e: any) => e.user.id === localUser.id)
+                          users.filter((e: any) => e.user.id !== localUser.id)
                         );
                       }}
                     >

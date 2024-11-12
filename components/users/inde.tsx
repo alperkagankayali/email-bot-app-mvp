@@ -6,6 +6,7 @@ import {
   Form,
   Input,
   InputNumber,
+  notification,
   Popconfirm,
   Table,
   Tag,
@@ -141,20 +142,34 @@ const UserTable = ({ id }: IProps) => {
     fetchUsers();
   }, []);
   const handleLogin = async (id: string) => {
-    const res = await handleOtherLogin(id);
-    debugger
-    if (res.success) {
-      localStorage.setItem("token", JSON.stringify(res?.data?.token));
-      localStorage.setItem("user", JSON.stringify(res?.data));
-      const arrUser: any[] = users
-      const findUser = arrUser?.some((e) => e.user.id === id);
-      if (!findUser) {
-        setUsers([...arrUser, res.data]);
-        dispatch(userInfo(res?.data?.user));
-        router.push("/dashboard");
+    const arrUser: any[] = users;
+    const findUser = arrUser?.some((e) => e.user.id === id);
+    if (arrUser.length > 3) {
+      notification.error({
+        message:
+          "En fazla 3 kullanıcı ile login olabilirsin, diğer kullanıcılardan çıkış yapman gerekiyor.",
+      });
+    } 
+    else if (findUser) {
+      notification.error({
+        message:
+          "Bu kullanıcı ile zaten giriş yapılmış.",
+      });
+    }
+    else {
+      const res = await handleOtherLogin(id);
+      if (res.success) {
+        localStorage.setItem("token", JSON.stringify(res?.data?.token));
+        localStorage.setItem("user", JSON.stringify(res?.data));
+        if (!findUser) {
+          setUsers([...arrUser, res.data]);
+          dispatch(userInfo(res?.data?.user));
+          router.push("/dashboard");
+        } else {
+          dispatch(userInfo(res?.data?.user));
+          router.push("/dashboard");
+        }
       }
-      dispatch(userInfo(res?.data?.user));
-      router.push("/dashboard");
     }
   };
   const columns = [
