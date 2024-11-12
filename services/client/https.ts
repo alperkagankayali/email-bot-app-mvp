@@ -30,6 +30,9 @@ instance.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
+      if (typeof window !== "undefined") {
+        localStorage.clear();
+      }
     }
     if (error.response) {
       return error.response?.data;

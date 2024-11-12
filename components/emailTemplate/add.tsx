@@ -20,7 +20,7 @@ const AddEmailTemplateForm: React.FC = () => {
   const handleSave = async (data: ILandingPage) => {
     const res = await createEmailTemplate(data);
     if (res.success) {
-      dispatch(fetchEmailTemplate());
+      dispatch(fetchEmailTemplate(8));
       router.push("/dashboard/scenario/email-templates");
     } else {
       message.error(res.message);

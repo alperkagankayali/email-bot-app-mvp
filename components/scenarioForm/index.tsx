@@ -1,20 +1,20 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import { Button, notification, Steps, Tabs, theme } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Steps, Tabs, theme } from "antd";
 import FirstTabForm from "./firstTab";
 import { fetchScenarioType } from "@/redux/slice/scenario";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import TemplateAddForm from "./templateAddForm";
 import TemplateList from "./templateList";
-import { createScenario } from "@/services/service/generalService";
-import { useRouter } from "@/i18n/routing";
 
-const ScenarioForm: React.FC = () => {
+type IProps = {
+  handleCreateScenario: () => void;
+};
+const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [tabKey, setTabKey] = useState("1");
-  const router = useRouter();
   const status = useSelector(
     (state: RootState) => state.scenario.scenarioTypeStatus
   );
@@ -42,15 +42,6 @@ const ScenarioForm: React.FC = () => {
 
   const changeTab = (key: string) => {
     setTabKey(key);
-  };
-
-  const handleCreateScenario = async () => {
-    const res = await createScenario(newScenario);
-    if (res.success) {
-      router.push("/dashboard/scenario");
-    } else {
-      notification.error({ message: res.message });
-    }
   };
 
   const steps = [

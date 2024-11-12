@@ -38,7 +38,7 @@ const TemplateAddForm: React.FC<IProps> = ({ changeTab, type }) => {
             emailTemplate: res.data._id,
           })
         );
-        dispatch(fetchEmailTemplate());
+        dispatch(fetchEmailTemplate(6));
         changeTab("2");
       } else {
         message.error(res.message);
@@ -52,7 +52,7 @@ const TemplateAddForm: React.FC<IProps> = ({ changeTab, type }) => {
             landingPage: res.data._id,
           })
         );
-        dispatch(fetchLandingPage());
+        dispatch(fetchLandingPage(6));
       } else {
         message.error(res.message);
       }
@@ -65,7 +65,7 @@ const TemplateAddForm: React.FC<IProps> = ({ changeTab, type }) => {
             dataEntry: res.data._id,
           })
         );
-        dispatch(fetchDataEntry());
+        dispatch(fetchDataEntry(6));
       } else {
         message.error(res.message);
       }

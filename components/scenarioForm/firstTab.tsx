@@ -2,10 +2,11 @@
 import { IScenario } from "@/types/scenarioType";
 import { Button, Form, FormProps, Input, notification, Select } from "antd";
 import FileUpload from "../fileUpload/inedx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { handleChangeScenarioData } from "@/redux/slice/scenario";
+
 const { Option } = Select;
 type IProps = {
   next: () => void;
@@ -22,6 +23,7 @@ const FirstTabForm = ({
   istType = false,
   defaultScenarioType = "",
 }: IProps) => {
+  const [form] = Form.useForm();
   const data = useSelector((state: RootState) => state.scenario.scenarioType);
   const scenarioData = useSelector(
     (state: RootState) => state.scenario.creteScenario
@@ -36,12 +38,28 @@ const FirstTabForm = ({
 
   const onFinish: FormProps<IScenario>["onFinish"] = async (values) => {
     if (!!fileUrl || !!scenarioData?.img) {
-      dispatch(handleChangeScenarioData({ ...values, img: scenarioData?.img }));
+      dispatch(
+        handleChangeScenarioData({
+          ...scenarioData,
+          ...values,
+          img: scenarioData?.img,
+        })
+      );
       next();
     } else {
       notification.error({ message: "Please upload your logo" });
     }
   };
+
+  useEffect(() => {
+    if (!!scenarioData) {
+      form.setFieldsValue({
+        language: scenarioData.language,
+        scenarioType: scenarioData.scenarioType,
+        title: scenarioData.title,
+      });
+    }
+  }, [scenarioData]);
 
   return (
     <>
@@ -50,6 +68,7 @@ const FirstTabForm = ({
         initialValues={{ remember: true }}
         onFinish={onFinish}
         autoComplete="off"
+        form={form}
       >
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
@@ -83,7 +102,11 @@ const FirstTabForm = ({
                   },
                 ]}
               >
-                <Select size="large" defaultValue={scenarioData?.scenarioType} placeholder="scenario type">
+                <Select
+                  size="large"
+                  defaultValue={scenarioData?.scenarioType}
+                  placeholder="scenario type"
+                >
                   {data?.map((scenario) => {
                     return (
                       <Option
@@ -118,6 +141,7 @@ const FirstTabForm = ({
                 <Select
                   size="large"
                   className=""
+                  defaultValue={scenarioData?.language}
                   placeholder="language"
                 >
                   {languages.map((e) => {

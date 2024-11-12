@@ -144,20 +144,19 @@ export const fetchScenario = createAsyncThunk(
   }
 );
 
-export const fetchLandingPage = createAsyncThunk("/landing-page", async () => {
-  const response = await getLandingPage("", 6, 1);
+export const fetchLandingPage = createAsyncThunk("/landing-page", async (limit:number) => {
+  const response = await getLandingPage("", limit, 1);
   return response;
 });
-export const fetchEmailTemplate = createAsyncThunk<any>(
-  "/email-template",
-  async () => {
-    const response = await getEmailTemplate("", 6, 1);
+
+export const fetchEmailTemplate = createAsyncThunk("/email-template", async (limit:number) => {
+    const response = await getEmailTemplate("", limit, 1);
     return response;
   }
 );
 
-export const fetchDataEntry = createAsyncThunk("/data-entry", async () => {
-  const response = await getDataEntries("", 6, 1);
+export const fetchDataEntry = createAsyncThunk("/data-entry", async (limit:number) => {
+  const response = await getDataEntries("", limit, 1);
   return response;
 });
 export const fetchScenarioType = createAsyncThunk(

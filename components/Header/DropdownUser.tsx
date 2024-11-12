@@ -90,7 +90,7 @@ const DropdownUser = () => {
         {!!users && users?.length > 1 && (
           <div className="ml-2">
             <Popover
-              content={users.map((element: any) => {
+              content={!!user && users?.map((element: any) => {
                 const localUser = element.user;
                 if (localUser.id === user?.id) {
                   return <React.Fragment key={localUser.id}></React.Fragment>;

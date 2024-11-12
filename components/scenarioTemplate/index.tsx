@@ -9,6 +9,7 @@ import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { EditOutlined, EyeOutlined, SettingOutlined } from "@ant-design/icons";
+import Loader from "../common/Loader";
 
 const { Meta } = Card;
 
@@ -26,10 +27,13 @@ const ScenarioList: React.FC = () => {
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchEmailTemplate());
+      dispatch(fetchEmailTemplate(6));
     }
   }, [status, dispatch]);
 
+  if(status !== "succeeded") {
+    <Loader />
+  }
   return (
     <div className="flex flex-col items-start">
       <Link

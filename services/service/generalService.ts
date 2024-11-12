@@ -239,6 +239,17 @@ export const updateLandingPage = async (id: string, updateData: any) => {
   return result;
 };
 
+export const updateScenario = async (id: string, updateData: any) => {
+  const url = servicesBaseUrl + finalConfig.UPDATE_SCENARIO;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(
+    url,
+    { id, updateData },
+    config
+  );
+  return result;
+};
+
 export const updateDataEntry = async (id: string, updateData: any) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_DATA_ENTRY;
   const config = headers.content_type.application_json;

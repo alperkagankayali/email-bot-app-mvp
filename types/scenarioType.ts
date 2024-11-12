@@ -23,6 +23,15 @@ export interface IScenario {
   _id: string;
   language: ILanguage;
 }
+export type ICreateScenarioType = {
+  scenarioType: string;
+  language: string;
+  img: string;
+  emailTemplate: string;
+  landingPage: string;
+  dataEntry: string;
+  title: string;
+};
 
 export interface IDataEntry {
   title: string;

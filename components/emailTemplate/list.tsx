@@ -26,7 +26,7 @@ const EmailTemplateSelect: React.FC = () => {
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchEmailTemplate());
+      dispatch(fetchEmailTemplate(6));
     }
   }, [status, dispatch]);
 

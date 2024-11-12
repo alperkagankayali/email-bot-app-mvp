@@ -40,6 +40,7 @@ type IProps = {
 
 const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
   const itemName = type + "TotalItem";
+  
   const [pageSize, setPageSize] = useState(6);
   const emailTemplateStatus = useSelector(
     (state: RootState) => state.scenario.emailTemplateStatus
@@ -59,7 +60,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
   const dataEntries = useSelector(
     (state: RootState) => state.scenario.dataEntries
   );
-  const scenarioData = useSelector(
+  const scenarioData: any = useSelector(
     (state: RootState) => state.scenario.creteScenario
   );
   const allstate: any = useSelector((state: RootState) => state.scenario);
@@ -70,13 +71,8 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
     show: false,
     data: "",
   });
-  const [selected, setSelected] = useState(
-    type === "emailTemplate"
-      ? scenarioData?.emailTemplate
-      : type === "dataEntry"
-        ? scenarioData?.dataEntry
-        : scenarioData?.landingPage
-  );
+  const [selected, setSelected] = useState(scenarioData[type]);
+
   const onChange: PaginationProps["onChange"] = async (page, pageNumber) => {
     if (type === "emailTemplate") {
       const res = await getEmailTemplate("", pageNumber, page);
@@ -101,13 +97,13 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
 
   useEffect(() => {
     if (type === "emailTemplate" && emailTemplateStatus === "idle") {
-      dispatch(fetchEmailTemplate());
+      dispatch(fetchEmailTemplate(6));
     }
     if (type === "dataEntry" && dataEntryStatus === "idle") {
-      dispatch(fetchDataEntry());
+      dispatch(fetchDataEntry(6));
     }
     if (type === "landingPage" && landingPageStatus === "idle") {
-      dispatch(fetchLandingPage());
+      dispatch(fetchLandingPage(6));
     }
   }, [
     emailTemplateStatus,
@@ -116,6 +112,13 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
     dispatch,
     current,
   ]);
+
+  useEffect(() => {
+    if(!!scenarioData[type]){
+      console.log('template list useeffect')
+      setSelected(scenarioData[type])
+    }
+  },[type])
 
   return (
     <div className="flex flex-col items-start">

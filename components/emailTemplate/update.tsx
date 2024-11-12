@@ -39,7 +39,7 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
   const handleSave = async (data: ILandingPage) => {
     const res = await updateEmailTemplate(id, data);
     if (res.success) {
-      dispatch(fetchEmailTemplate());
+      dispatch(fetchEmailTemplate(8));
       router.push("/dashboard/scenario/email-templates");
     } else {
       message.error(res.message);

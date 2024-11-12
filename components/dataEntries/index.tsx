@@ -26,7 +26,7 @@ const DataEntriesList: React.FC = () => {
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchDataEntry());
+      dispatch(fetchDataEntry(10));
     }
   }, [status, dispatch]);
 

@@ -52,6 +52,8 @@ const ScenarioList: React.FC = () => {
     show: false,
     data: "",
   });
+  const [selectLanguage, setSelectLanguage] = useState("");
+  const [selectScenarioType, setSelectSecenariType] = useState("");
 
   useEffect(() => {
     if (status === "idle") {
@@ -99,12 +101,13 @@ const ScenarioList: React.FC = () => {
 
   const handleDeleteEmailTemplate = async (id: string) => {
     const res = await deleteScenario(id);
-    if(res.success){
-      notification.success({message:res.data?.title + " deleted"})
+    if (res.success) {
+      notification.success({ message: res.data?.title + " deleted" });
       dispatch(changeNewScenarioData(data?.filter((e) => e._id !== id)));
-    }
-    else {
-      notification.error({message:res.data?.title + " could not be deleted"})
+    } else {
+      notification.error({
+        message: res.data?.title + " could not be deleted",
+      });
     }
   };
 
@@ -135,10 +138,12 @@ const ScenarioList: React.FC = () => {
               <Select
                 size="large"
                 className="w-50 "
+                value={selectScenarioType}
                 placeholder="scenario type"
-                onChange={(value: string) =>
-                  handleSelect(value, "scenarioType")
-                }
+                onChange={(value: string) => {
+                  setSelectSecenariType(value);
+                  handleSelect(value, "scenarioType");
+                }}
               >
                 {scenarioType?.map((type) => {
                   return (
@@ -157,7 +162,11 @@ const ScenarioList: React.FC = () => {
               size="large"
               className="w-36 !ml-4"
               placeholder="language"
-              onChange={(value: string) => handleSelect(value, "language")}
+              value={selectLanguage}
+              onChange={(value: string) => {
+                setSelectLanguage(value);
+                handleSelect(value, "language");
+              }}
             >
               {languages.map((e) => {
                 return (
@@ -171,6 +180,8 @@ const ScenarioList: React.FC = () => {
               <DeleteFilled
                 className="ml-2 cursor-pointer"
                 onClick={() => {
+                  setSelectSecenariType("");
+                  setSelectLanguage("");
                   replace(`${pathname}`);
                 }}
               />
@@ -182,11 +193,7 @@ const ScenarioList: React.FC = () => {
       <div className="grid grid-cols-4 gap-8 mt-4">
         {data?.map((scenario) => {
           const actions: React.ReactNode[] = [
-            <Link
-              href={
-                "/dashboard/scenario/update/" + scenario._id
-              }
-            >
+            <Link href={"/dashboard/scenario/update/" + scenario._id}>
               <EditOutlined key="edit" />
             </Link>,
             <EyeOutlined
@@ -205,8 +212,7 @@ const ScenarioList: React.FC = () => {
               okText="Yes"
               cancelText="No"
             >
-              <DeleteOutlined
-              />
+              <DeleteOutlined />
             </Popconfirm>,
           ];
           return (

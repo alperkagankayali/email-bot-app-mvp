@@ -29,10 +29,13 @@ export async function GET(request: Request) {
         return verificationResult; // 401 döndürecek
       } else {
         if (!!id) {
-          const scenario = await Scenario.findById(id)
-            .populate("scenarioType")
-            .populate("emailTemplate");
-
+          const scenario = await Scenario.findById(id).populate([
+            { path: "emailTemplate", model: EmailTemplate ,select: ["title", "img","content"]},
+            { path: "scenarioType", model: ScenarioType ,select: ["title", "description"]},
+            { path: "language", model: Languages, select: ["code", "name"] },
+            { path: "landingPage", model: LandingPage ,select: ["title", "img","content"]},
+            { path: "dataEntry", model: DataEntry ,select: ["title", "img","content"]},
+          ]);
           return NextResponse.json(
             {
               ...message200,
@@ -56,7 +59,6 @@ export async function GET(request: Request) {
             { path: "scenarioType", model: ScenarioType },
             { path: "language", model: Languages, select: ["code", "name"] },
           ]);
-          // .populate({ path: "emailTemplate", model: EmailTemplate })
           return NextResponse.json(
             {
               ...message200,
