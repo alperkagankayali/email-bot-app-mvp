@@ -23,13 +23,14 @@ import {
 } from "@/redux/slice/scenario";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { EyeOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import {
   getDataEntries,
   getEmailTemplate,
   getLandingPage,
 } from "@/services/service/generalService";
 import clsx from "clsx";
+import { Link } from "@/i18n/routing";
 const { Meta } = Card;
 type IProps = {
   type: "emailTemplate" | "landingPage" | "dataEntry";
@@ -126,6 +127,15 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
             : landingPage
         )?.map((list) => {
           const actions: React.ReactNode[] = [
+            <Link
+              href={
+                `/dashboard/scenario/${type === "emailTemplate" ? "email-template" : type === "landingPage" ? "landing-page" : "data-entries"}/update/` +
+                list._id
+              }
+              target="_blank"
+            >
+              <EditOutlined key="edit" />
+            </Link>,
             <EyeOutlined
               key="ellipsis"
               onClick={() => setOpen({ show: true, data: list.content })}

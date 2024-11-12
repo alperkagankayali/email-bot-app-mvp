@@ -1,7 +1,7 @@
 "use client";
 import { ILandingPage } from "@/types/scenarioType";
 import { Button, Form, Input, Select } from "antd";
-import type { FormProps } from "antd";
+import type { FormInstance, FormProps } from "antd";
 import RinchTextEditor from "../rinchTextEditor";
 import FileUpload from "../fileUpload/inedx";
 import { useState } from "react";
@@ -13,12 +13,16 @@ type IProps = {
   defaultContent?: string;
   istType?: boolean;
   defaultScenarioType?: string;
+  handleResetForm?: () => void;
+  form?: FormInstance<any>;
 };
 const TemplateForm = ({
   handleSave,
   title = "",
   img = "",
   defaultContent = "",
+  handleResetForm,
+  form,
 }: IProps) => {
   const [fileUrl, setFileUrl] = useState(img);
   const [content, setContent] = useState(defaultContent);
@@ -36,6 +40,8 @@ const TemplateForm = ({
         name="resource"
         initialValues={{ remember: true }}
         onFinish={onFinish}
+        onReset={handleResetForm}
+        form={form}
         autoComplete="off"
       >
         <div className="mb-4">

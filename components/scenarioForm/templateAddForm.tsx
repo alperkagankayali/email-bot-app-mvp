@@ -7,7 +7,7 @@ import {
   createEmailTemplate,
   createLandingPage,
 } from "@/services/service/generalService";
-import { message } from "antd";
+import { Form, message } from "antd";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,6 +16,7 @@ import {
   fetchLandingPage,
   handleChangeScenarioData,
 } from "@/redux/slice/scenario";
+import { useEffect } from "react";
 type IProps = {
   changeTab: (x: string) => void;
   type: "emailTemplate" | "landingPage" | "dataEntry";
@@ -23,6 +24,7 @@ type IProps = {
 
 const TemplateAddForm: React.FC<IProps> = ({ changeTab, type }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [form] = Form.useForm();
   const scenarioData = useSelector(
     (state: RootState) => state.scenario.creteScenario
   );
@@ -69,10 +71,20 @@ const TemplateAddForm: React.FC<IProps> = ({ changeTab, type }) => {
       }
     }
   };
-
+  const onReset = () => {
+    form.resetFields();
+  };
+  useEffect(() => {
+    onReset();
+  }, [type]);
   return (
     <div>
-      <TemplateForm handleSave={handleSave} istType={true} />
+      <TemplateForm
+        handleSave={handleSave}
+        istType={true}
+        form={form}
+        handleResetForm={onReset}
+      />
     </div>
   );
 };
