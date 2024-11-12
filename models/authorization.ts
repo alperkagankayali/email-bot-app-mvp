@@ -1,7 +1,7 @@
 import { IAuthorization } from "@/types/pagesType";
 import { Schema, Types, model, models } from "mongoose";
 
-const newsSchema = new Schema<IAuthorization>({
+const authorizationSchema = new Schema<IAuthorization>({
   page: { type: Types.ObjectId, ref: "Page" },
   created_at: { type: Date, default: Date.now },
   role: { type: String, enum: ["user", "admin"] },
@@ -17,6 +17,6 @@ const newsSchema = new Schema<IAuthorization>({
 
 const Authorization =
   models.Authorization ||
-  model<IAuthorization>("Authorization", newsSchema, "authorization");
+  model<IAuthorization>("Authorization", authorizationSchema, "authorization");
 
 export default Authorization;

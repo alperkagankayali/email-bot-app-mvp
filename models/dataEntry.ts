@@ -1,7 +1,7 @@
 import { IDataEntry } from "@/types/scenarioType";
 import { Schema, Types, model, models } from "mongoose";
 
-const newsSchema = new Schema<IDataEntry>({
+const dataEntrySchema = new Schema<IDataEntry>({
   title: { type: String },
   img: { type: String },
   content: { type: String },
@@ -19,6 +19,6 @@ const newsSchema = new Schema<IDataEntry>({
   },
 });
 
-const DataEntry = models.DataEntry || model<IDataEntry>("DataEntry", newsSchema);
+const DataEntry = models.DataEntry || model<IDataEntry>("DataEntry", dataEntrySchema);
 
 export default DataEntry;

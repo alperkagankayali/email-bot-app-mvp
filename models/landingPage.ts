@@ -1,7 +1,7 @@
 import { ILandingPage } from "@/types/scenarioType";
 import { Schema, Types, model, models } from "mongoose";
 
-const newsSchema = new Schema<ILandingPage>({
+const landingPageSchema = new Schema<ILandingPage>({
   title: { type: String },
   img: { type: String },
   content: { type: String },
@@ -18,6 +18,6 @@ const newsSchema = new Schema<ILandingPage>({
   },
 });
 
-const LandingPage = models.LandingPage || model<ILandingPage>("LandingPage", newsSchema);
+const LandingPage = models.LandingPage || model<ILandingPage>("LandingPage", landingPageSchema);
 
 export default LandingPage;
