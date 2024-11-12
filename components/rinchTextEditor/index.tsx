@@ -27,7 +27,6 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({
             input.type = "file";
             input.accept = "image/*";
             input.onchange = async (event: any) => {
-              debugger;
               const file = event.target.files[0];
               const formData = new FormData();
               formData.append("file", file);

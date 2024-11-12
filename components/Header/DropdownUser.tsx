@@ -127,12 +127,6 @@ const DropdownUser = () => {
                       variant="solid"
                       className="ml-2"
                       onClick={() => {
-                        console.log(
-                          "filter",
-                          users.filter((e: any) => e.user.id !== localUser.id),
-                          localUser
-                        );
-                        debugger;
                         setUsers(
                           users.filter((e: any) => e.user.id !== localUser.id)
                         );

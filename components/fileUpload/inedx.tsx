@@ -40,7 +40,6 @@ const FileUpload = ({ handleUploadFile, defaultValue }: IProps) => {
         console.log(info.file, info.fileList);
       }
       if (status === "done") {
-        debugger
         handleUploadFile(info.file.response.data.url);
         message.success(`${info.file.name} file uploaded successfully.`);
       } else if (status === "error") {
