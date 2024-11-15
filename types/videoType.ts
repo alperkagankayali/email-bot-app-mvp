@@ -1,3 +1,4 @@
+import { ICompany } from "./companyType";
 import { IUser } from "./userType";
 
 export interface IVideoType {
@@ -7,4 +8,5 @@ export interface IVideoType {
   author: IUser;
   created_at: Date;
   isDelete: boolean;
+  company: ICompany;
 }

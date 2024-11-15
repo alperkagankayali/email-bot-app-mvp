@@ -27,6 +27,7 @@ const quizSchema = new Schema<IQuizType>({
     enum: ["multiple", "single"],
     required: true,
   },
+  company: { type: Types.ObjectId, ref: "Company" },
 });
 
 const Quiz = models.Quiz || model<IQuizType>("Quiz", quizSchema);

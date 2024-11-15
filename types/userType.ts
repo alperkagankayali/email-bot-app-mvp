@@ -13,7 +13,7 @@ export interface IUser {
   _id?: Types.ObjectId;
   isDelete?: boolean;
   createdAt?: Date;
-  course?: ICourse;
+  course?: ICourse[];
   author?: IUser;
 }
 

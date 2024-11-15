@@ -1,3 +1,4 @@
+import { ICompany } from "./companyType";
 import { IUser } from "./userType";
 
 export interface IArticleType {
@@ -7,4 +8,5 @@ export interface IArticleType {
   author: IUser;
   created_at: Date;
   isDelete: boolean;
+  company: ICompany;
 }

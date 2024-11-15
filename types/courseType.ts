@@ -1,4 +1,5 @@
 import { IArticleType } from "./articleType";
+import { ICompany } from "./companyType";
 import { IQuizType } from "./quizType";
 import { IUser } from "./userType";
 import { IVideoType } from "./videoType";
@@ -15,4 +16,5 @@ export interface ICourse {
   videos: IVideoType[];
   article: IArticleType[];
   quiz: IQuizType[];
+  company: ICompany;
 }

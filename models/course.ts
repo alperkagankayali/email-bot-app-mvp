@@ -12,6 +12,7 @@ const courseSchema = new Schema<ICourse>({
   videos: [{ type: Types.ObjectId, ref: "Video" }],
   article: [{ type: Types.ObjectId, ref: "Article" }],
   quiz: [{ type: Types.ObjectId, ref: "Quiz" }],
+  company: { type: Types.ObjectId, ref: "Company" },
 });
 
 const Course = models.Course || model<ICourse>("Course", courseSchema);

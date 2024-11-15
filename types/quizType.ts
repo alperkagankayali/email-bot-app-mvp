@@ -1,3 +1,4 @@
+import { ICompany } from "./companyType";
 import { IUser } from "./userType";
 
 export interface IQuizType {
@@ -9,6 +10,7 @@ export interface IQuizType {
   isDelete: boolean;
   type: "multiple" | "single";
   question: IQuestion;
+  company: ICompany;
 }
 
 export type IQuestion = {

@@ -8,6 +8,8 @@ const articleSchema = new Schema<IArticleType>({
   author: { type: Types.ObjectId, ref: "User" },
   created_at: { type: Date, default: Date.now },
   isDelete: { type: Boolean, default: false },
+  company: { type: Types.ObjectId, ref: "Company" },
+
 });
 
 const Article = models.Article || model<IArticleType>("Article", articleSchema);
