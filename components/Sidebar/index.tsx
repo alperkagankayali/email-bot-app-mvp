@@ -7,7 +7,11 @@ import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { FundViewOutlined, MailOutlined } from "@ant-design/icons";
+import {
+  FundViewOutlined,
+  MailOutlined,
+  ReadOutlined,
+} from "@ant-design/icons";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -217,6 +221,20 @@ const menuGroups = [
             label: "menu-user-authorization",
             route: "/dashboard/authorization",
           },
+        ],
+      },
+    ],
+  },
+  {
+    name: "menu-academy",
+    menuItems: [
+      {
+        icon: <ReadOutlined />,
+        label: "menu-academy",
+        route: "#",
+        children: [
+          { label: "menu-education", route: "/dashboard/education" },
+          { label: "menu-news", route: "/dashboard/news" },
         ],
       },
     ],

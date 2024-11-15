@@ -2,7 +2,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import {
   getTranslations,
-  unstable_setRequestLocale,
+  setRequestLocale,
 } from "next-intl/server";
 import "../globals.css";
 import StoreProvider from "../StoreProvider";
@@ -35,7 +35,7 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  unstable_setRequestLocale(locale);
+  setRequestLocale(locale);
   const messages = await getResource(locale);
 
   return (
