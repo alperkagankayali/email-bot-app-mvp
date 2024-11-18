@@ -1,9 +1,6 @@
-import { IArticleType } from "./articleType";
 import { ICompany } from "./companyType";
-import { IQuizType } from "./quizType";
 import { IUser } from "./userType";
-import { IVideoType } from "./videoType";
-
+import { Types } from "mongoose";
 export interface ICourse {
   title: string;
   img: string;
@@ -11,10 +8,26 @@ export interface ICourse {
   author: IUser;
   created_at: Date;
   isPublished: boolean;
-  contents: string;
   isDelete: boolean;
-  videos: IVideoType[];
-  article: IArticleType[];
-  quiz: IQuizType[];
+  contents: Content[];
   company: ICompany;
+}
+enum ContentType {
+  VIDEO = "video",
+  QUIZ = "quiz",
+  ARTICLE = "article",
+}
+export interface Content {
+  type: ContentType; // İçerik türü (video, quiz, article)
+  refId: Types.ObjectId; // Referans belge ID'si
+  order: number; // Sıralama bilgisi
+}
+
+export  type IEducationCreate = {
+  title: string;
+  img: string;
+  description: string;
+  isPublished: boolean;
+  contents: Content[];
+
 }

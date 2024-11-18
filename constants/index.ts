@@ -1,5 +1,10 @@
 import { IResponseType } from "@/types/responseType";
 
+export const servicesBaseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://email-bot-app-mvp-mx28.vercel.app/api"
+    : `http://localhost:${process.env.PORT || 3000}/api`;
+
 export function jsonToQueryString(json: any) {
   return (
     "?" +

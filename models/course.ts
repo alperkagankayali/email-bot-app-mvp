@@ -9,10 +9,18 @@ const courseSchema = new Schema<ICourse>({
   created_at: { type: Date, default: Date.now },
   isDelete: { type: Boolean, default: false },
   isPublished: { type: Boolean, default: false },
-  videos: [{ type: Types.ObjectId, ref: "Video" }],
-  article: [{ type: Types.ObjectId, ref: "Article" }],
-  quiz: [{ type: Types.ObjectId, ref: "Quiz" }],
   company: { type: Types.ObjectId, ref: "Company" },
+  contents: [
+    {
+      type: {
+        type: String,
+        enum: ["video", "quiz", "article"], // İçerik türü
+        required: true,
+      },
+      refId: { type: Types.ObjectId, required: true, refPath: "contents.type" },
+      order: { type: Number, required: true }, // Sıralama bilgisi
+    },
+  ],
 });
 
 const Course = models.Course || model<ICourse>("Course", courseSchema);

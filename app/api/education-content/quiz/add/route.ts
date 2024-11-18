@@ -17,6 +17,8 @@ export async function POST(request: Request) {
       } else if (verificationResult?.role === "admin") {
         const quizCreate = new Quiz({
           ...body,
+          author: verificationResult?.id,
+          company: verificationResult?.companyId,
         });
         const quiz = await quizCreate.save();
         return NextResponse.json(

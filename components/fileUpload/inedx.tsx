@@ -3,10 +3,10 @@ import React from "react";
 import { InboxOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
 import { message, Upload } from "antd";
-import { servicesBaseUrl } from "@/services/service/generalService";
 import finalConfig from "@/lib/config.json";
 import type { GetProp } from "antd";
 import { v4 as uuidv4 } from "uuid";
+import { servicesBaseUrl } from "@/constants";
 const { Dragger } = Upload;
 type IProps = {
   handleUploadFile: (x: string) => void;

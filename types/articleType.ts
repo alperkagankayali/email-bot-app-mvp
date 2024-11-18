@@ -9,4 +9,5 @@ export interface IArticleType {
   created_at: Date;
   isDelete: boolean;
   company: ICompany;
+  _id:string;
 }

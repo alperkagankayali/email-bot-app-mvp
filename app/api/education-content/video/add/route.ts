@@ -17,6 +17,8 @@ export async function POST(request: Request) {
       } else if (verificationResult?.role === "admin") {
         const newVideo = new Video({
           ...body,
+          author: verificationResult?.id,
+          company: verificationResult?.companyId,
         });
         const video = await newVideo.save();
         return NextResponse.json(

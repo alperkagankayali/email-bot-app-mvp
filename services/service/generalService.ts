@@ -1,4 +1,4 @@
-import { jsonToQueryString } from "@/constants";
+import { jsonToQueryString, servicesBaseUrl } from "@/constants";
 import { getRequest, postRequest } from "../client/client";
 import finalConfig from "@/lib/config.json";
 import headers from "@/lib/header.json";
@@ -7,10 +7,6 @@ import { IResponseType } from "@/types/responseType";
 import { IUser } from "@/types/userType";
 import { ILandingPage, IScenario } from "@/types/scenarioType";
 
-export const servicesBaseUrl =
-  process.env.NODE_ENV === "production"
-    ? "https://email-bot-app-mvp-mx28.vercel.app/api"
-    : `http://localhost:${process.env.PORT || 3000}/api`;
 
 export const getLanguage = async (limit = 10, page = 1, isActive = true) => {
   const queryParams = jsonToQueryString({ isActive, limit, page });

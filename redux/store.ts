@@ -4,6 +4,7 @@ import user from "@/redux/slice/user";
 import language from "@/redux/slice/language";
 import companies from "@/redux/slice/companies";
 import scenario from "@/redux/slice/scenario";
+import education from "@/redux/slice/education";
 
 export const makeStore = () => {
   return configureStore({
@@ -13,6 +14,7 @@ export const makeStore = () => {
       language,
       companies,
       scenario,
+      education,
     },
   });
 };

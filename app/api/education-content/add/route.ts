@@ -17,6 +17,8 @@ export async function POST(request: Request) {
       } else if (verificationResult?.role === "admin") {
         const newCourse = new Course({
           ...body,
+          author: verificationResult?.id,
+          company: verificationResult?.companyId,
         });
         const course = await newCourse.save();
         return NextResponse.json(

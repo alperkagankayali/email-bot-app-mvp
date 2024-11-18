@@ -2,7 +2,6 @@
 import { cookies } from "next/headers";
 const { createCodec } = require("json-crypto");
 import jwt from "jsonwebtoken";
-import { servicesBaseUrl } from "@/services/service/generalService";
 import finalConfig from "@/lib/config.json";
 import { headers } from "next/headers";
 import { redirect } from "@/i18n/routing";

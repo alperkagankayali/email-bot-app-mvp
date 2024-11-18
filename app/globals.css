@@ -26,22 +26,34 @@ body {
   }
 }
 
-.card-meta .ant-card-meta-title {
-  white-space:normal !important;
+.ant-card-meta-title {
+  white-space: normal !important;
   height: auto !important;
-  @apply !line-clamp-3
+  @apply !line-clamp-3;
 }
 .ant-card-actions {
-  @apply !mt-auto
+  @apply !mt-auto;
 }
 .template-list .ant-radio {
   display: none !important;
 }
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active{
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: none;
-    transition: background-color 5000s ease-in-out 0s;
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: none;
+  transition: background-color 5000s ease-in-out 0s;
+}
+.ant-tabs-nav-list .ant-tabs-tab-active {
+   
+    background: #3d3d3d !important;
+  
+}
+.ant-tabs-nav-list .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: white !important;
+}
+
+.card-checkbox .ant-checkbox{
+display: none !important;
 }

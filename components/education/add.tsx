@@ -1,22 +1,29 @@
 "use client";
 import React, { useState } from "react";
 import { Button, Steps, theme } from "antd";
+import EducationInfoForm from "./form/educationInfoForm";
+import EducationContentForm from "./form/educationContentForm";
 
-type IProps = {
-  
-};
+type IProps = {};
 const EducationAddForm: React.FC<IProps> = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
+  const next = () => {
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
 
   const steps = [
     {
       title: "Education Info",
-      content: "",
+      content: <EducationInfoForm next={next} />,
     },
     {
       title: "Education Content",
-      content: "",
+      content: <EducationContentForm />,
     },
     {
       title: "Education Content Order ",
@@ -31,14 +38,6 @@ const EducationAddForm: React.FC<IProps> = () => {
     },
   ];
 
-  const next = () => {
-    setCurrent(current + 1);
-  };
-
-  const prev = () => {
-    setCurrent(current - 1);
-  };
-
   const items = steps.map((item) => ({ key: item.title, title: item.title }));
 
   const contentStyle: React.CSSProperties = {
@@ -52,11 +51,6 @@ const EducationAddForm: React.FC<IProps> = () => {
       <Steps current={current} items={items} />
       <div style={contentStyle}>{steps[current]?.content}</div>
       <div className="mt-6 flex">
-        {current < steps.length - 1 && (
-          <Button type="primary" onClick={() => next()}>
-            Next
-          </Button>
-        )}
         {current === steps.length - 1 && (
           <Button type="primary" onClick={() => console.log("done")}>
             Done
