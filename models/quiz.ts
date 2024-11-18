@@ -20,13 +20,13 @@ const quizSchema = new Schema<IQuizType>({
           message: "Answer must be a string or an array of strings.",
         },
       },
+      type: {
+        type: String,
+        enum: ["multiple", "single"],
+        required: true,
+      },
     },
   ],
-  type: {
-    type: String,
-    enum: ["multiple", "single"],
-    required: true,
-  },
   company: { type: Types.ObjectId, ref: "Company" },
 });
 

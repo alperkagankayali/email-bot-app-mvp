@@ -57,9 +57,9 @@ const VideoTab = ({}: IProps) => {
                 dispatch(
                   handleEducationDataChange({
                     ...createEducation,
-                    contents: e.map((element) => {
-                      return { type: "article", order: 1, refId: element };
-                    }),
+                    contents: [...createEducation.contents,...e.map((element) => {
+                      return { type: "video", order: 1, refId: element };
+                    })],
                   })
                 );
               }

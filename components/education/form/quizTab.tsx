@@ -1,18 +1,19 @@
 "use client";
 
 import { AppDispatch, RootState } from "@/redux/store";
-import ArticleForm from "./articleForm";
 import { Card, Radio } from "antd";
 import type { RadioChangeEvent } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchArticle,
+  fetchQuiz,
+  fetchVideo,
   handleEducationDataChange,
 } from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
-import type { CheckboxProps } from "antd";
+import VideoForm from "./videoForm";
+import QuizForm from "./quizForm";
 
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
@@ -23,14 +24,12 @@ const optionsWithDisabled = [
   { label: "Add", value: "add" },
 ];
 
-const ArticleTab = ({}: IProps) => {
+const QuizTab = ({}: IProps) => {
   const [value, setValue] = useState("select");
   const [selected, setSelected] = useState([]);
   const dispatch = useDispatch<AppDispatch>();
-  const status = useSelector(
-    (state: RootState) => state.education.articleStatus
-  );
-  const data = useSelector((state: RootState) => state.education.article);
+  const status = useSelector((state: RootState) => state.education.quizStatus);
+  const data = useSelector((state: RootState) => state.education.quiz);
   const createEducation = useSelector(
     (state: RootState) => state.education.createEducation
   );
@@ -40,7 +39,7 @@ const ArticleTab = ({}: IProps) => {
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchArticle());
+      dispatch(fetchQuiz());
     }
   }, [status, dispatch]);
   return (
@@ -53,8 +52,12 @@ const ArticleTab = ({}: IProps) => {
         onChange={onChange}
         buttonStyle="solid"
       />
-      <div className="mt-5">
-        {value === "add" && <ArticleForm />}
+      <div className="mt-5 w-full">
+        {value === "add" && (
+          <>
+            <QuizForm />
+          </>
+        )}
 
         {value === "select" && (
           <CheckboxGroup
@@ -63,9 +66,12 @@ const ArticleTab = ({}: IProps) => {
                 dispatch(
                   handleEducationDataChange({
                     ...createEducation,
-                    contents: e.map((element:any) => {
-                      return { type: "article", order: 1, refId: element};
-                    }),
+                    contents: [
+                      ...createEducation.contents,
+                      ...e.map((element) => {
+                        return { type: "video", order: 1, refId: element };
+                      }),
+                    ],
                   })
                 );
               }
@@ -75,15 +81,15 @@ const ArticleTab = ({}: IProps) => {
             className={"card-checkbox"}
             value={selected}
           >
-            {data.map((article) => {
-              const selectedArticle = selected.some((e) => e === article._id);
+            {data.map((quiz) => {
+              const selectedArticle = selected.some((e) => e === quiz._id);
               return (
-                <Checkbox value={article._id}>
+                <Checkbox value={quiz._id}>
                   <Card
                     className={clsx("!h-60", {
                       "!border !border-blue-700": selectedArticle,
                     })}
-                    key={article._id}
+                    key={quiz._id}
                     hoverable
                     loading={status === "loading"}
                     style={{
@@ -94,9 +100,9 @@ const ArticleTab = ({}: IProps) => {
                     }}
                   >
                     <Meta
-                      title={article.title}
+                      title={quiz.title}
                       className="!line-clamp-3"
-                      description={article?.description}
+                      description={quiz?.description}
                     />
                   </Card>
                 </Checkbox>
@@ -109,4 +115,4 @@ const ArticleTab = ({}: IProps) => {
   );
 };
 
-export default ArticleTab;
+export default QuizTab;

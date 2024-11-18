@@ -1,14 +1,14 @@
 "use client";
 import React from "react";
-import { Tabs } from "antd";
+import { Button, Tabs } from "antd";
 import ArticleTab from "./articleTab";
 import VideoTab from "./videoTab";
+import QuizTab from "./quizTab";
 
-const onChange = (key: string) => {
-  console.log(key);
+type IProps = {
+  next: () => void;
 };
-
-const EducationContentForm: React.FC = () => {
+const EducationContentForm: React.FC<IProps> = ({ next }) => {
   const items = [
     {
       label: "Article",
@@ -31,7 +31,11 @@ const EducationContentForm: React.FC = () => {
     {
       label: "Quiz",
       key: "3",
-      children: <></>,
+      children: (
+        <>
+          <QuizTab />
+        </>
+      ),
     },
   ];
   return (
@@ -43,12 +47,21 @@ const EducationContentForm: React.FC = () => {
           display: "flex",
           borderBottom: "2px black solid",
         }}
-        onChange={onChange}
         type="card"
         className="w-full"
         items={items}
         tabBarExtraContent={<p>Select or Create Education Content</p>}
       />
+      <div className="mb-4">
+        <Button
+          onClick={next}
+          size="small"
+
+          className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90 mt-4"
+        >
+          Kaydet ve Devam Et
+        </Button>
+      </div>
     </>
   );
 };

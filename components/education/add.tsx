@@ -1,11 +1,16 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Steps, theme } from "antd";
+import { Button, notification, Steps, theme } from "antd";
 import EducationInfoForm from "./form/educationInfoForm";
 import EducationContentForm from "./form/educationContentForm";
+import OrderForm from "./form/orderForm";
+import { createEducation } from "@/services/service/educationService";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 type IProps = {};
 const EducationAddForm: React.FC<IProps> = () => {
+  const educationContent = useSelector((state:RootState) => state.education.createEducation)
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const next = () => {
@@ -23,16 +28,13 @@ const EducationAddForm: React.FC<IProps> = () => {
     },
     {
       title: "Education Content",
-      content: <EducationContentForm />,
+      content: <EducationContentForm  next={next}/>,
     },
     {
       title: "Education Content Order ",
       content: (
         <>
-          <p>
-            If the scenario type is not a data entry, no selection can be made
-            in this field. Click Done to save.
-          </p>
+         <OrderForm />
         </>
       ),
     },
@@ -46,13 +48,22 @@ const EducationAddForm: React.FC<IProps> = () => {
     marginTop: 16,
   };
 
+  const onFinish = async () => {
+    const res = await createEducation(educationContent);
+    if (res.status) {
+      notification.info({ message: "Başarıyla kaydedildi" });
+    } else {
+      notification.error({ message: res.message });
+    }
+  }
+
   return (
     <>
       <Steps current={current} items={items} />
       <div style={contentStyle}>{steps[current]?.content}</div>
       <div className="mt-6 flex">
         {current === steps.length - 1 && (
-          <Button type="primary" onClick={() => console.log("done")}>
+          <Button type="primary" onClick={onFinish}>
             Done
           </Button>
         )}

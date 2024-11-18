@@ -1,6 +1,5 @@
 import { ICompany } from "./companyType";
 import { IUser } from "./userType";
-import { Types } from "mongoose";
 export interface ICourse {
   title: string;
   img: string;
@@ -19,7 +18,7 @@ enum ContentType {
 }
 export interface Content {
   type: ContentType; // İçerik türü (video, quiz, article)
-  refId: Types.ObjectId; // Referans belge ID'si
+  refId: string; // Referans belge ID'si
   order: number; // Sıralama bilgisi
 }
 
