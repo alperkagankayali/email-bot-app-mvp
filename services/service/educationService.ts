@@ -4,6 +4,7 @@ import finalConfig from "@/lib/config.json";
 import headers from "@/lib/header.json";
 import { IResponseType } from "@/types/responseType";
 import { IArticleType } from "@/types/articleType";
+import { IVideoType } from "@/types/videoType";
 
 export const getVideo = async (limit = 10, page = 1) => {
   const queryParams = jsonToQueryString({ limit, page });
@@ -21,6 +22,12 @@ export const getArticle = async (limit = 10, page = 1) => {
 };
 export const createArticle = async (data: IArticleType) => {
   const url = servicesBaseUrl + finalConfig.ADD_ARTICLE;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, data, config);
+  return result;
+};
+export const createVideo = async (data: IVideoType) => {
+  const url = servicesBaseUrl + finalConfig.ADD_VIDEO;
   const config = headers.content_type.application_json;
   const result: IResponseType = await postRequest(url, data, config);
   return result;

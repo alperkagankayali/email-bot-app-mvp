@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchVideo, handleEducationDataChange } from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
+import VideoForm from "./videoForm";
 
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
@@ -46,10 +47,10 @@ const VideoTab = ({}: IProps) => {
         onChange={onChange}
         buttonStyle="solid"
       />
-      <div className="mt-5">
-        {value === "add-video" && <> asdlkj</>}
+      <div className="mt-5 w-full">
+        {value === "add" && <> <VideoForm /> </>}
 
-        {value === "select-video" && (
+        {value === "select" && (
           <CheckboxGroup
             onChange={(e) => {
               if (!!createEducation) {

@@ -49,7 +49,7 @@ const educationSlice = createSlice({
       })
       .addCase(fetchVideo.fulfilled, (state, action) => {
         state.videoStatus = "succeeded";
-        state.videoStatus = action.payload;
+        state.videos = action.payload;
       })
       .addCase(fetchVideo.rejected, (state) => {
         state.videoStatus = "failed";

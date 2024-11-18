@@ -4,6 +4,7 @@ import type { FormProps } from "antd";
 import { useState } from "react";
 import { IVideoType } from "@/types/videoType";
 import FileUpload from "@/components/fileUpload/inedx";
+import { createVideo } from "@/services/service/educationService";
 
 type IProps = {};
 const VideoForm = ({}: IProps) => {
@@ -11,21 +12,23 @@ const VideoForm = ({}: IProps) => {
 
   const onFinish: FormProps<IVideoType>["onFinish"] = async (values) => {
     values.videolink = videolink;
-    // const res = await createArticle(values);
-    // if (res.status) {
-    //   notification.info({ message: "Başarıyla kaydedildi" });
-    // } else {
-    //   notification.error({ message: res.message });
-    // }
+    console.log('videos',values)
+    const res = await createVideo(values);
+    if (res.status) {
+      notification.info({ message: "Başarıyla kaydedildi" });
+    } else {
+      notification.error({ message: res.message });
+    }
   };
 
   return (
-    <div className="mb-6 flex">
+    <div className="mb-6 flex w-full">
       <Form
         name="resource"
         initialValues={{ remember: true }}
         onFinish={onFinish}
         autoComplete="off"
+        className="w-full"
       >
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
@@ -60,12 +63,13 @@ const VideoForm = ({}: IProps) => {
         </div>
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Content
+            Video
           </label>
           <div className="relative">
             <Form.Item<IVideoType> name="videolink">
               <FileUpload
                 handleUploadFile={(url: string) => setVideoLink(url)}
+                type="video"
               />
             </Form.Item>
             <Form.Item>
