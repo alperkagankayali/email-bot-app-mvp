@@ -78,7 +78,7 @@ const ArticleTab = ({}: IProps) => {
             {data.map((article) => {
               const selectedArticle = selected.some((e) => e === article._id);
               return (
-                <Checkbox value={article._id}>
+                <Checkbox value={article._id} key={article._id}>
                   <Card
                     className={clsx("!h-60", {
                       "!border !border-blue-700": selectedArticle,

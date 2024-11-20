@@ -72,7 +72,7 @@ const VideoTab = ({}: IProps) => {
             {data.map((video) => {
               const selectedArticle = selected.some((e) => e === video._id);
               return (
-                <Checkbox value={video._id}>
+                <Checkbox value={video._id} key={video._id}>
                   <Card
                     className={clsx("!h-60", {
                       "!border !border-blue-700": selectedArticle,

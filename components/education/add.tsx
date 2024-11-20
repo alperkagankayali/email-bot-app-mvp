@@ -7,6 +7,7 @@ import OrderForm from "./form/orderForm";
 import { createEducation } from "@/services/service/educationService";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useRouter } from "@/i18n/routing";
 
 type IProps = {};
 const EducationAddForm: React.FC<IProps> = () => {
@@ -47,11 +48,12 @@ const EducationAddForm: React.FC<IProps> = () => {
     borderRadius: token.borderRadiusLG,
     marginTop: 16,
   };
-
+  const router = useRouter()
   const onFinish = async () => {
     const res = await createEducation(educationContent);
     if (res.status) {
       notification.info({ message: "Başarıyla kaydedildi" });
+      router.push("/dashboard/education")
     } else {
       notification.error({ message: res.message });
     }

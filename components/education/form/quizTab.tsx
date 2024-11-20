@@ -69,7 +69,7 @@ const QuizTab = ({}: IProps) => {
                     contents: [
                       ...createEducation.contents,
                       ...e.map((element) => {
-                        return { type: "video", order: 1, refId: element };
+                        return { type: "quiz", order: 1, refId: element };
                       }),
                     ],
                   })
@@ -84,7 +84,7 @@ const QuizTab = ({}: IProps) => {
             {data.map((quiz) => {
               const selectedArticle = selected.some((e) => e === quiz._id);
               return (
-                <Checkbox value={quiz._id}>
+                <Checkbox value={quiz._id} key={quiz._id}>
                   <Card
                     className={clsx("!h-60", {
                       "!border !border-blue-700": selectedArticle,

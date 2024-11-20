@@ -1,5 +1,5 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import type { DragEndEvent } from "@dnd-kit/core";
 import {
   DndContext,
@@ -17,8 +17,9 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { List, Table } from "antd";
 import type { TableColumnsType } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { handleEducationDataChange } from "@/redux/slice/education";
 
 interface DataType {
   key: string;
@@ -78,8 +79,11 @@ const Row: React.FC<Readonly<RowProps>> = (props) => {
 };
 
 const OrderForm: React.FC = () => {
-  const createEducation = useSelector((state:RootState) => state.education.createEducation)
+  const createEducation = useSelector(
+    (state: RootState) => state.education.createEducation
+  );
   const [dataSource, setDataSource] = useState(createEducation?.contents ?? []);
+  const dispatch = useDispatch();
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -93,14 +97,20 @@ const OrderForm: React.FC = () => {
     debugger;
     if (active.id !== over?.id) {
       setDataSource((prev) => {
-        const newData = [...prev]
+        const newData = [...prev];
         const activeIndex = prev.findIndex((i) => i.refId === active.id);
         const overIndex = prev.findIndex((i) => i.refId === over?.id);
         return arrayMove(newData, activeIndex, overIndex);
       });
     }
   };
-  console.log(dataSource);
+
+  useEffect(() => {
+    dispatch(
+      handleEducationDataChange({ ...createEducation, contents: dataSource })
+    );
+  }, [dataSource]);
+
   return (
     <DndContext
       sensors={sensors}
