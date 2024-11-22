@@ -1,6 +1,7 @@
 "use client";
 import {
   getArticle,
+  getEducationContent,
   getQuiz,
   getVideo,
 } from "@/services/service/educationService";
@@ -76,8 +77,27 @@ const educationSlice = createSlice({
       .addCase(fetchQuiz.rejected, (state) => {
         state.quizStatus = "failed";
       });
+    builder
+      .addCase(fetchContent.pending, (state) => {
+        state.educationStatus = "loading";
+      })
+      .addCase(fetchContent.fulfilled, (state, action) => {
+        state.educationStatus = "succeeded";
+        state.educationContent = action.payload;
+      })
+      .addCase(fetchContent.rejected, (state) => {
+        state.educationStatus = "failed";
+      });
   },
 });
+
+export const fetchContent = createAsyncThunk(
+  "/education-content",
+  async () => {
+    const response = await getEducationContent();
+    return response.data;
+  }
+);
 
 export const fetchVideo = createAsyncThunk(
   "/education-content/video",

@@ -41,6 +41,7 @@ export async function GET(request: Request) {
           });
 
           const courses = await Course.find({ isDelete: false ,company:verificationResult.companyId })
+          .select("title description img isPublished contents")
             .skip(skip)
             .limit(limit);
           return NextResponse.json(

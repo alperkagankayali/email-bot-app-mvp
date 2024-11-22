@@ -52,3 +52,10 @@ export const getQuiz = async (limit = 10, page = 1) => {
   const result: IResponseType = await getRequest(url, config);
   return result;
 };
+export const getEducationContent = async (limit = 10, page = 1) => {
+  const queryParams = jsonToQueryString({ limit, page });
+  const url = servicesBaseUrl + finalConfig.GET_EDUCATION_CONTENT + queryParams;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url, config);
+  return result;
+};

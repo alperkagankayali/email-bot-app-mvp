@@ -5,13 +5,15 @@ import EducationInfoForm from "./form/educationInfoForm";
 import EducationContentForm from "./form/educationContentForm";
 import OrderForm from "./form/orderForm";
 import { createEducation } from "@/services/service/educationService";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { useRouter } from "@/i18n/routing";
+import { fetchContent } from "@/redux/slice/education";
 
 type IProps = {};
 const EducationAddForm: React.FC<IProps> = () => {
   const educationContent = useSelector((state:RootState) => state.education.createEducation)
+  const dispatch = useDispatch<AppDispatch>()
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const next = () => {
@@ -53,6 +55,7 @@ const EducationAddForm: React.FC<IProps> = () => {
     const res = await createEducation(educationContent);
     if (res.status) {
       notification.info({ message: "Başarıyla kaydedildi" });
+      dispatch(fetchContent())
       router.push("/dashboard/education")
     } else {
       notification.error({ message: res.message });
