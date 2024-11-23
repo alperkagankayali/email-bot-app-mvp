@@ -234,6 +234,9 @@ const menuGroups = [
         route: "#",
         children: [
           { label: "menu-education", route: "/dashboard/education" },
+          { label: "menu-academy-quiz", route: "/dashboard/academy/quiz",role: ["superadmin"], },
+          { label: "menu-academy-article", route: "/dashboard/academy/article",role: ["superadmin"], },
+          { label: "menu-academy-video", route: "/dashboard/academy/video",role: ["superadmin"], },
           { label: "menu-news", route: "/dashboard/news" },
         ],
       },

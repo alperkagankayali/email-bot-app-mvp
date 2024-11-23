@@ -19,7 +19,7 @@ export async function GET(request: Request) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
-      } else if (verificationResult?.role === "admin") {
+      } else if (verificationResult?.role === "admin" || verificationResult?.role === "superadmin") {
         if (!!id) {
           const article = await Article.findById(id);
           return NextResponse.json(

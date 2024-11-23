@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
-      } else if (verificationResult?.role === "admin") {
+      }else if (verificationResult?.role === "admin" || verificationResult?.role === "superadmin")  {
         const video = await Video.findOneAndUpdate(
           { _id: id },
           { $set: updateData },

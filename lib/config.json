@@ -46,5 +46,9 @@
   "UPDATE_ARTICLE": "/education-content/article/update",
   "GET_EDUCATION_CONTENT": "/education-content",
   "ADD_EDUCATION_CONTENT": "/education-content/add",
-  "UPDATE_EDUCATION_CONTENT": "/education-content/update"
+  "UPDATE_EDUCATION_CONTENT": "/education-content/update",
+  "DELETE_VIDEO": "/education-content/video/delete",
+  "DELETE_QUIZ": "/education-content/quiz/delete",
+  "DELETE_ARTICLE": "/education-content/article/delete",
+  "DELETE_EDUCATION_CONTENT": "/education-content/delete"
 }

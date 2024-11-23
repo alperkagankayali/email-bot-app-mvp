@@ -15,6 +15,6 @@ export interface IQuizType {
 export type IQuestion = {
   title: string;
   options: string[];
-  answer: string | string[];
+  answer: string[];
   type: "multiple" | "single";
 };

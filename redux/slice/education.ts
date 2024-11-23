@@ -21,6 +21,10 @@ interface IEducationSlice {
   article: IArticleType[];
   educationContent: ICourse[];
   createEducation: IEducationCreate | null;
+  quizTotalItems: number;
+  articleTotalItems: number;
+  videoTotalItems: number;
+  educationContentTotalItems: number;
 }
 
 const initialState: IEducationSlice = {
@@ -33,6 +37,10 @@ const initialState: IEducationSlice = {
   article: [],
   educationContent: [],
   createEducation: null,
+  quizTotalItems: 0,
+  articleTotalItems: 0,
+  videoTotalItems: 0,
+  educationContentTotalItems: 0,
 };
 
 const educationSlice = createSlice({
@@ -42,6 +50,18 @@ const educationSlice = createSlice({
     handleEducationDataChange: (state, action) => {
       state.createEducation = action.payload;
     },
+    handleArticleDataChange: (state, action) => {
+      state.article = action.payload;
+    },
+    handleVideoDataChange: (state, action) => {
+      state.videos = action.payload;
+    },
+    handleQuizDataChange: (state, action) => {
+      state.quiz = action.payload;
+    },
+    handleEducationContentDataChange: (state, action) => {
+      state.educationContent = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
@@ -50,7 +70,8 @@ const educationSlice = createSlice({
       })
       .addCase(fetchVideo.fulfilled, (state, action) => {
         state.videoStatus = "succeeded";
-        state.videos = action.payload;
+        state.videoTotalItems = action.payload.totalItems ?? 0;
+        state.videos = action.payload.data;
       })
       .addCase(fetchVideo.rejected, (state) => {
         state.videoStatus = "failed";
@@ -61,7 +82,8 @@ const educationSlice = createSlice({
       })
       .addCase(fetchArticle.fulfilled, (state, action) => {
         state.articleStatus = "succeeded";
-        state.article = action.payload;
+        state.articleTotalItems = action.payload.totalItems ?? 0;
+        state.article = action.payload.data;
       })
       .addCase(fetchArticle.rejected, (state) => {
         state.articleStatus = "failed";
@@ -72,7 +94,8 @@ const educationSlice = createSlice({
       })
       .addCase(fetchQuiz.fulfilled, (state, action) => {
         state.quizStatus = "succeeded";
-        state.quiz = action.payload;
+        state.quizTotalItems = action.payload.totalItems ?? 0;
+        state.quiz = action.payload.data;
       })
       .addCase(fetchQuiz.rejected, (state) => {
         state.quizStatus = "failed";
@@ -83,7 +106,8 @@ const educationSlice = createSlice({
       })
       .addCase(fetchContent.fulfilled, (state, action) => {
         state.educationStatus = "succeeded";
-        state.educationContent = action.payload;
+        state.educationContentTotalItems = action.payload.totalItems ?? 0;
+        state.educationContent = action.payload.data;
       })
       .addCase(fetchContent.rejected, (state) => {
         state.educationStatus = "failed";
@@ -93,34 +117,40 @@ const educationSlice = createSlice({
 
 export const fetchContent = createAsyncThunk(
   "/education-content",
-  async () => {
-    const response = await getEducationContent();
-    return response.data;
+  async (limit: number) => {
+    const response = await getEducationContent(limit, 1);
+    return response;
   }
 );
 
 export const fetchVideo = createAsyncThunk(
   "/education-content/video",
-  async () => {
-    const response = await getVideo();
-    return response.data;
+  async (limit: number) => {
+    const response = await getVideo(limit, 1);
+    return response;
   }
 );
 export const fetchArticle = createAsyncThunk(
   "/education-content/article",
-  async () => {
-    const response = await getArticle();
-    return response.data;
+  async (limit: number) => {
+    const response = await getArticle(limit, 1);
+    return response;
   }
 );
 export const fetchQuiz = createAsyncThunk(
   "/education-content/quiz",
-  async () => {
-    const response = await getQuiz();
-    return response.data;
+  async (limit: number) => {
+    const response = await getQuiz(limit, 1);
+    return response;
   }
 );
 
-export const { handleEducationDataChange } = educationSlice.actions;
+export const {
+  handleEducationDataChange,
+  handleArticleDataChange,
+  handleVideoDataChange,
+  handleQuizDataChange,
+  handleEducationContentDataChange,
+} = educationSlice.actions;
 
 export default educationSlice.reducer;

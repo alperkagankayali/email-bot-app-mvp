@@ -25,6 +25,9 @@ body {
     text-wrap: balance;
   }
 }
+.ant-card {
+  @apply flex flex-col;
+}
 
 .ant-card-meta-title {
   white-space: normal !important;

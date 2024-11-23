@@ -10,20 +10,30 @@ import {
   notification,
   Radio,
   Space,
-  Typography,
 } from "antd";
 import { IQuizType } from "@/types/quizType";
 import { createQuiz } from "@/services/service/educationService";
+import { useRouter } from "@/i18n/routing";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { fetchQuiz } from "@/redux/slice/education";
 
-const QuizForm: React.FC = () => {
+type IProps = {
+  redirect?: boolean;
+};
+const QuizForm: React.FC<IProps> = ({ redirect = false }) => {
   const [form] = Form.useForm();
   const [fieldsState, setFields] = useState<IQuizType>();
-
+  const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter();
   const onFinish = async (values: IQuizType) => {
-    console.log("videos", values);
     const res = await createQuiz(values);
-    if (res.status) {
+    if (res.success) {
       notification.info({ message: "Başarıyla kaydedildi" });
+      if (redirect) {
+        dispatch(fetchQuiz)
+        router.push("/dashboard/academy/quiz");
+      }
     } else {
       notification.error({ message: res.message });
     }
@@ -44,10 +54,25 @@ const QuizForm: React.FC = () => {
           setFields(allFields);
         }}
       >
-        <Form.Item label="Title" name="title" rules={[{ required: true }]}>
+        <Form.Item
+          layout="vertical"
+          labelCol={{ span: 24 }}
+          wrapperCol={{ span: 24 }}
+          label="Title"
+          name="title"
+          rules={[{ required: true }]}
+          className="!mb-10"
+        >
           <Input />
         </Form.Item>
-        <Form.Item name="description" label="Description">
+        <Form.Item
+          layout="vertical"
+          labelCol={{ span: 24 }}
+          wrapperCol={{ span: 24 }}
+          name="description"
+          label="Description"
+          className="!mb-10"
+        >
           <Input.TextArea rows={1} />
         </Form.Item>
         <Form.List name="question">
@@ -69,10 +94,28 @@ const QuizForm: React.FC = () => {
                       />
                     }
                   >
-                    <Form.Item label="Title" name={[field.name, "title"]}>
+                    <Form.Item
+                      rules={[
+                        {
+                          required: true,
+                          message: "Sorunun başlığı zorunludur.",
+                        },
+                      ]}
+                      label="Title"
+                      name={[field.name, "title"]}
+                    >
                       <Input />
                     </Form.Item>
-                    <Form.Item label="Type" name={[field.name, "type"]}>
+                    <Form.Item
+                      label="Type"
+                      name={[field.name, "type"]}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Soru tipi zorunludur.",
+                        },
+                      ]}
+                    >
                       <Radio.Group>
                         <Radio value="single">Single Answer</Radio>
                         <Radio value="multiple">Multiple Answer</Radio>
@@ -85,7 +128,6 @@ const QuizForm: React.FC = () => {
                             {!!fieldsState &&
                               fieldsState?.question[field.name]?.options?.map(
                                 (e, index) => {
-                                  debugger;
                                   return (
                                     <Radio value={e} key={index + e}>
                                       {e}
@@ -148,7 +190,7 @@ const QuizForm: React.FC = () => {
                               onClick={() => subOpt.add()}
                               block
                             >
-                              + Add Sub Item
+                              + Add a option
                             </Button>
                           </div>
                         )}
@@ -158,14 +200,14 @@ const QuizForm: React.FC = () => {
                 ))}
 
                 <Button type="dashed" onClick={() => add()} block>
-                  + Add Item
+                  + Add a question
                 </Button>
               </div>
             );
           }}
         </Form.List>
-        <Button type="primary" htmlType="submit" className="mt-4 w-full">
-          Submit
+        <Button type="primary" htmlType="submit" className="mt-4 w-full mb-10">
+          Kaydet
         </Button>
         {/* <Form.Item noStyle shouldUpdate>
           {() => (
