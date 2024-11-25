@@ -46,7 +46,6 @@ export async function GET(request: Request) {
           );
         } else {
           const scenarioTotal = await Scenario.countDocuments(
-            {},
             { isDelete: false }
           );
           const filter: any = {};

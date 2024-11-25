@@ -20,8 +20,11 @@ export async function GET(request: Request) {
         jwtKey
       ) as ISuperAdminJWT;
       if (jwtSuperAdmin.role === "superadmin") {
-        const userTotal = await User.countDocuments({}, { company: id });
-        const files = await User.find({ company: id }).populate({ path: "company", model: Company })
+        const userTotal = await User.countDocuments({ company: id });
+        const files = await User.find({ company: id }).populate({
+          path: "company",
+          model: Company,
+        });
         return NextResponse.json(
           {
             ...message200,

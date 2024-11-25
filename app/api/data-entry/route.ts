@@ -32,7 +32,6 @@ export async function GET(request: Request) {
           );
         } else {
           const dataEntryTotal = await DataEntry.countDocuments(
-            {},
             { isDelete: false }
           );
           const dataEntry = await DataEntry.find({ isDelete: false })

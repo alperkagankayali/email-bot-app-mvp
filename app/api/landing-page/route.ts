@@ -31,7 +31,6 @@ export async function GET(request: Request) {
           );
         } else {
           const landingPageTotal = await LandingPage.countDocuments(
-            {},
             { isDelete: false }
           );
           const landingPage = await LandingPage.find({ isDelete: false })

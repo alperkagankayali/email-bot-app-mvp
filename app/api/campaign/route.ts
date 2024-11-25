@@ -36,7 +36,6 @@ export async function GET(request: Request) {
           );
         } else {
           const compaingTotal = await Campaign.countDocuments(
-            {},
             { isDelete: false }
           );
           const compaing = await Campaign.find({ isDelete: false })

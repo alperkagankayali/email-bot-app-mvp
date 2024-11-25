@@ -16,7 +16,6 @@ export async function GET(request: Request) {
       const user = jwt.verify(token.split(" ")[1], jwtKey) as IUserJWT;
       if (user.role === "admin" || user.role === "user") {
         const authTotal = await Authorization.countDocuments(
-          {},
           { company: user.companyId }
         );
         const users = await Authorization.find({

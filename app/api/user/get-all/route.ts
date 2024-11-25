@@ -16,7 +16,6 @@ export async function GET(request: Request) {
       const user = jwt.verify(token.split(" ")[1], jwtKey) as IUserJWT;
       if (user.role === "admin") {
         const userTotal = await User.countDocuments(
-          {},
           { company: user.companyId }
         );
         const users = await User.find({ company: user.companyId }).populate({ path: "company", model: Company });
