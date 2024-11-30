@@ -1,10 +1,14 @@
 "use client";
 import { Button, Form, Input, notification, Select } from "antd";
 import type { FormProps } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IVideoType } from "@/types/videoType";
 import FileUpload from "@/components/fileUpload/inedx";
-import { createVideo } from "@/services/service/educationService";
+import {
+  createVideo,
+  getVideo,
+  updateVideo,
+} from "@/services/service/educationService";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useRouter } from "@/i18n/routing";
@@ -12,24 +16,47 @@ import { fetchVideo } from "@/redux/slice/education";
 
 type IProps = {
   redirect?: boolean;
+  videoId?: string;
 };
-const VideoForm = ({redirect}: IProps) => {
+const VideoForm = ({ redirect, videoId }: IProps) => {
   const [videolink, setVideoLink] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter()
+  const router = useRouter();
+  const [form] = Form.useForm();
+
   const onFinish: FormProps<IVideoType>["onFinish"] = async (values) => {
     values.videolink = videolink;
-    const res = await createVideo(values);
-    if (res.status) {
+    let res = null;
+    if (!!videoId) {
+      res = await updateVideo(videoId, values);
+    } else {
+      res = await createVideo(values);
+    }
+    if (res?.status) {
       if (redirect) {
-        dispatch(fetchVideo(10))
+        dispatch(fetchVideo(10));
         router.push("/dashboard/academy/video");
       }
       notification.info({ message: "Başarıyla kaydedildi" });
     } else {
-      notification.error({ message: res.message });
+      notification.error({ message: res?.message });
     }
   };
+
+  useEffect(() => {
+    if (!!videoId) {
+      const fetchArticleById = async () => {
+        const res = await getVideo(10, 1, videoId);
+        form.setFieldsValue({
+          title: res.data.title,
+          description: res.data.description,
+          videolink: res.data.videolink,
+        });
+        setVideoLink(res.data.videolink);
+      };
+      fetchArticleById();
+    }
+  }, [videoId]);
 
   return (
     <div className="mb-6 flex w-full">
@@ -37,6 +64,7 @@ const VideoForm = ({redirect}: IProps) => {
         name="resource"
         initialValues={{ remember: true }}
         onFinish={onFinish}
+        form={form}
         autoComplete="off"
         className="w-full"
       >
@@ -78,6 +106,7 @@ const VideoForm = ({redirect}: IProps) => {
           <div className="relative">
             <Form.Item<IVideoType> name="videolink">
               <FileUpload
+                defaultValue={videolink}
                 handleUploadFile={(url: string) => setVideoLink(url)}
                 type="video"
               />

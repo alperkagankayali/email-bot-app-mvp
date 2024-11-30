@@ -34,6 +34,24 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
+          if (verificationResult?.role === "superadmin") {
+            const quizTotal = await Quiz.countDocuments({
+              isDelete: false,
+            });
+            const quiz = await Quiz.find({
+              isDelete: false,
+            })
+              .skip(skip)
+              .limit(limit);
+            return NextResponse.json(
+              {
+                ...message200,
+                data: quiz,
+                totalItems: quizTotal,
+              },
+              { status: 200, statusText: message200.message }
+            );
+          }
           const quizTotal = await Quiz.countDocuments({
             isDelete: false,
             $or: [

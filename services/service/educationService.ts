@@ -7,15 +7,15 @@ import { IArticleType } from "@/types/articleType";
 import { IVideoType } from "@/types/videoType";
 import { IQuizType } from "@/types/quizType";
 
-export const getVideo = async (limit = 10, page = 1) => {
-  const queryParams = jsonToQueryString({ limit, page });
+export const getVideo = async (limit = 10, page = 1, id = "") => {
+  const queryParams = jsonToQueryString({ limit, page, id });
   const url = servicesBaseUrl + finalConfig.GET_VIDEO + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
   return result;
 };
-export const getArticle = async (limit = 10, page = 1, id="") => {
-  const queryParams = jsonToQueryString({ limit, page ,id});
+export const getArticle = async (limit = 10, page = 1, id = "") => {
+  const queryParams = jsonToQueryString({ limit, page, id });
   const url = servicesBaseUrl + finalConfig.GET_ARTICLE + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
@@ -83,3 +83,15 @@ export const updateArticle = async (id: string, updateData: any) => {
   );
   return result;
 };
+
+export const updateVideo = async (id: string, updateData: any) => {
+  const url = servicesBaseUrl + finalConfig.UPDATE_VIDEO;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(
+    url,
+    { id, updateData },
+    config
+  );
+  return result;
+};
+

@@ -34,6 +34,24 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
+          if (verificationResult?.role === "superadmin") {
+            const videoTotal = await Video.countDocuments({
+              isDelete: false,
+            });
+            const video = await Video.find({
+              isDelete: false,
+            })
+              .skip(skip)
+              .limit(limit);
+            return NextResponse.json(
+              {
+                ...message200,
+                data: video,
+                totalItems: videoTotal,
+              },
+              { status: 200, statusText: message200.message }
+            );
+          }
           const videoTotal = await Video.countDocuments({
             isDelete: false,
             $or: [

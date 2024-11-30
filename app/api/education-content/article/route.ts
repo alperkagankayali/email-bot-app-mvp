@@ -34,6 +34,24 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
+          if (verificationResult?.role === "superadmin") {
+            const articleTotal = await Article.countDocuments({
+              isDelete: false,
+            });
+            const article = await Article.find({
+              isDelete: false,
+            })
+              .skip(skip)
+              .limit(limit);
+            return NextResponse.json(
+              {
+                ...message200,
+                data: article,
+                totalItems: articleTotal,
+              },
+              { status: 200, statusText: message200.message }
+            );
+          }
           const articleTotal = await Article.countDocuments({
             isDelete: false,
             $or: [

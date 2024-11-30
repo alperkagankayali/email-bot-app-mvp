@@ -39,6 +39,26 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
+          if (verificationResult?.role === "superadmin") {
+            const courseTotal = await Course.countDocuments({
+              isDelete: false,
+            });
+
+            const courses = await Course.find({
+              isDelete: false,
+            })
+              .select("title description img isPublished contents")
+              .skip(skip)
+              .limit(limit);
+            return NextResponse.json(
+              {
+                ...message200,
+                data: courses,
+                totalItems: courseTotal,
+              },
+              { status: 200, statusText: message200.message }
+            );
+          }
           const courseTotal = await Course.countDocuments({
             isDelete: false,
             $or: [
