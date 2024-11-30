@@ -9,5 +9,6 @@ export interface IVideoType {
   created_at: Date;
   isDelete: boolean;
   company: ICompany;
+  authorType: "admin" | "superadmin";
   _id: string;
 }

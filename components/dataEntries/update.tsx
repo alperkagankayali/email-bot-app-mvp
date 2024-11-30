@@ -37,7 +37,7 @@ const UpdateDataEntryForm: React.FC<IProps> = ({ id }) => {
   const handleSave = async (data: ILandingPage) => {
     const res = await updateDataEntry(id, data);
     if (res.success) {
-      dispatch(fetchDataEntry())
+      dispatch(fetchDataEntry(10))
       router.push("/dashboard/scenario/data-entries");
     } else {
       message.error(res.message);

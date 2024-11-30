@@ -9,7 +9,9 @@ export interface IQuizType {
   isDelete: boolean;
   question: IQuestion[];
   company: ICompany;
-  _id: string;
+  _id: string;  
+  authorType: "admin" | "superadmin";
+
 }
 
 export type IQuestion = {

@@ -1,19 +1,19 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import VideoList from "@/components/academy/video";
+import VideoForm from "@/components/education/form/videoForm";
 
-const Video: React.FC = async () => {
+const VideoAdd: React.FC = async () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="menu-academy-video" />
         <div>
-          <VideoList />
+          <VideoForm redirect={true} />
         </div>
       </div>
     </DefaultLayout>
   );
 };
 
-export default Video;
+export default VideoAdd;

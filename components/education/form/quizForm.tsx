@@ -31,7 +31,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false }) => {
     if (res.success) {
       notification.info({ message: "Başarıyla kaydedildi" });
       if (redirect) {
-        dispatch(fetchQuiz)
+        dispatch(fetchQuiz(10))
         router.push("/dashboard/academy/quiz");
       }
     } else {

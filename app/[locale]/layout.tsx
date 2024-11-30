@@ -33,7 +33,7 @@ export default async function LocaleLayout({
   params: { locale },
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: { locale: string }
 }) {
   setRequestLocale(locale);
   const messages = await getResource(locale);

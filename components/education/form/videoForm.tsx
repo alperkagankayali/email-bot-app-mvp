@@ -5,16 +5,26 @@ import { useState } from "react";
 import { IVideoType } from "@/types/videoType";
 import FileUpload from "@/components/fileUpload/inedx";
 import { createVideo } from "@/services/service/educationService";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { useRouter } from "@/i18n/routing";
+import { fetchVideo } from "@/redux/slice/education";
 
-type IProps = {};
-const VideoForm = ({}: IProps) => {
+type IProps = {
+  redirect?: boolean;
+};
+const VideoForm = ({redirect}: IProps) => {
   const [videolink, setVideoLink] = useState("");
-
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter()
   const onFinish: FormProps<IVideoType>["onFinish"] = async (values) => {
     values.videolink = videolink;
-    console.log('videos',values)
     const res = await createVideo(values);
     if (res.status) {
+      if (redirect) {
+        dispatch(fetchVideo(10))
+        router.push("/dashboard/academy/video");
+      }
       notification.info({ message: "Başarıyla kaydedildi" });
     } else {
       notification.error({ message: res.message });

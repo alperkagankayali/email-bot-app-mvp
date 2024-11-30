@@ -2,23 +2,57 @@
 import { Button, Form, Input, notification, Select } from "antd";
 import type { FormProps } from "antd";
 import RinchTextEditor from "@/components/rinchTextEditor";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IArticleType } from "@/types/articleType";
-import { createArticle } from "@/services/service/educationService";
+import { createArticle, getArticle, updateArticle } from "@/services/service/educationService";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { useRouter } from "@/i18n/routing";
+import { fetchArticle } from "@/redux/slice/education";
 
-type IProps = {};
-const ArticleForm = ({}: IProps) => {
+type IProps = {
+  redirect?: boolean;
+  articleId?: string;
+};
+const ArticleForm = ({ redirect = false, articleId }: IProps) => {
   const [content, setContent] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const [form] = Form.useForm();
 
   const onFinish: FormProps<IArticleType>["onFinish"] = async (values) => {
     values.content = content;
-    const res = await createArticle(values);
-    if (res.status) {
+    let res = null;
+    if(!!articleId) {
+      res = await updateArticle(articleId,values);
+    }
+    else{
+      res = await createArticle(values);
+    }
+    if (res?.status) {
+      if (redirect) {
+        dispatch(fetchArticle(10));
+        router.push("/dashboard/academy/article");
+      }
       notification.info({ message: "Başarıyla kaydedildi" });
     } else {
-      notification.error({ message: res.message });
+      notification.error({ message: res?.message });
     }
   };
+
+  useEffect(() => {
+    if(!!articleId) {
+      const fetchArticleById = async () => {
+        const res = await getArticle(10,1,articleId);
+        form.setFieldsValue({
+          title:res.data.title,
+          description:res.data.description,
+        })
+        setContent(res.data.content)
+      }
+      fetchArticleById()
+    }
+  },[articleId])
 
   return (
     <div className="mb-6 flex">
@@ -26,6 +60,7 @@ const ArticleForm = ({}: IProps) => {
         name="resource"
         initialValues={{ remember: true }}
         onFinish={onFinish}
+        form={form}
         autoComplete="off"
       >
         <div className="mb-4">
