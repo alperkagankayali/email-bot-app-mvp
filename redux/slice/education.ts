@@ -6,7 +6,7 @@ import {
   getVideo,
 } from "@/services/service/educationService";
 import { IArticleType } from "@/types/articleType";
-import { ICourse, IEducationCreate } from "@/types/courseType";
+import { ICourse, Content, IEducationCreate } from "@/types/courseType";
 import { IQuizType } from "@/types/quizType";
 import { IVideoType } from "@/types/videoType";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
@@ -25,6 +25,9 @@ interface IEducationSlice {
   articleTotalItems: number;
   videoTotalItems: number;
   educationContentTotalItems: number;
+  selectVideo: string[];
+  selectQuiz: string[];
+  selectArticle: string[];
 }
 
 const initialState: IEducationSlice = {
@@ -41,6 +44,9 @@ const initialState: IEducationSlice = {
   articleTotalItems: 0,
   videoTotalItems: 0,
   educationContentTotalItems: 0,
+  selectVideo: [],
+  selectQuiz: [],
+  selectArticle: [],
 };
 
 const educationSlice = createSlice({
@@ -61,6 +67,11 @@ const educationSlice = createSlice({
     },
     handleEducationContentDataChange: (state, action) => {
       state.educationContent = action.payload;
+    },
+    handleSelectedContent: (state, action) => {
+      state[
+        action.payload.type as "selectVideo" | "selectQuiz" | "selectArticle"
+      ] = action.payload.data;
     },
   },
   extraReducers(builder) {
@@ -151,6 +162,7 @@ export const {
   handleVideoDataChange,
   handleQuizDataChange,
   handleEducationContentDataChange,
+  handleSelectedContent,
 } = educationSlice.actions;
 
 export default educationSlice.reducer;

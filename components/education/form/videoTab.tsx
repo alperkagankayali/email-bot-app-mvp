@@ -5,7 +5,11 @@ import { Card, Radio } from "antd";
 import type { RadioChangeEvent } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchVideo, handleEducationDataChange } from "@/redux/slice/education";
+import {
+  fetchVideo,
+  handleEducationDataChange,
+  handleSelectedContent,
+} from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
 import VideoForm from "./videoForm";
@@ -34,9 +38,10 @@ const VideoTab = ({}: IProps) => {
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchVideo());
+      dispatch(fetchVideo(6));
     }
   }, [status, dispatch]);
+
   return (
     <>
       <Radio.Group
@@ -48,22 +53,19 @@ const VideoTab = ({}: IProps) => {
         buttonStyle="solid"
       />
       <div className="mt-5 w-full">
-        {value === "add" && <> <VideoForm /> </>}
+        {value === "add" && (
+          <>
+            {" "}
+            <VideoForm />{" "}
+          </>
+        )}
 
         {value === "select" && (
           <CheckboxGroup
             onChange={(e) => {
-              if (!!createEducation) {
-                dispatch(
-                  handleEducationDataChange({
-                    ...createEducation,
-                    contents: [...createEducation.contents,...e.map((element) => {
-                      return { type: "video", order: 1, refId: element };
-                    })],
-                  })
-                );
-              }
-
+              dispatch(
+                handleSelectedContent({ type: "selectVideo", data: e })
+              );
               setSelected(e);
             }}
             className={"card-checkbox"}

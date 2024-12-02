@@ -1,20 +1,27 @@
-import { INews } from "@/types/newsType";
+import { INewsBlog } from "@/types/newsType";
 import { Schema, Types, model, models } from "mongoose";
 
-const newsSchema = new Schema<INews>({
+const newsBlogSchema = new Schema<INewsBlog>({
   headline: { type: String, required: true },
+  content: { type: String, required: true },
   created_at: { type: Date, default: Date.now },
-  // Required: One reading material for each news
-  readingMaterialUrl: { type: String, required: true },
-  questionnaireType: {
+  updated_at: { type: Date, default: Date.now },
+  featuredImageUrl: { type: String, required: true },
+  category: { type: String, required: true },
+  tags: { type: [String], default: [] },
+  authorType: {
     type: String,
-    enum: ["action", "quiz"],
     required: true,
+    enum: ["User", "superadmin"],
   },
-  questionnaireUrl: { type: String, required: true },
-  author: { type: Types.ObjectId, ref: "User" },
+  author: {
+    type: Types.ObjectId,
+    required: true,
+    refPath: "authorType", 
+  },
+  isPublished: { type: Boolean, default: false },
 });
 
-const News = models.News || model<INews>("News", newsSchema);
+const News = models.News || model<INewsBlog>("News", newsBlogSchema);
 
 export default News;

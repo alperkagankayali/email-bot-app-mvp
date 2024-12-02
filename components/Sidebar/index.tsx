@@ -230,13 +230,30 @@ const menuGroups = [
     menuItems: [
       {
         icon: <ReadOutlined />,
-        label: "menu-academy",
+        label: "menu-education",
+        route: "/dashboard/education",
+      },
+      {
+        icon: <ReadOutlined />,
+        label: "menu-education-content",
         route: "#",
+        role: ["superadmin"],
         children: [
-          { label: "menu-education", route: "/dashboard/education" },
-          { label: "menu-academy-quiz", route: "/dashboard/academy/quiz",role: ["superadmin"], },
-          { label: "menu-academy-article", route: "/dashboard/academy/article",role: ["superadmin"], },
-          { label: "menu-academy-video", route: "/dashboard/academy/video",role: ["superadmin"], },
+          {
+            label: "menu-academy-quiz",
+            route: "/dashboard/academy/quiz",
+            role: ["superadmin"],
+          },
+          {
+            label: "menu-academy-article",
+            route: "/dashboard/academy/article",
+            role: ["superadmin"],
+          },
+          {
+            label: "menu-academy-video",
+            route: "/dashboard/academy/video",
+            role: ["superadmin"],
+          },
           { label: "menu-news", route: "/dashboard/news" },
         ],
       },

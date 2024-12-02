@@ -10,6 +10,7 @@ export interface ICourse {
   isDelete: boolean;
   contents: Content[];
   company: ICompany;
+  _id:string
 }
 enum ContentType {
   VIDEO = "video",

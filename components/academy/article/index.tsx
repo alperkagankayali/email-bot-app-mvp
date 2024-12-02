@@ -95,7 +95,7 @@ const ArticleList: React.FC = () => {
                     title={article.title}
                     description={
                       <>
-                        <p>{article.description}</p>
+                        <p className="line-clamp-3">{article.description}</p>
                         <Tag color="warning" className="mt-auto"> {article?.authorType === "superadmin" ? "Super Admin" : "Admin"}</Tag>
                       </>
                     }

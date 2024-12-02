@@ -139,7 +139,7 @@ const QuizList: React.FC = () => {
                     <li>{e}</li>
                   ))}
                 </ul>
-                <p className="text-red-900 my-6">answer: {item.answer}</p>
+                <p className="text-red-900 my-6">answer: {item.answer.map((e) => <p>{e}</p>)}</p>
               </List.Item>
             );
           }}

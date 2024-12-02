@@ -72,3 +72,23 @@ export function base64ToBlob(base64: string, mimeType: string) {
 
   return new Blob([ab], { type: mimeType });
 }
+const color = [
+  "magenta",
+  "red",
+  "volcano",
+  "orange",
+  "gold",
+  "lime",
+  "green",
+  "cyan",
+  "blue",
+  "geekblue",
+  "purple",
+  "#f50",
+  "#2db7f5",
+  "#87d068",
+  "#108ee9",
+];
+export const randomColor = () => {
+  return color[Math.floor(Math.random() * color.length)];
+};

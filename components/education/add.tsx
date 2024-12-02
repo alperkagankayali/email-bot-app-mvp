@@ -55,7 +55,7 @@ const EducationAddForm: React.FC<IProps> = () => {
     const res = await createEducation(educationContent);
     if (res.status) {
       notification.info({ message: "Başarıyla kaydedildi" });
-      dispatch(fetchContent())
+      dispatch(fetchContent(6))
       router.push("/dashboard/education")
     } else {
       notification.error({ message: res.message });

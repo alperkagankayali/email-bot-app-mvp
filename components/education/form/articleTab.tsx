@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchArticle,
   handleEducationDataChange,
+  handleSelectedContent,
 } from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
@@ -40,7 +41,7 @@ const ArticleTab = ({}: IProps) => {
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchArticle());
+      dispatch(fetchArticle(6));
     }
   }, [status, dispatch]);
   return (
@@ -59,17 +60,9 @@ const ArticleTab = ({}: IProps) => {
         {value === "select" && (
           <CheckboxGroup
             onChange={(e) => {
-              if (!!createEducation) {
-                dispatch(
-                  handleEducationDataChange({
-                    ...createEducation,
-                    contents: e.map((element:any) => {
-                      return { type: "article", order: 1, refId: element};
-                    }),
-                  })
-                );
-              }
-
+              dispatch(
+                handleSelectedContent({ type: "selectArticle", data: e })
+              );
               setSelected(e);
             }}
             className={"card-checkbox"}

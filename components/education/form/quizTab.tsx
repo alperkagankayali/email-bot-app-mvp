@@ -9,10 +9,10 @@ import {
   fetchQuiz,
   fetchVideo,
   handleEducationDataChange,
+  handleSelectedContent,
 } from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
-import VideoForm from "./videoForm";
 import QuizForm from "./quizForm";
 
 const CheckboxGroup = Checkbox.Group;
@@ -39,7 +39,7 @@ const QuizTab = ({}: IProps) => {
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchQuiz());
+      dispatch(fetchQuiz(6));
     }
   }, [status, dispatch]);
   return (
@@ -62,20 +62,7 @@ const QuizTab = ({}: IProps) => {
         {value === "select" && (
           <CheckboxGroup
             onChange={(e) => {
-              if (!!createEducation) {
-                dispatch(
-                  handleEducationDataChange({
-                    ...createEducation,
-                    contents: [
-                      ...createEducation.contents,
-                      ...e.map((element) => {
-                        return { type: "quiz", order: 1, refId: element };
-                      }),
-                    ],
-                  })
-                );
-              }
-
+              dispatch(handleSelectedContent({ type: "selectQuiz", data: e }));
               setSelected(e);
             }}
             className={"card-checkbox"}

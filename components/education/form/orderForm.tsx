@@ -79,10 +79,56 @@ const Row: React.FC<Readonly<RowProps>> = (props) => {
 };
 
 const OrderForm: React.FC = () => {
+  const selectedVideo = useSelector(
+    (state: RootState) => state.education.selectVideo
+  );
+  const videos = useSelector((state: RootState) => state.education.videos);
+  const selectedArticle = useSelector(
+    (state: RootState) => state.education.selectArticle
+  );
+  const articles = useSelector((state: RootState) => state.education.article);
+  const selectedQuiz = useSelector(
+    (state: RootState) => state.education.selectQuiz
+  );
+  const quiz = useSelector((state: RootState) => state.education.quiz);
   const createEducation = useSelector(
     (state: RootState) => state.education.createEducation
   );
-  const [dataSource, setDataSource] = useState(createEducation?.contents ?? []);
+
+  const newDataSource = [
+    ...selectedVideo.map((e) => {
+      const findData = videos.find((video) => video._id === e);
+      return {
+        type: "video",
+        refId: e,
+        order: 1,
+        title: findData?.title,
+        description: findData?.description,
+      };
+    }),
+    ...selectedArticle.map((e) => {
+      const findData = articles.find((article) => article._id === e);
+      return {
+        type: "article",
+        refId: e,
+        order: 1,
+        title: findData?.title,
+        description: findData?.description,
+      };
+    }),
+    ...selectedQuiz.map((e) => {
+      const findData = quiz.find((element) => element._id === e);
+      return {
+        type: "quiz",
+        refId: e,
+        order: 1,
+        title: findData?.title,
+        description: findData?.description,
+      };
+    }),
+  ];
+  console.log("newDAta2", newDataSource);
+  const [dataSource, setDataSource] = useState(newDataSource);
   const dispatch = useDispatch();
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -94,7 +140,6 @@ const OrderForm: React.FC = () => {
   );
 
   const onDragEnd = ({ active, over }: DragEndEvent) => {
-    debugger;
     if (active.id !== over?.id) {
       setDataSource((prev) => {
         const newData = [...prev];
@@ -107,7 +152,12 @@ const OrderForm: React.FC = () => {
 
   useEffect(() => {
     dispatch(
-      handleEducationDataChange({ ...createEducation, contents: dataSource })
+      handleEducationDataChange({
+        ...createEducation,
+        contents: dataSource.map((data, index) => {
+          return { ...data, order: index };
+        }),
+      })
     );
   }, [dataSource]);
 

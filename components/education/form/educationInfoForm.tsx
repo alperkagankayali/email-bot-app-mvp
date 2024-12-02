@@ -5,6 +5,7 @@ import { AppDispatch } from "@/redux/store";
 import { ICourse } from "@/types/courseType";
 import FileUpload from "@/components/fileUpload/inedx";
 import { handleEducationDataChange } from "@/redux/slice/education";
+import { useState } from "react";
 
 const { Option } = Select;
 type IProps = {
@@ -12,13 +13,15 @@ type IProps = {
 };
 const EducationInfoForm = ({ next }: IProps) => {
   const [form] = Form.useForm();
-
+  const [img, setImg] = useState("");
   const dispatch = useDispatch<AppDispatch>();
 
   const onFinish: FormProps<ICourse>["onFinish"] = async (values) => {
-    console.log(values);
-    dispatch(handleEducationDataChange(values))
-    notification.error({ message: "Please upload your logo" });
+    if (!!img) {
+      notification.error({ message: "Please upload your logo" });
+    }
+    values.img = img;
+    dispatch(handleEducationDataChange(values));
     next();
   };
 
@@ -70,7 +73,7 @@ const EducationInfoForm = ({ next }: IProps) => {
           <div className="relative">
             <Form.Item<ICourse> name="img">
               <FileUpload
-                handleUploadFile={(data) => console.log(data)}
+                handleUploadFile={(data) => setImg(data)}
                 defaultValue={""}
               />
             </Form.Item>
