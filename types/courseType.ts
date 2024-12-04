@@ -10,7 +10,8 @@ export interface ICourse {
   isDelete: boolean;
   contents: Content[];
   company: ICompany;
-  _id:string
+  authorType: "User" | "superadmin";
+  _id: string;
 }
 enum ContentType {
   VIDEO = "video",
@@ -23,11 +24,10 @@ export interface Content {
   order: number; // Sıralama bilgisi
 }
 
-export  type IEducationCreate = {
+export type IEducationCreate = {
   title: string;
   img: string;
   description: string;
   isPublished: boolean;
   contents: Content[];
-
-}
+};

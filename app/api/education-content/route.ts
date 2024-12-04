@@ -36,7 +36,7 @@ export async function GET(request: Request) {
               data: course,
               totalItems: 1,
             },
-            { status: 200, statusText: message200.message }
+            { status: 200 }
           );
         } else {
           if (verificationResult?.role === "superadmin") {
@@ -47,7 +47,7 @@ export async function GET(request: Request) {
             const courses = await Course.find({
               isDelete: false,
             })
-              .select("title description img isPublished contents")
+              .select("title description img isPublished contents authorType")
               .skip(skip)
               .limit(limit);
             return NextResponse.json(
@@ -56,35 +56,36 @@ export async function GET(request: Request) {
                 data: courses,
                 totalItems: courseTotal,
               },
-              { status: 200, statusText: message200.message }
+              { status: 200 }
+            );
+          } else {
+            const courseTotal = await Course.countDocuments({
+              isDelete: false,
+              $or: [
+                { company: verificationResult.companyId },
+                { authorType: "superadmin" },
+              ],
+            });
+
+            const courses = await Course.find({
+              isDelete: false,
+              $or: [
+                { company: verificationResult.companyId },
+                { authorType: "superadmin" },
+              ],
+            })
+              .select("title description img isPublished contents authorType")
+              .skip(skip)
+              .limit(limit);
+            return NextResponse.json(
+              {
+                ...message200,
+                data: courses,
+                totalItems: courseTotal,
+              },
+              { status: 200 }
             );
           }
-          const courseTotal = await Course.countDocuments({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
-          });
-
-          const courses = await Course.find({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
-          })
-            .select("title description img isPublished contents")
-            .skip(skip)
-            .limit(limit);
-          return NextResponse.json(
-            {
-              ...message200,
-              data: courses,
-              totalItems: courseTotal,
-            },
-            { status: 200, statusText: message200.message }
-          );
         }
       } else {
         return NextResponse.json(
@@ -105,7 +106,7 @@ export async function GET(request: Request) {
   } catch (error: any) {
     return NextResponse.json(
       { ...message500 },
-      { status: 500, statusText: error?.message || "" }
+      { status: 500 }
     );
   }
 }
