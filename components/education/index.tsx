@@ -5,11 +5,12 @@ import { Link } from "@/i18n/routing";
 import { fetchContent } from "@/redux/slice/education";
 import { AppDispatch, RootState } from "@/redux/store";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Avatar, Button, Card, List, Popconfirm, Tag } from "antd";
+import { Avatar, Badge, Button, Card, List, Popconfirm, Tag } from "antd";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+const { Meta } = Card;
 
 const EducationList: React.FC = () => {
   const t = useTranslations("pages");
@@ -57,37 +58,47 @@ const EducationList: React.FC = () => {
             </Popconfirm>,
           ];
           return (
+            // <Badge.Ribbon
+            //   className="card-title-ribbon"
+            //   color={"green"}
+            //   text={"Global"}
+            // >
             <Card
               actions={actions}
-              key={item.title}
+              key={item._id}
+              hoverable
+              rootClassName="flex h-full"
+              loading={status === "loading"}
+              style={{ width: 240 }}
               cover={
                 <Image
-                  src={!!item.img ? item.img : noImage}
-                  width={64}
-                  height={64}
-                  className="max-h-36 object-cover"
-                  alt="content img"
+                  width={240}
+                  height={100}
+                  className="h-30 object-contain bg-[#03162b]"
+                  alt={item.title}
+                  src={status === "loading" ? noImage : item.img}
                 />
               }
             >
-              <div className="flex flex-col min-h-30">
-                <h3 className="text-xl">{item.title}</h3>
-                <p className="line-clamp-4 mt-3 ">{item.description}</p>
-                <div className="grid grid-cols-3  gap-2 mt-auto pt-2">
-                  <Tag color="purple" className="!m-0 !pl-1">
-                    {" "}
-                    Article {reduce["article"].count}
-                  </Tag>
-                  <Tag color="#f50" className="!m-0 !pl-1">
-                    {" "}
-                    Quiz {reduce["quiz"].count}
-                  </Tag>
-                  <Tag color="#2db7f5" className="!m-0 !pl-1">
-                    {" "}
-                    Video {reduce["video"].count}
-                  </Tag>
-                </div>
-              </div>
+              <Meta
+                title={item.title}
+                description={
+                  <div className="grid grid-cols-3  gap-2 mt-auto pt-2">
+                    <Tag color="purple" className="!m-0 !pl-1">
+                      {" "}
+                      Article {reduce["article"].count}
+                    </Tag>
+                    <Tag color="#f50" className="!m-0 !pl-1">
+                      {" "}
+                      Quiz {reduce["quiz"].count}
+                    </Tag>
+                    <Tag color="#2db7f5" className="!m-0 !pl-1">
+                      {" "}
+                      Video {reduce["video"].count}
+                    </Tag>
+                  </div>
+                }
+              />
             </Card>
           );
         })}

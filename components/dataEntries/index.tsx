@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Modal } from "antd";
+import { Badge, Card, Modal } from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -53,24 +53,30 @@ const DataEntriesList: React.FC = () => {
             />,
           ];
           return (
-            <Card
-              actions={actions}
-              key={dataEntry._id}
-              hoverable
-              loading={status === "loading"}
-              style={{ width: 240 }}
-              cover={
-                <Image
-                  width={240}
-                  height={150}
-                  className="min-h-50 object-cover"
-                  alt={dataEntry.title}
-                  src={status === "loading" ? noImage : dataEntry.img}
-                />
-              }
+            <Badge.Ribbon
+              className="card-title-ribbon"
+              color={dataEntry?.authorType === "superadmin" ? "green" : "red"}
+              text={dataEntry?.authorType === "superadmin" ? "Global" : "Local"}
             >
-              <Meta title={dataEntry.title} />
-            </Card>
+              <Card
+                actions={actions}
+                key={dataEntry._id}
+                hoverable
+                loading={status === "loading"}
+                style={{ width: 240 }}
+                cover={
+                  <Image
+                    width={240}
+                    height={150}
+                    className="min-h-50 object-cover"
+                    alt={dataEntry.title}
+                    src={status === "loading" ? noImage : dataEntry.img}
+                  />
+                }
+              >
+                <Meta title={dataEntry.title} />
+              </Card>
+            </Badge.Ribbon>
           );
         })}
       </div>

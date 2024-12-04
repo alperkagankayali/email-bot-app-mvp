@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Modal, PaginationProps } from "antd";
+import { Badge, Card, Modal, PaginationProps } from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -13,7 +13,10 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Pagination } from "antd";
-import { deleteEmailTemplate, getEmailTemplate } from "@/services/service/generalService";
+import {
+  deleteEmailTemplate,
+  getEmailTemplate,
+} from "@/services/service/generalService";
 
 const { Meta } = Card;
 
@@ -48,10 +51,12 @@ const EmailTemplateList: React.FC = () => {
     }
   }, [status, dispatch]);
 
-  const handleDeleteEmailTemplate = async (id:string) => {
+  const handleDeleteEmailTemplate = async (id: string) => {
     const res = await deleteEmailTemplate(id);
-    dispatch(handleChangeEmailData(data?.filter((e) => e._id !== res.data?._id)));
-  }
+    dispatch(
+      handleChangeEmailData(data?.filter((e) => e._id !== res.data?._id))
+    );
+  };
 
   return (
     <div className="flex flex-col items-start">
@@ -79,27 +84,40 @@ const EmailTemplateList: React.FC = () => {
                 setOpen({ show: true, data: emailTemplate.content })
               }
             />,
-            <DeleteOutlined onClick={() =>handleDeleteEmailTemplate(emailTemplate._id)}/>,
+            <DeleteOutlined
+              onClick={() => handleDeleteEmailTemplate(emailTemplate._id)}
+            />,
           ];
           return (
-            <Card
-              actions={actions}
-              key={emailTemplate._id}
-              hoverable
-              loading={status === "loading"}
-              style={{ width: 240 }}
-              cover={
-                <Image
-                  width={240}
-                  height={100}
-                  className="h-30 object-contain bg-[#03162b]"
-                  alt={emailTemplate.title}
-                  src={status === "loading" ? noImage : emailTemplate.img}
-                />
+            <Badge.Ribbon
+              className="card-title-ribbon"
+              color={
+                emailTemplate?.authorType === "superadmin" ? "green" : "red"
+              }
+              text={
+                emailTemplate?.authorType === "superadmin" ? "Global" : "Local"
               }
             >
-              <Meta title={emailTemplate.title} />
-            </Card>
+              <Card
+                actions={actions}
+                key={emailTemplate._id}
+                hoverable
+                rootClassName="flex h-full"
+                loading={status === "loading"}
+                style={{ width: 240 }}
+                cover={
+                  <Image
+                    width={240}
+                    height={100}
+                    className="h-30 object-contain bg-[#03162b]"
+                    alt={emailTemplate.title}
+                    src={status === "loading" ? noImage : emailTemplate.img}
+                  />
+                }
+              >
+                <Meta title={emailTemplate.title} />
+              </Card>
+            </Badge.Ribbon>
           );
         })}
       </div>

@@ -6,6 +6,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { deleteArticle, getArticle } from "@/services/service/educationService";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import {
+  Badge,
   Button,
   Card,
   Modal,
@@ -84,23 +85,32 @@ const ArticleList: React.FC = () => {
                 </Popconfirm>,
               ];
               return (
-                <Card
-                  actions={actions}
-                  key={article._id}
-                  hoverable
-                  loading={status === "loading"}
-                  style={{ width: 240 }}
+                <Badge.Ribbon
+                  className="card-title-ribbon"
+                  color={article?.authorType === "superadmin" ? "green" : "red"}
+                  text={
+                    article?.authorType === "superadmin" ? "Global" : "Local"
+                  }
                 >
-                  <Meta
-                    title={article.title}
-                    description={
-                      <>
-                        <p className="line-clamp-3">{article.description}</p>
-                        <Tag color="warning" className="mt-auto"> {article?.authorType === "superadmin" ? "Super Admin" : "Admin"}</Tag>
-                      </>
-                    }
-                  />
-                </Card>
+                  <Card
+                    actions={actions}
+                    key={article._id}
+                    rootClassName="h-full flex"
+                    hoverable
+                    loading={status === "loading"}
+                    style={{ width: 240 }}
+                    // title=" "
+                  >
+                    <Meta
+                      title={article.title}
+                      description={
+                        <>
+                          <p className="line-clamp-3">{article.description}</p>
+                        </>
+                      }
+                    />
+                  </Card>
+                </Badge.Ribbon>
               );
             })}
           </div>

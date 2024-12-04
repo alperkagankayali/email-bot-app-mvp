@@ -5,6 +5,7 @@ import { fetchQuiz, handleQuizDataChange } from "@/redux/slice/education";
 import { AppDispatch, RootState } from "@/redux/store";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import {
+  Badge,
   Button,
   Card,
   List,
@@ -88,15 +89,22 @@ const QuizList: React.FC = () => {
                 </Popconfirm>,
               ];
               return (
-                <Card
-                  actions={actions}
-                  key={quiz._id}
-                  hoverable
-                  loading={status === "loading"}
-                  style={{ width: 240 }}
+                <Badge.Ribbon
+                  className="card-title-ribbon"
+                  color={quiz?.authorType === "superadmin" ? "green" : "red"}
+                  text={quiz?.authorType === "superadmin" ? "Global" : "Local"}
                 >
-                  <Meta title={quiz.title} description={quiz.description} />
-                </Card>
+                  <Card
+                    actions={actions}
+                    key={quiz._id}
+                    hoverable
+                    rootClassName="flex h-full"
+                    loading={status === "loading"}
+                    style={{ width: 240 }}
+                  >
+                    <Meta title={quiz.title} description={quiz.description} />
+                  </Card>
+                </Badge.Ribbon>
               );
             })}
           </div>
@@ -139,7 +147,12 @@ const QuizList: React.FC = () => {
                     <li>{e}</li>
                   ))}
                 </ul>
-                <p className="text-red-900 my-6">answer: {item.answer.map((e) => <p>{e}</p>)}</p>
+                <p className="text-red-900 my-6">
+                  answer:{" "}
+                  {item.answer.map((e) => (
+                    <p>{e}</p>
+                  ))}
+                </p>
               </List.Item>
             );
           }}

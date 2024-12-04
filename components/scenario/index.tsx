@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Modal, notification, Popconfirm, Popover } from "antd";
+import { Badge, Card, Modal, notification, Popconfirm, Popover } from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -216,34 +216,41 @@ const ScenarioList: React.FC = () => {
             </Popconfirm>,
           ];
           return (
-            <Card
-              actions={actions}
-              key={scenario._id}
-              hoverable
-              loading={status === "loading"}
-              style={{ width: 240 }}
-              className="flex flex-col"
-              cover={
-                <Image
-                  width={240}
-                  height={120}
-                  className="h-30 object-contain bg-[#03162b]"
-                  alt={scenario.title}
-                  src={status === "loading" ? noImage : scenario.img}
-                />
-              }
+            <Badge.Ribbon
+              className="card-title-ribbon"
+              color={scenario?.authorType === "superadmin" ? "green" : "red"}
+              text={scenario?.authorType === "superadmin" ? "Global" : "Local"}
             >
-              <Meta
-                className="card-meta"
-                title={scenario.title}
-                description={
-                  <div className="">
-                    <p>{scenario.scenarioType.title}</p>
-                    <p>{scenario?.language.name}</p>
-                  </div>
+              <Card
+                actions={actions}
+                key={scenario._id}
+                hoverable
+                loading={status === "loading"}
+                style={{ width: 240 }}
+                rootClassName="flex h-full"
+                className="flex flex-col "
+                cover={
+                  <Image
+                    width={240}
+                    height={120}
+                    className="h-30 object-contain bg-[#03162b]"
+                    alt={scenario.title}
+                    src={status === "loading" ? noImage : scenario.img}
+                  />
                 }
-              />
-            </Card>
+              >
+                <Meta
+                  className="card-meta"
+                  title={scenario.title}
+                  description={
+                    <div className="">
+                      <p>{scenario.scenarioType.title}</p>
+                      <p>{scenario?.language.name}</p>
+                    </div>
+                  }
+                />
+              </Card>
+            </Badge.Ribbon>
           );
         })}
       </div>

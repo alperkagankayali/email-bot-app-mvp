@@ -11,6 +11,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { deleteArticle, getArticle } from "@/services/service/educationService";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import {
+  Badge,
   Button,
   Card,
   Modal,
@@ -25,9 +26,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 const VideoList: React.FC = () => {
   const t = useTranslations("pages");
-  const [open, setOpen] = useState({
+  const [open, setOpen] = useState<{ show: boolean; data: any }>({
     show: false,
-    data: "",
+    data: {},
   });
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector((state: RootState) => state.education.videoStatus);
@@ -74,7 +75,16 @@ const VideoList: React.FC = () => {
                 </Link>,
                 <EyeOutlined
                   key="ellipsis"
-                  onClick={() => setOpen({ show: true, data: video.videolink })}
+                  onClick={() => {
+                    setOpen({
+                      show: true,
+                      data: {
+                        link: video.videolink,
+                        title: video.title,
+                        description: video.description,
+                      },
+                    });
+                  }}
                 />,
                 <Popconfirm
                   title="Delete the article"
@@ -87,15 +97,22 @@ const VideoList: React.FC = () => {
                 </Popconfirm>,
               ];
               return (
-                <Card
-                  actions={actions}
-                  key={video._id}
-                  hoverable
-                  loading={status === "loading"}
-                  style={{ width: 240 }}
+                <Badge.Ribbon
+                  className="card-title-ribbon"
+                  color={video?.authorType === "superadmin" ? "green" : "red"}
+                  text={video?.authorType === "superadmin" ? "Global" : "Local"}
                 >
-                  <Meta title={video.title} description={video.description} />
-                </Card>
+                  <Card
+                    actions={actions}
+                    key={video._id}
+                    rootClassName="flex h-full"
+                    hoverable
+                    loading={status === "loading"}
+                    style={{ width: 240 }}
+                  >
+                    <Meta title={video.title} description={video.description} />
+                  </Card>
+                </Badge.Ribbon>
               );
             })}
           </div>
@@ -120,27 +137,34 @@ const VideoList: React.FC = () => {
           title=""
           centered
           open={open.show}
-          onOk={() => setOpen({ show: false, data: "" })}
-          onCancel={() => setOpen({ show: false, data: "" })}
+          onOk={() => setOpen({ show: false, data: {} })}
+          onCancel={() => setOpen({ show: false, data: {} })}
           width={1000}
         >
-          {!!open.data && (
-            <video
-              width="1000"
-              height="240"
-              controls
-              preload="none"
-              className="max-h-96"
-            >
-              <source src={open.data} type="video/mp4" />
-              <track
-                src="/path/to/captions.vtt"
-                kind="subtitles"
-                srcLang="en"
-                label="English"
+          {Object.keys(open.data).length > 0 && (
+            <div>
+              <Meta
+                title={open.data.title}
+                description={open.data.description}
+                className="mb-4"
               />
-              {open.data}
-            </video>
+              <video
+                width="1000"
+                height="240"
+                controls
+                preload="none"
+                className="max-h-96"
+              >
+                <source src={open.data.link} type="video/mp4" />
+                <track
+                  src="/path/to/captions.vtt"
+                  kind="subtitles"
+                  srcLang="en"
+                  label="English"
+                />
+                {open.data.link}
+              </video>
+            </div>
           )}
         </Modal>
       )}

@@ -41,7 +41,9 @@ export async function POST(request: Request) {
       email: body.email,
     });
     const newDate = new Date();
-    let user: IUser | null = await User.findOne({ email: body.email }).populate({ path: "company", model: Company });
+    let user: IUser | null = await User.findOne({ email: body.email }).populate(
+      { path: "company", model: Company }
+    );
     const jwtKey: string = process.env.JWT_SCREET_KEY as string;
     const cookieKey: string = process.env.COOKIE_SCREET_KEY as string;
 
@@ -61,7 +63,7 @@ export async function POST(request: Request) {
           nameSurname: superAdmin.nameSurname,
         },
         jwtKey,
-        { expiresIn: "2h" }
+        { expiresIn: "1d" }
       );
       const userSesion = { isLoggedIn: true, token, ...user };
       const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
@@ -77,7 +79,7 @@ export async function POST(request: Request) {
           ...message200,
           data: { token: token, type: "Bearer", user: superAdmin },
         },
-        { status: 200, statusText: message200.message }
+        { status: 200 }
       );
     } else if (
       user !== null &&
@@ -115,29 +117,33 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           ...message200,
-          data: { token: token, type: "Bearer", user: {
-            email: user?.email,
-            password: user?.password,
-            id: user?._id,
-            department: user.department,
-            language: user.language,
-            nameSurname: user.nameSurname,
-            role: user.role,
-            companyName: user?.company?.companyName,
-            companyId: user?.company?._id,
-            lisanceStartDate: user?.company?.lisanceStartDate,
-            lisanceEndDate: user?.company?.lisanceEndDate,
-            companyLogo: user?.company?.logo,
-          } },
+          data: {
+            token: token,
+            type: "Bearer",
+            user: {
+              email: user?.email,
+              password: user?.password,
+              id: user?._id,
+              department: user.department,
+              language: user.language,
+              nameSurname: user.nameSurname,
+              role: user.role,
+              companyName: user?.company?.companyName,
+              companyId: user?.company?._id,
+              lisanceStartDate: user?.company?.lisanceStartDate,
+              lisanceEndDate: user?.company?.lisanceEndDate,
+              companyLogo: user?.company?.logo,
+            },
+          },
         },
-        { status: 200, statusText: message200.message }
+        { status: 200 }
       );
     } else {
       return NextResponse.json(
         {
           ...message403,
         },
-        { status: 403, statusText: message403.message }
+        { status: 403 }
       );
     }
   } catch (error: any) {

@@ -40,7 +40,7 @@ export default function Login({ locale }: IProps) {
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!!values.password && values.password?.length > 3 && !!values.username) {
       const res = await handleLogin(values.username, values.password);
-      if (res.status === 200) {
+      if (res.success) {
         if (res.data.user.role === "superadmin") {
           localStorage.setItem("users", JSON.stringify([res?.data]));
           localStorage.setItem("token", JSON.stringify(res?.data?.token));

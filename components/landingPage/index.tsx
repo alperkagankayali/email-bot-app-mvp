@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Modal } from "antd";
+import { Badge, Card, Modal } from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -26,7 +26,7 @@ const LandingPageList: React.FC = () => {
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchLandingPage());
+      dispatch(fetchLandingPage(10));
     }
   }, [status, dispatch]);
 
@@ -55,24 +55,32 @@ const LandingPageList: React.FC = () => {
             />,
           ];
           return (
-            <Card
-              actions={actions}
-              key={landingpage._id}
-              hoverable
-              loading={status === "loading"}
-              style={{ width: 240 }}
-              cover={
-                <Image
-                  width={240}
-                  height={150}
-                  className="min-h-50 object-cover"
-                  alt={landingpage.title}
-                  src={status === "loading" ? noImage : landingpage.img}
-                />
+            <Badge.Ribbon
+              className="card-title-ribbon"
+              color={landingpage?.authorType === "superadmin" ? "green" : "red"}
+              text={
+                landingpage?.authorType === "superadmin" ? "Global" : "Local"
               }
             >
-              <Meta title={landingpage.title} />
-            </Card>
+              <Card
+                actions={actions}
+                key={landingpage._id}
+                hoverable
+                loading={status === "loading"}
+                style={{ width: 240 }}
+                cover={
+                  <Image
+                    width={240}
+                    height={150}
+                    className="min-h-50 object-cover"
+                    alt={landingpage.title}
+                    src={status === "loading" ? noImage : landingpage.img}
+                  />
+                }
+              >
+                <Meta title={landingpage.title} />
+              </Card>
+            </Badge.Ribbon>
           );
         })}
       </div>
