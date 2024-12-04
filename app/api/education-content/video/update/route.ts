@@ -1,7 +1,7 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
-import { message201, message401, message500 } from "@/constants";
+import { message201, message401, message404, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import Video from "@/models/video";
 
@@ -14,19 +14,54 @@ export async function POST(request: Request) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
-      }else if (verificationResult?.role === "admin" || verificationResult?.role === "superadmin")  {
-        const video = await Video.findOneAndUpdate(
-          { _id: id },
-          { $set: updateData },
-          { new: true }
-        );
-        return NextResponse.json(
-          {
-            ...message201,
-            data: video,
-          },
-          { status: 201 }
-        );
+      } else if (
+        verificationResult?.role === "admin" ||
+        verificationResult?.role === "superadmin"
+      ) {
+        const findVideo = await Video.findById(id);
+        if (!findVideo) {
+          return NextResponse.json(
+            {
+              ...message404,
+              message: "Video not found",
+            },
+            { status: 404 }
+          );
+        } else if (
+          verificationResult?.role === "admin" &&
+          findVideo.authorType === "superadmin"
+        ) {
+          const newVideo = new Video({
+            ...findVideo.toObject(),
+            ...updateData,
+            _id: undefined,
+            authorType: "User",
+            author: verificationResult.id,
+          });
+
+          await newVideo.save();
+
+          return NextResponse.json(
+            {
+              ...message201,
+              data: newVideo,
+            },
+            { status: 201 }
+          );
+        } else {
+          const article = await Video.findOneAndUpdate(
+            { _id: id },
+            { $set: updateData },
+            { new: true }
+          );
+          return NextResponse.json(
+            {
+              ...message201,
+              data: article,
+            },
+            { status: 201, statusText: message201.message }
+          );
+        }
       } else {
         return NextResponse.json(
           {

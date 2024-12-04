@@ -45,8 +45,8 @@ export const createEducation = async (data: any) => {
   const result: IResponseType = await postRequest(url, data, config);
   return result;
 };
-export const getQuiz = async (limit = 10, page = 1) => {
-  const queryParams = jsonToQueryString({ limit, page });
+export const getQuiz = async (limit = 10, page = 1, id = "") => {
+  const queryParams = jsonToQueryString({ limit, page, id });
   const url = servicesBaseUrl + finalConfig.GET_QUIZ + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
@@ -95,3 +95,13 @@ export const updateVideo = async (id: string, updateData: any) => {
   return result;
 };
 
+export const updateQuiz = async (id: string, updateData: any) => {
+  const url = servicesBaseUrl + finalConfig.UPDATE_QUIZ;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(
+    url,
+    { id, updateData },
+    config
+  );
+  return result;
+};

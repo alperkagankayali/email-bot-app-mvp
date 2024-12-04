@@ -69,7 +69,7 @@ const QuizList: React.FC = () => {
               const actions: React.ReactNode[] = [
                 <Link
                   href={
-                    "/dashboard/scenario/email-templates/update/" + quiz._id
+                    "/dashboard/academy/quiz/update/" + quiz._id
                   }
                 >
                   <EditOutlined key="edit" />

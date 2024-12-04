@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CloseOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -12,7 +12,11 @@ import {
   Space,
 } from "antd";
 import { IQuizType } from "@/types/quizType";
-import { createQuiz } from "@/services/service/educationService";
+import {
+  createQuiz,
+  getQuiz,
+  updateQuiz,
+} from "@/services/service/educationService";
 import { useRouter } from "@/i18n/routing";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
@@ -20,24 +24,45 @@ import { fetchQuiz } from "@/redux/slice/education";
 
 type IProps = {
   redirect?: boolean;
+  quizId?: string;
 };
-const QuizForm: React.FC<IProps> = ({ redirect = false }) => {
-  const [form] = Form.useForm();
+const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
   const [fieldsState, setFields] = useState<IQuizType>();
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const [form] = Form.useForm();
+
   const onFinish = async (values: IQuizType) => {
-    const res = await createQuiz(values);
+    let res = null;
+    if (!!quizId) {
+      res = await updateQuiz(quizId, values);
+    } else {
+      res = await createQuiz(values);
+    }
     if (res.success) {
       notification.info({ message: "Başarıyla kaydedildi" });
       if (redirect) {
-        dispatch(fetchQuiz(10))
+        dispatch(fetchQuiz(10));
         router.push("/dashboard/academy/quiz");
       }
     } else {
       notification.error({ message: res.message });
     }
   };
+
+  useEffect(() => {
+    if (!!quizId) {
+      const fetchArticleById = async () => {
+        const res = await getQuiz(10, 1, quizId);
+        form.setFieldsValue({
+          title: res.data.title,
+          description: res.data.description,
+          question: res.data.question,
+        });
+      };
+      fetchArticleById();
+    }
+  }, [quizId]);
 
   return (
     <div className="">
