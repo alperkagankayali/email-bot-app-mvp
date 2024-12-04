@@ -2,8 +2,12 @@
 
 import { noImage, randomColor } from "@/constants";
 import { Link } from "@/i18n/routing";
-import { fetchContent } from "@/redux/slice/education";
+import {
+  fetchContent,
+  handleEducationContentDataChange,
+} from "@/redux/slice/education";
 import { AppDispatch, RootState } from "@/redux/store";
+import { deleteEducation } from "@/services/service/educationService";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Card, List, Popconfirm, Tag } from "antd";
 import { useTranslations } from "next-intl";
@@ -21,11 +25,22 @@ const EducationList: React.FC = () => {
   const data = useSelector(
     (state: RootState) => state.education.educationContent
   );
+  const user = useSelector((state: RootState) => state.user.user);
+
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchContent(10));
     }
   }, [status, dispatch]);
+
+  const handleDeleteEducation = async (id: string) => {
+    const res = await deleteEducation(id);
+    dispatch(
+      handleEducationContentDataChange(
+        data?.filter((e) => e._id !== res.data?._id)
+      )
+    );
+  };
 
   return (
     <div>
@@ -36,7 +51,7 @@ const EducationList: React.FC = () => {
       </div>
       <div className="grid grid-cols-4 gap-9 mt-5">
         {data.map((item) => {
-          console.log('item',item)
+          console.log("item", item);
           const reduce = item.contents.reduce((acc: any, content) => {
             if (!acc[content.type]) {
               acc[content.type] = { type: content.type, count: 0 };
@@ -51,9 +66,12 @@ const EducationList: React.FC = () => {
             <Popconfirm
               title="Delete the article"
               description="Are you sure to delete this article?"
-              onConfirm={() => console.log(item._id)}
+              onConfirm={() => handleDeleteEducation(item._id)}
               okText="Yes"
               cancelText="No"
+              disabled={
+                item?.authorType === "superadmin" && user?.role !== "superadmin"
+              }
             >
               <DeleteOutlined />
             </Popconfirm>,

@@ -28,6 +28,7 @@ const QuizList: React.FC = () => {
   });
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector((state: RootState) => state.education.quizStatus);
+  const user = useSelector((state: RootState) => state.user.user);
   const data = useSelector((state: RootState) => state.education.quiz);
   const totalItems = useSelector(
     (state: RootState) => state.education.quizTotalItems
@@ -80,6 +81,7 @@ const QuizList: React.FC = () => {
                 />,
                 <Popconfirm
                   title="Delete the quiz"
+                  disabled={quiz?.authorType === "superadmin" && user?.role !== "superadmin"}
                   description="Are you sure to delete this quiz?"
                   onConfirm={() => handleDeletQuiz(quiz._id)}
                   okText="Yes"

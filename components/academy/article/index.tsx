@@ -30,16 +30,19 @@ const ArticleList: React.FC = () => {
   const status = useSelector(
     (state: RootState) => state.education.articleStatus
   );
+  const user = useSelector((state: RootState) => state.user.user);
   const data = useSelector((state: RootState) => state.education.article);
   const totalItems = useSelector(
     (state: RootState) => state.education.articleTotalItems
   );
   const [pageSize, setPageSize] = useState(10);
+  
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchArticle(10));
     }
   }, [status, dispatch]);
+
   const handleDeletArticle = async (id: string) => {
     const res = await deleteArticle(id);
     dispatch(
@@ -79,6 +82,7 @@ const ArticleList: React.FC = () => {
                   description="Are you sure to delete this article?"
                   onConfirm={() => handleDeletArticle(article._id)}
                   okText="Yes"
+                  disabled={article?.authorType === "superadmin" && user?.role !== "superadmin"}
                   cancelText="No"
                 >
                   <DeleteOutlined />

@@ -66,8 +66,30 @@ export const getEducationContent = async (limit = 10, page = 1) => {
   return result;
 };
 
+export const getEducationDetail = async (id: string) => {
+  const queryParams = jsonToQueryString({ id });
+  const url = servicesBaseUrl + finalConfig.GET_EDUCATION_CONTENT + queryParams;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url, config);
+  return result;
+};
+
 export const deleteArticle = async (id: string) => {
   const url = servicesBaseUrl + finalConfig.DELETE_ARTICLE;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};
+
+export const deleteVideo = async (id: string) => {
+  const url = servicesBaseUrl + finalConfig.DELETE_VIDEO;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};
+
+export const deleteEducation = async (id: string) => {
+  const url = servicesBaseUrl + finalConfig.DELETE_EDUCATION_CONTENT;
   const config = headers.content_type.application_json;
   const result: IResponseType = await postRequest(url, { id }, config);
   return result;

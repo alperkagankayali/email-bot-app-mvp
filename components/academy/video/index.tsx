@@ -8,7 +8,7 @@ import {
   handleVideoDataChange,
 } from "@/redux/slice/education";
 import { AppDispatch, RootState } from "@/redux/store";
-import { deleteArticle, getArticle } from "@/services/service/educationService";
+import { deleteArticle, deleteVideo, getArticle } from "@/services/service/educationService";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import {
   Badge,
@@ -43,8 +43,10 @@ const VideoList: React.FC = () => {
       dispatch(fetchVideo(10));
     }
   }, [status, dispatch]);
-  const handleDeletArticle = async (id: string) => {
-    const res = await deleteArticle(id);
+
+
+  const handleDeleteVideo = async (id: string) => {
+    const res = await deleteVideo(id);
     dispatch(
       handleVideoDataChange(data?.filter((e) => e._id !== res.data?._id))
     );
@@ -89,7 +91,7 @@ const VideoList: React.FC = () => {
                 <Popconfirm
                   title="Delete the article"
                   description="Are you sure to delete this article?"
-                  onConfirm={() => handleDeletArticle(video._id)}
+                  onConfirm={() => handleDeleteVideo(video._id)}
                   okText="Yes"
                   cancelText="No"
                 >
