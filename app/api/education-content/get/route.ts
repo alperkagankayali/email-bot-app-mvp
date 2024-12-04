@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { message200, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import Course from "@/models/course";
+var mongoose = require('mongoose');
 
 export async function GET(request: Request) {
   try {
@@ -30,7 +31,7 @@ export async function GET(request: Request) {
         const courses = await Course.aggregate([
           // 1. Filtreleme
           {
-            $match: { isDelete: false, _id: id }, // Silinmemiş kursları getiriyoruz.
+            $match: { _id: new mongoose.Types.ObjectId(id), isDelete: false }, // Silinmemiş kursları getiriyoruz.
           },
 
           // 2. Company bilgilerini eklemek için lookup
@@ -210,7 +211,6 @@ export async function GET(request: Request) {
             },
           },
         ]);
-        console.log(courses);
         return NextResponse.json(
           {
             ...message200,

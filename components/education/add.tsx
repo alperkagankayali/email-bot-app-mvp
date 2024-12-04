@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, notification, Steps, theme } from "antd";
 import EducationInfoForm from "./form/educationInfoForm";
 import EducationContentForm from "./form/educationContentForm";
@@ -8,14 +8,25 @@ import { createEducation } from "@/services/service/educationService";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useRouter } from "@/i18n/routing";
-import { fetchContent } from "@/redux/slice/education";
+import { fetchContent, fetchEducationById } from "@/redux/slice/education";
 
-type IProps = {};
-const EducationAddForm: React.FC<IProps> = () => {
-  const educationContent = useSelector((state:RootState) => state.education.createEducation)
-  const dispatch = useDispatch<AppDispatch>()
+type IProps = {
+  id?: string;
+};
+const EducationAddForm: React.FC<IProps> = ({ id }) => {
+  const educationContent = useSelector(
+    (state: RootState) => state.education.createEducation
+  );
+  const detailStatus = useSelector(
+    (state: RootState) => state.education.educationDetailStatus
+  );
+  const educationDetail = useSelector(
+    (state: RootState) => state.education.educationDetail
+  );
+  const dispatch = useDispatch<AppDispatch>();
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
+
   const next = () => {
     setCurrent(current + 1);
   };
@@ -31,13 +42,13 @@ const EducationAddForm: React.FC<IProps> = () => {
     },
     {
       title: "Education Content",
-      content: <EducationContentForm  next={next}/>,
+      content: <EducationContentForm next={next} />,
     },
     {
       title: "Education Content Order ",
       content: (
         <>
-         <OrderForm />
+          <OrderForm />
         </>
       ),
     },
@@ -50,17 +61,24 @@ const EducationAddForm: React.FC<IProps> = () => {
     borderRadius: token.borderRadiusLG,
     marginTop: 16,
   };
-  const router = useRouter()
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!!id && educationDetail?._id !== id && detailStatus !== 'loading') {
+      dispatch(fetchEducationById(id));
+    }
+  }, [detailStatus, dispatch, id]);
+
   const onFinish = async () => {
     const res = await createEducation(educationContent);
     if (res.status) {
       notification.info({ message: "Başarıyla kaydedildi" });
-      dispatch(fetchContent(6))
-      router.push("/dashboard/education")
+      dispatch(fetchContent(6));
+      router.push("/dashboard/education");
     } else {
       notification.error({ message: res.message });
     }
-  }
+  };
 
   return (
     <>

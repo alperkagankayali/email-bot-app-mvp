@@ -127,7 +127,7 @@ const OrderForm: React.FC = () => {
       };
     }),
   ];
-  console.log("newDAta2", newDataSource);
+  
   const [dataSource, setDataSource] = useState(newDataSource);
   const dispatch = useDispatch();
   const sensors = useSensors(

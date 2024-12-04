@@ -95,6 +95,7 @@ const QuizList: React.FC = () => {
                   className="card-title-ribbon"
                   color={quiz?.authorType === "superadmin" ? "green" : "red"}
                   text={quiz?.authorType === "superadmin" ? "Global" : "Local"}
+                  key={quiz._id}
                 >
                   <Card
                     actions={actions}

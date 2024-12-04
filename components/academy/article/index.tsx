@@ -95,6 +95,7 @@ const ArticleList: React.FC = () => {
                   text={
                     article?.authorType === "superadmin" ? "Global" : "Local"
                   }
+                  key={article._id}
                 >
                   <Card
                     actions={actions}

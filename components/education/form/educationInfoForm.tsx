@@ -1,11 +1,11 @@
 "use client";
 import { Button, Form, FormProps, Input, notification, Select } from "antd";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { ICourse } from "@/types/courseType";
 import FileUpload from "@/components/fileUpload/inedx";
 import { handleEducationDataChange } from "@/redux/slice/education";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const { Option } = Select;
 type IProps = {
@@ -15,6 +15,9 @@ const EducationInfoForm = ({ next }: IProps) => {
   const [form] = Form.useForm();
   const [img, setImg] = useState("");
   const dispatch = useDispatch<AppDispatch>();
+  const educationDetail = useSelector(
+    (state: RootState) => state.education.educationDetail
+  );
 
   const onFinish: FormProps<ICourse>["onFinish"] = async (values) => {
     if (!!img) {
@@ -24,6 +27,16 @@ const EducationInfoForm = ({ next }: IProps) => {
     dispatch(handleEducationDataChange(values));
     next();
   };
+
+  useEffect(() => {
+    if (!!educationDetail) {
+      form.setFieldsValue({
+        title: educationDetail.title,
+        description: educationDetail.description,
+      });
+      setImg(educationDetail.img);
+    }
+  }, [educationDetail]);
 
   return (
     <>
@@ -74,7 +87,7 @@ const EducationInfoForm = ({ next }: IProps) => {
             <Form.Item<ICourse> name="img">
               <FileUpload
                 handleUploadFile={(data) => setImg(data)}
-                defaultValue={""}
+                defaultValue={img}
               />
             </Form.Item>
           </div>

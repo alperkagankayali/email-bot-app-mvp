@@ -103,6 +103,7 @@ const VideoList: React.FC = () => {
                   className="card-title-ribbon"
                   color={video?.authorType === "superadmin" ? "green" : "red"}
                   text={video?.authorType === "superadmin" ? "Global" : "Local"}
+                  key={video._id}
                 >
                   <Card
                     actions={actions}

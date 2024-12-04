@@ -2,6 +2,7 @@
 import {
   getArticle,
   getEducationContent,
+  getEducationDetail,
   getQuiz,
   getVideo,
 } from "@/services/service/educationService";
@@ -17,6 +18,7 @@ interface IEducationSlice {
   articleStatus: "loading" | "succeeded" | "failed" | "idle";
   videoStatus: "loading" | "succeeded" | "failed" | "idle";
   educationStatus: "loading" | "succeeded" | "failed" | "idle";
+  educationDetailStatus: "loading" | "succeeded" | "failed" | "idle";
   videos: IVideoType[];
   article: IArticleType[];
   educationContent: ICourse[];
@@ -28,6 +30,7 @@ interface IEducationSlice {
   selectVideo: string[];
   selectQuiz: string[];
   selectArticle: string[];
+  educationDetail: ICourse | null;
 }
 
 const initialState: IEducationSlice = {
@@ -36,6 +39,7 @@ const initialState: IEducationSlice = {
   articleStatus: "idle",
   videoStatus: "idle",
   educationStatus: "idle",
+  educationDetailStatus: "idle",
   videos: [],
   article: [],
   educationContent: [],
@@ -47,6 +51,7 @@ const initialState: IEducationSlice = {
   selectVideo: [],
   selectQuiz: [],
   selectArticle: [],
+  educationDetail: null,
 };
 
 const educationSlice = createSlice({
@@ -123,6 +128,17 @@ const educationSlice = createSlice({
       .addCase(fetchContent.rejected, (state) => {
         state.educationStatus = "failed";
       });
+    builder
+      .addCase(fetchEducationById.pending, (state) => {
+        state.educationDetailStatus = "loading";
+      })
+      .addCase(fetchEducationById.fulfilled, (state, action) => {
+        state.educationDetailStatus = "succeeded";
+        state.educationDetail = action.payload.data[0];
+      })
+      .addCase(fetchEducationById.rejected, (state) => {
+        state.educationDetailStatus = "failed";
+      });
   },
 });
 
@@ -130,6 +146,14 @@ export const fetchContent = createAsyncThunk(
   "/education-content",
   async (limit: number) => {
     const response = await getEducationContent(limit, 1);
+    return response;
+  }
+);
+
+export const fetchEducationById = createAsyncThunk(
+  "/education-content/get",
+  async (id: string) => {
+    const response = await getEducationDetail(id);
     return response;
   }
 );

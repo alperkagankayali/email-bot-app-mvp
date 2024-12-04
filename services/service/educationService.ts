@@ -68,7 +68,7 @@ export const getEducationContent = async (limit = 10, page = 1) => {
 
 export const getEducationDetail = async (id: string) => {
   const queryParams = jsonToQueryString({ id });
-  const url = servicesBaseUrl + finalConfig.GET_EDUCATION_CONTENT + queryParams;
+  const url = servicesBaseUrl + finalConfig.GET_BY_ID_EDUCATION_CONTENT + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
   return result;

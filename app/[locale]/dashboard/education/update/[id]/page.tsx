@@ -1,9 +1,9 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import QuizForm from "@/components/education/form/quizForm";
+import EducationAddForm from "@/components/education/add";
 
-const QuizUpdate: React.FC <{
+const EducationUpdate: React.FC <{
   params: { id: string }
 }>= async ({
   params: { id },
@@ -13,11 +13,11 @@ const QuizUpdate: React.FC <{
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="menu-academy-article" />
         <div>
-          <QuizForm redirect={true} quizId={id} />
+        <EducationAddForm id={id} />
         </div>
       </div>
     </DefaultLayout>
   );
 };
 
-export default QuizUpdate;
+export default EducationUpdate;

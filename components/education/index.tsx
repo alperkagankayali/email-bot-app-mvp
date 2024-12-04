@@ -51,7 +51,6 @@ const EducationList: React.FC = () => {
       </div>
       <div className="grid grid-cols-4 gap-9 mt-5">
         {data.map((item) => {
-          console.log("item", item);
           const reduce = item.contents.reduce((acc: any, content) => {
             if (!acc[content.type]) {
               acc[content.type] = { type: content.type, count: 0 };
@@ -81,6 +80,7 @@ const EducationList: React.FC = () => {
               className="card-title-ribbon"
               color={item?.authorType === "superadmin" ? "green" : "red"}
               text={item?.authorType === "superadmin" ? "Global" : "Local"}
+              key={item._id}
             >
               <Card
                 actions={actions}
@@ -95,7 +95,9 @@ const EducationList: React.FC = () => {
                     height={100}
                     className="h-30 object-contain bg-[#03162b]"
                     alt={item.title}
-                    src={status === "loading" ? noImage : item.img}
+                    src={
+                      status === "loading" || !!!item.img ? noImage : item.img
+                    }
                   />
                 }
               >
