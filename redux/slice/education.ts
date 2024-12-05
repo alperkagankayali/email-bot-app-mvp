@@ -134,6 +134,9 @@ const educationSlice = createSlice({
       })
       .addCase(fetchEducationById.fulfilled, (state, action) => {
         state.educationDetailStatus = "succeeded";
+        state.selectArticle = action.payload.data[0].contents?.filter((e:any) => e.type === "article")?.map((e:any) => e.refId?._id)
+        state.selectQuiz = action.payload.data[0].contents?.filter((e:any) => e.type === "quiz")?.map((e:any) => e.refId?._id)
+        state.selectVideo = action.payload.data[0].contents?.filter((e:any) => e.type === "video")?.map((e:any) => e.refId?._id)
         state.educationDetail = action.payload.data[0];
       })
       .addCase(fetchEducationById.rejected, (state) => {

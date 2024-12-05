@@ -60,6 +60,10 @@ input:-webkit-autofill:active {
 .card-checkbox .ant-checkbox{
 display: none !important;
 }
+.card-checkbox-check span:nth-child(2){
+  display: flex;
+  height: 100%;
+}
 
 .card-title-ribbon{
   inset-inline-end: -30px !important;

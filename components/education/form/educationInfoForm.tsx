@@ -20,7 +20,7 @@ const EducationInfoForm = ({ next }: IProps) => {
   );
 
   const onFinish: FormProps<ICourse>["onFinish"] = async (values) => {
-    if (!!img) {
+    if (img === "") {
       notification.error({ message: "Please upload your logo" });
     }
     values.img = img;
@@ -84,7 +84,7 @@ const EducationInfoForm = ({ next }: IProps) => {
             Fotoğraf
           </label>
           <div className="relative">
-            <Form.Item<ICourse> name="img">
+            <Form.Item<ICourse> name="img" >
               <FileUpload
                 handleUploadFile={(data) => setImg(data)}
                 defaultValue={img}

@@ -4,7 +4,7 @@ import { Button, notification, Steps, theme } from "antd";
 import EducationInfoForm from "./form/educationInfoForm";
 import EducationContentForm from "./form/educationContentForm";
 import OrderForm from "./form/orderForm";
-import { createEducation } from "@/services/service/educationService";
+import { createEducation, updateEducation } from "@/services/service/educationService";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useRouter } from "@/i18n/routing";
@@ -70,7 +70,12 @@ const EducationAddForm: React.FC<IProps> = ({ id }) => {
   }, [detailStatus, dispatch, id]);
 
   const onFinish = async () => {
-    const res = await createEducation(educationContent);
+    let res = null;
+    if (!!id) {
+      res = await updateEducation(id, educationContent);
+    } else {
+      res = await await createEducation(educationContent);
+    }
     if (res.status) {
       notification.info({ message: "Başarıyla kaydedildi" });
       dispatch(fetchContent(6));

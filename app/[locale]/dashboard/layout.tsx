@@ -30,7 +30,7 @@ export default function RootLayout({
 
   return (
     <html lang={locale}>
-      <body suppressHydrationWarning={true}>
+      <body >
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
           {loading ? <Loader /> : children}
         </div>

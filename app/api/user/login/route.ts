@@ -63,7 +63,7 @@ export async function POST(request: Request) {
           nameSurname: superAdmin.nameSurname,
         },
         jwtKey,
-        { expiresIn: "1d" }
+        { expiresIn: "10d" }
       );
       const userSesion = { isLoggedIn: true, token, ...user };
       const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data

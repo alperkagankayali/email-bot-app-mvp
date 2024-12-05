@@ -1,5 +1,8 @@
+import { IArticleType } from "./articleType";
 import { ICompany } from "./companyType";
+import { IQuizType } from "./quizType";
 import { IUser } from "./userType";
+import { IVideoType } from "./videoType";
 export interface ICourse {
   title: string;
   img: string;
@@ -20,7 +23,7 @@ enum ContentType {
 }
 export interface Content {
   type: ContentType; // İçerik türü (video, quiz, article)
-  refId: string; // Referans belge ID'si
+  refId:  IArticleType | IVideoType | IQuizType; // Referans belge ID'si
   order: number; // Sıralama bilgisi
 }
 

@@ -7,12 +7,25 @@ import {
   handleEducationContentDataChange,
 } from "@/redux/slice/education";
 import { AppDispatch, RootState } from "@/redux/store";
-import { deleteEducation } from "@/services/service/educationService";
+import {
+  deleteEducation,
+  getEducationContent,
+} from "@/services/service/educationService";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Avatar, Badge, Button, Card, List, Popconfirm, Tag } from "antd";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  List,
+  Pagination,
+  PaginationProps,
+  Popconfirm,
+  Tag,
+} from "antd";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 const { Meta } = Card;
 
@@ -26,6 +39,9 @@ const EducationList: React.FC = () => {
     (state: RootState) => state.education.educationContent
   );
   const user = useSelector((state: RootState) => state.user.user);
+  const totalItems = useSelector(
+    (state: RootState) => state.education.educationContentTotalItems
+  );
 
   useEffect(() => {
     if (status === "idle") {
@@ -40,6 +56,19 @@ const EducationList: React.FC = () => {
         data?.filter((e) => e._id !== res.data?._id)
       )
     );
+  };
+
+  const [pageSize, setPageSize] = useState(8);
+
+  const onChangePagitnation: PaginationProps["onChange"] = async (
+    page,
+    pageNumber
+  ) => {
+    const res = await getEducationContent(pageNumber, page);
+    if (res.success && !!data) {
+      dispatch(handleEducationContentDataChange(res.data));
+    }
+    setPageSize(pageNumber);
   };
 
   return (
@@ -124,6 +153,20 @@ const EducationList: React.FC = () => {
             </Badge.Ribbon>
           );
         })}
+      </div>
+      <div className="mt-10 mb-20 w-full">
+        {!!totalItems && (
+          <Pagination
+            onChange={onChangePagitnation}
+            total={totalItems}
+            pageSize={pageSize}
+            showTotal={(total) => `Total ${total} items`}
+            showSizeChanger
+            defaultPageSize={8}
+            align="center"
+            pageSizeOptions={[8, 16, 24]}
+          />
+        )}
       </div>
     </div>
   );

@@ -126,7 +126,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
                           message: "Sorunun başlığı zorunludur.",
                         },
                       ]}
-                      label="Title"
+                      label="Question"
                       name={[field.name, "title"]}
                     >
                       <Input />
@@ -143,7 +143,18 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
                     >
                       <Radio.Group>
                         <Radio value="single">Single Answer</Radio>
-                        <Radio value="multiple">Multiple Answer</Radio>
+                        <Radio
+                          value="multiple"
+                          disabled={
+                            fieldsState?.question[field.name]?.options === undefined ||
+                            fieldsState?.question[field.name]?.options
+                              ?.length === 0 ||
+                            fieldsState?.question[field.name]?.options
+                              ?.length === 1 
+                          }
+                        >
+                          Multiple Answer
+                        </Radio>
                       </Radio.Group>
                     </Form.Item>
                     {!!fieldsState &&

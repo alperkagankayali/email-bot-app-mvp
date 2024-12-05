@@ -127,3 +127,15 @@ export const updateQuiz = async (id: string, updateData: any) => {
   );
   return result;
 };
+
+export const updateEducation = async (id: string, updateData: any) => {
+  const url = servicesBaseUrl + finalConfig.UPDATE_EDUCATION_CONTENT;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(
+    url,
+    { id, updateData },
+    config
+  );
+  return result;
+};
+

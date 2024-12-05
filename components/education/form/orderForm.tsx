@@ -15,11 +15,16 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { List, Table } from "antd";
+import { Avatar, List, Table } from "antd";
 import type { TableColumnsType } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { handleEducationDataChange } from "@/redux/slice/education";
+import {
+  AccountBookTwoTone,
+  BookTwoTone,
+  VideoCameraTwoTone,
+} from "@ant-design/icons";
 
 interface DataType {
   key: string;
@@ -82,52 +87,59 @@ const OrderForm: React.FC = () => {
   const selectedVideo = useSelector(
     (state: RootState) => state.education.selectVideo
   );
-  const videos = useSelector((state: RootState) => state.education.videos);
   const selectedArticle = useSelector(
     (state: RootState) => state.education.selectArticle
   );
-  const articles = useSelector((state: RootState) => state.education.article);
   const selectedQuiz = useSelector(
     (state: RootState) => state.education.selectQuiz
   );
-  const quiz = useSelector((state: RootState) => state.education.quiz);
   const createEducation = useSelector(
     (state: RootState) => state.education.createEducation
+  );
+  const educationDetail = useSelector(
+    (state: RootState) => state.education.educationDetail
   );
 
   const newDataSource = [
     ...selectedVideo.map((e) => {
-      const findData = videos.find((video) => video._id === e);
+      const findData = educationDetail?.contents.find(
+        (education) => education.type === "video" && education.refId?._id === e
+      );
       return {
         type: "video",
         refId: e,
-        order: 1,
-        title: findData?.title,
-        description: findData?.description,
+        order: findData?.order,
+        title: findData?.refId.title,
+        description: findData?.refId?.description,
       };
     }),
     ...selectedArticle.map((e) => {
-      const findData = articles.find((article) => article._id === e);
+      const findData = educationDetail?.contents.find(
+        (education) =>
+          education.type === "article" && education.refId?._id === e
+      );
       return {
         type: "article",
         refId: e,
-        order: 1,
-        title: findData?.title,
-        description: findData?.description,
+        order: findData?.order,
+        title: findData?.refId.title,
+        description: findData?.refId?.description,
       };
     }),
     ...selectedQuiz.map((e) => {
-      const findData = quiz.find((element) => element._id === e);
+      const findData = educationDetail?.contents.find(
+        (education) => education.type === "quiz" && education.refId?._id === e
+      );
       return {
         type: "quiz",
         refId: e,
-        order: 1,
-        title: findData?.title,
-        description: findData?.description,
+        order: findData?.order,
+        title: findData?.refId.title,
+        description: findData?.refId?.description,
       };
     }),
   ];
-  
+
   const [dataSource, setDataSource] = useState(newDataSource);
   const dispatch = useDispatch();
   const sensors = useSensors(
@@ -171,15 +183,41 @@ const OrderForm: React.FC = () => {
         items={dataSource.map((i) => i.refId) ?? []}
         strategy={verticalListSortingStrategy}
       >
-        <List bordered>
-          {dataSource.map((e) => {
-            return (
-              <Row data-row-key={e.refId} key={e.refId}>
-                {e.type}
-              </Row>
-            );
-          })}
-        </List>
+        <List
+          itemLayout="horizontal"
+          dataSource={dataSource}
+          renderItem={(item, index) => (
+            <Row data-row-key={item.refId} key={item.refId}>
+              <List.Item className="w-full">
+                <List.Item.Meta
+                  avatar={
+                    <Avatar
+                      size={{
+                        xs: 14,
+                        sm: 22,
+                        md: 30,
+                        lg: 44,
+                        xl: 60,
+                        xxl: 60,
+                      }}
+                      icon={
+                        item.type === "video" ? (
+                          <VideoCameraTwoTone />
+                        ) : item.type === "article" ? (
+                          <BookTwoTone />
+                        ) : (
+                          <AccountBookTwoTone />
+                        )
+                      }
+                    />
+                  }
+                  title={<p>{item.title}</p>}
+                  description={item.description}
+                />
+              </List.Item>
+            </Row>
+          )}
+        />
       </SortableContext>
     </DndContext>
   );
