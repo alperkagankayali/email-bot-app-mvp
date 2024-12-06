@@ -1,10 +1,9 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from 'next/server';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import User from '../../../../models/user';
-import EmailTemplate from '../../../../models/emailTemplate';
-import { getS3Object } from "@/lib/aws/s3/getS3Object";
-
+import User from '../../../../../models/user';
+import EmailTemplate from '../../../../../models/emailTemplate';
+import { embedTrackingPixel } from '../../../../../lib/email/prepareEmail';
 const sesClient = new SESClient({ region: 'eu-north-1' });
 
 export async function POST(request: Request) {
@@ -23,7 +22,9 @@ export async function POST(request: Request) {
     if (!emailContent) return NextResponse.json({ message: 'Email content not found' }, { status: 404 });
     const subject = emailContent.title;
   
-    const htmlBody = emailContent.content;
+    let htmlBody = emailContent.content;
+    // add open get request code here
+    htmlBody = embedTrackingPixel(htmlBody, emailId, userId)
     // SES SendEmailCommand setup
     const emailParams = {
       Destination: { ToAddresses: [toEmail] },
