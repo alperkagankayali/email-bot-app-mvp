@@ -8,6 +8,8 @@ const newsBlogSchema = new Schema<INewsBlog>({
   updated_at: { type: Date, default: Date.now },
   featuredImageUrl: { type: String, required: true },
   category: { type: String, required: true },
+  language: { type: String, required: true },
+  previewCount: { type: Number, default: 0 },
   tags: { type: [String], default: [] },
   authorType: {
     type: String,
@@ -17,9 +19,10 @@ const newsBlogSchema = new Schema<INewsBlog>({
   author: {
     type: Types.ObjectId,
     required: true,
-    refPath: "authorType", 
+    refPath: "authorType",
   },
   isPublished: { type: Boolean, default: false },
+  company: { type: Types.ObjectId, ref: "Company" },
 });
 
 const News = models.News || model<INewsBlog>("News", newsBlogSchema);

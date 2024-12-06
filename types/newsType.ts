@@ -1,3 +1,4 @@
+import { ICompany } from "./companyType";
 import { ISuperAdmin } from "./superAdmingType";
 import { IUser } from "./userType";
 
@@ -12,4 +13,7 @@ export interface INewsBlog {
   tags: string[]; // Haber etiketleri
   isPublished: boolean; // Haber yayında mı?
   authorType: "user" | "superadmin";
+  company: ICompany;
+  language: string;
+  previewCount: number;
 }

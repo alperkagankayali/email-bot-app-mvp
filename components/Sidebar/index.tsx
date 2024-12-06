@@ -8,6 +8,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import {
+  BoxPlotOutlined,
   FundViewOutlined,
   MailOutlined,
   ReadOutlined,
@@ -256,6 +257,17 @@ const menuGroups = [
           },
           { label: "menu-news", route: "/dashboard/news" },
         ],
+      },
+    ],
+  },
+  {
+    name: "menu-campaign",
+    menuItems: [
+      {
+        icon: <BoxPlotOutlined />,
+        label: "menu-campaign",
+        route: "/dashboard/campaign",
+        children: [{ label: "menu-news", route: "/dashboard/news" }],
       },
     ],
   },
