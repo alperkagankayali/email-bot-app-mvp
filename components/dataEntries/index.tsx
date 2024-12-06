@@ -57,6 +57,7 @@ const DataEntriesList: React.FC = () => {
               className="card-title-ribbon"
               color={dataEntry?.authorType === "superadmin" ? "green" : "red"}
               text={dataEntry?.authorType === "superadmin" ? "Global" : "Local"}
+              key={dataEntry._id}
             >
               <Card
                 actions={actions}

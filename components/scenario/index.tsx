@@ -220,6 +220,7 @@ const ScenarioList: React.FC = () => {
               className="card-title-ribbon"
               color={scenario?.authorType === "superadmin" ? "green" : "red"}
               text={scenario?.authorType === "superadmin" ? "Global" : "Local"}
+              key={scenario._id}
             >
               <Card
                 actions={actions}

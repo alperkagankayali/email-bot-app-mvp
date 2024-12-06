@@ -97,6 +97,7 @@ const EmailTemplateList: React.FC = () => {
               text={
                 emailTemplate?.authorType === "superadmin" ? "Global" : "Local"
               }
+              key={emailTemplate._id}
             >
               <Card
                 actions={actions}

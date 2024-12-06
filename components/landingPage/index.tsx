@@ -61,6 +61,7 @@ const LandingPageList: React.FC = () => {
               text={
                 landingpage?.authorType === "superadmin" ? "Global" : "Local"
               }
+              key={landingpage._id}
             >
               <Card
                 actions={actions}
