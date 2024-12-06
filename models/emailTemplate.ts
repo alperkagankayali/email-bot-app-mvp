@@ -16,7 +16,8 @@ const emailTemplateSchema = new Schema<IEmailTemplate>({
     type: Types.ObjectId,
     required: true,
     refPath: "authorType", 
-  }
+  },
+  company: { type: Types.ObjectId, ref: "Company" },
 });
 
 const EmailTemplate = models.EmailTemplate || model<IEmailTemplate>("EmailTemplate", emailTemplateSchema);

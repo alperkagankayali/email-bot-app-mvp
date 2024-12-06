@@ -15,12 +15,12 @@ export async function GET(request: Request) {
     const skip = (page - 1) * limit; //
     const id = searchParams.get("id");
     if (!!token) {
-      const verificationResult = await verifyToken(token.split(" ")[1]);
+      const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
       } else {
         if (!!id) {
-          const landingPage = await LandingPage.findById(id)
+          const landingPage = await LandingPage.findById(id);
           return NextResponse.json(
             {
               ...message200,
@@ -30,10 +30,20 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
-          const landingPageTotal = await LandingPage.countDocuments(
-            { isDelete: false }
-          );
-          const landingPage = await LandingPage.find({ isDelete: false })
+          const landingPageTotal = await LandingPage.countDocuments({
+            isDelete: false,
+            $or: [
+              { company: verificationResult.companyId },
+              { authorType: "superadmin" },
+            ],
+          });
+          const landingPage = await LandingPage.find({
+            isDelete: false,
+            $or: [
+              { company: verificationResult.companyId },
+              { authorType: "superadmin" },
+            ],
+          })
             .skip(skip)
             .limit(limit);
           return NextResponse.json(

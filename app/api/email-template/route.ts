@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     const id = searchParams.get("id");
 
     if (!!token) {
-      const verificationResult = await verifyToken(token.split(" ")[1]);
+      const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
       } else {
@@ -34,8 +34,18 @@ export async function GET(request: Request) {
         } else {
           const emailTemplateTotal = await EmailTemplate.countDocuments({
             isDelete: false,
+            $or: [
+              { company: verificationResult.companyId },
+              { authorType: "superadmin" },
+            ],
           });
-          const emailTemplate = await EmailTemplate.find({ isDelete: false })
+          const emailTemplate = await EmailTemplate.find({
+            isDelete: false,
+            $or: [
+              { company: verificationResult.companyId },
+              { authorType: "superadmin" },
+            ],
+          })
             .skip(skip)
             .limit(limit);
           return NextResponse.json(

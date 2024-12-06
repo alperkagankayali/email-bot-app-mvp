@@ -17,9 +17,10 @@ export async function POST(request: Request) {
       } else {
         const emailTemplateCreate = new EmailTemplate({
           ...body,
-          authorType:
-            verificationResult?.role === "superadmin" ? "superadmin" : "User",
           author: verificationResult?.id,
+          authorType:
+            verificationResult?.role === "admin" ? "user" : "superadmin",
+          company: verificationResult?.companyId,
         });
         const emailTemplate = await emailTemplateCreate.save();
         return NextResponse.json(
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
             ...message201,
             data: emailTemplate,
           },
-          { status: 201, statusText: message201.message }
+          { status: 201 }
         );
       }
     } else {
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
         {
           ...message401,
         },
-        { status: 401, statusText: message401.message }
+        { status: 401 }
       );
     }
   } catch (error: any) {

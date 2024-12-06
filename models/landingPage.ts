@@ -16,6 +16,7 @@ const landingPageSchema = new Schema<ILandingPage>({
     type: Types.ObjectId,
     refPath: "authorType", 
   },
+  company: { type: Types.ObjectId, ref: "Company" },
 });
 
 const LandingPage = models.LandingPage || model<ILandingPage>("LandingPage", landingPageSchema);

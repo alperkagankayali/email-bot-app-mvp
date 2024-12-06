@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 import { message201, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
-import EmailTemplate from "@/models/emailTemplate";
+import LandingPage from "@/models/landingPage";
 
 export async function POST(request: Request) {
   try {
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
       } else {
-        const emailTemplate = await EmailTemplate.findOneAndUpdate(
+        const landingPage = await LandingPage.findOneAndUpdate(
           { _id: id },
           { $set: { isDelete: true } },
           { new: true }
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             ...message201,
-            data: emailTemplate,
+            data: landingPage,
           },
           { status: 201 }
         );

@@ -1,3 +1,4 @@
+import { ICompany } from "./companyType";
 import { ILanguage } from "./languageType";
 import { ISuperAdmin } from "./superAdmingType";
 import { IUser } from "./userType";
@@ -41,6 +42,7 @@ export interface IDataEntry {
   author: IUser | ISuperAdmin;
   created_at: Date;
   authorType: string;
+  company: ICompany;
   _id: string;
 }
 export interface IEmailTemplate {
@@ -52,11 +54,13 @@ export interface IEmailTemplate {
   created_at: Date;
   scenarioType: IScenarioType;
   authorType: string;
+  company: ICompany;
   _id: string;
 }
 export interface ILandingPage {
   title: string;
   img: string;
+  company: ICompany;
   content: string;
   isDelete?: boolean;
   author: IUser | ISuperAdmin;

@@ -25,7 +25,7 @@ export async function POST(request: Request) {
             ...message201,
             data: landingPage,
           },
-          { status: 201, statusText: message201.message }
+          { status: 201 }
         );
       }
     } else {
@@ -33,13 +33,10 @@ export async function POST(request: Request) {
         {
           ...message401,
         },
-        { status: 401, statusText: message401.message }
+        { status: 401 }
       );
     }
   } catch (error: any) {
-    return NextResponse.json(
-      { ...message500 },
-      { status: 500, statusText: error?.message || "" }
-    );
+    return NextResponse.json({ ...message500 }, { status: 500 });
   }
 }

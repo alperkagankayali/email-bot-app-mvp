@@ -17,6 +17,7 @@ const dataEntrySchema = new Schema<IDataEntry>({
     required: true,
     refPath: "authorType", 
   },
+  company: { type: Types.ObjectId, ref: "Company" },
 });
 
 const DataEntry = models.DataEntry || model<IDataEntry>("DataEntry", dataEntrySchema);

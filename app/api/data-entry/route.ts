@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const id = searchParams.get("id");
 
     if (!!token) {
-      const verificationResult = await verifyToken(token.split(" ")[1]);
+      const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
       } else {
@@ -31,10 +31,20 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
-          const dataEntryTotal = await DataEntry.countDocuments(
-            { isDelete: false }
-          );
-          const dataEntry = await DataEntry.find({ isDelete: false })
+          const dataEntryTotal = await DataEntry.countDocuments({
+            isDelete: false,
+            $or: [
+              { company: verificationResult.companyId },
+              { authorType: "superadmin" },
+            ],
+          });
+          const dataEntry = await DataEntry.find({
+            isDelete: false,
+            $or: [
+              { company: verificationResult.companyId },
+              { authorType: "superadmin" },
+            ],
+          })
             .skip(skip)
             .limit(limit);
           return NextResponse.json(
