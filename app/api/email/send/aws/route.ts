@@ -3,11 +3,11 @@ import { NextResponse } from 'next/server';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import User from '../../../../../models/user';
 import EmailTemplate from '../../../../../models/emailTemplate';
-import { embedTrackingPixel } from '../../../../../lib/email/prepareEmail';
+import { embedTrackingPixel } from "@/lib/email/prepareEmail";
 const sesClient = new SESClient({ region: 'eu-north-1' });
 
 export async function POST(request: Request) {
-  const { userId, emailId, senderAddress } = await request.json(); // Parse JSON body
+  const { userId, emailId, senderAddress, isEmailTracked } = await request.json(); // Parse JSON body
 
   try {
     await connectToDatabase();
@@ -24,7 +24,9 @@ export async function POST(request: Request) {
   
     let htmlBody = emailContent.content;
     // add open get request code here
-    htmlBody = embedTrackingPixel(htmlBody, emailId, userId)
+    if (isEmailTracked) {
+      htmlBody = embedTrackingPixel(htmlBody, emailId, userId);
+    }
     // SES SendEmailCommand setup
     const emailParams = {
       Destination: { ToAddresses: [toEmail] },
