@@ -140,11 +140,11 @@ const EducationList: React.FC = () => {
                       </Tag>
                       <Tag color="#f50" className="!m-0 !pl-1">
                         {" "}
-                        Quiz {reduce["quiz"].count}
+                        Quiz {reduce["quiz"]?.count}
                       </Tag>
                       <Tag color="#2db7f5" className="!m-0 !pl-1">
                         {" "}
-                        Video {reduce["video"].count}
+                        Video {reduce["video"]?.count}
                       </Tag>
                     </div>
                   }

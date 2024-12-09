@@ -1,3 +1,4 @@
+import { languageCodeLists } from "@/constants";
 import { ICourse } from "@/types/courseType";
 import { Schema, Types, model, models } from "mongoose";
 
@@ -13,11 +14,13 @@ const courseSchema = new Schema<ICourse>({
   author: {
     type: Types.ObjectId,
     required: true,
-    refPath: "authorType", 
-  },  created_at: { type: Date, default: Date.now },
+    refPath: "authorType",
+  },
+  created_at: { type: Date, default: Date.now },
   isDelete: { type: Boolean, default: false },
   isPublished: { type: Boolean, default: false },
   company: { type: Types.ObjectId, ref: "Company" },
+  language: { type: String, enum: languageCodeLists, required: true },
   contents: [
     {
       type: {

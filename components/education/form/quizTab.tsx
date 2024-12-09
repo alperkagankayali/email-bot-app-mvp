@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchQuiz,
   handleQuizDataChange,
-  handleSelectedContent,
+  handleAddEducationFormValue,
 } from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
@@ -21,18 +21,18 @@ import { IQuestion } from "@/types/quizType";
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
 
-type IProps = {};
+type IProps = {
+  lang: string;
+};
 const optionsWithDisabled = [
   { label: "Select", value: "select" },
   { label: "Add", value: "add" },
 ];
 
-const QuizTab = ({}: IProps) => {
+const QuizTab = ({ lang }: IProps) => {
   const [value, setValue] = useState("select");
-  const selectQuiz = useSelector(
-    (state: RootState) => state.education.selectQuiz
-  );
-  const [selected, setSelected] = useState(selectQuiz ?? []);
+  const forms = useSelector((state: RootState) => state.education.forms);
+  const [selected, setSelected] = useState([]);
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
   const status = useSelector((state: RootState) => state.education.quizStatus);
@@ -93,10 +93,16 @@ const QuizTab = ({}: IProps) => {
         {value === "select" && (
           <CheckboxGroup
             onChange={(e) => {
-              dispatch(handleSelectedContent({ type: "selectQuiz", data: e }));
+              dispatch(
+                handleAddEducationFormValue({
+                  language: lang,
+                  field: "selectQuiz",
+                  value: e,
+                })
+              );
               setSelected(e);
             }}
-            className={"card-checkbox !grid grid-cols-4 gap-10"}
+            className={"card-checkbox !grid grid-cols-3 gap-10"}
             value={selected}
           >
             {data.map((quiz) => {

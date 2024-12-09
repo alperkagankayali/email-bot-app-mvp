@@ -3,12 +3,12 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 import { message201, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
-import Course from "@/models/course";
+import EducationList from "@/models/educationList";
 
 export async function POST(request: Request) {
   try {
     await connectToDatabase();
-    const body = await request.json();
+    const { id } = await request.json();
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
@@ -18,18 +18,15 @@ export async function POST(request: Request) {
         verificationResult?.role === "admin" ||
         verificationResult?.role === "superadmin"
       ) {
-        const newCourse = new Course({
-          ...body,
-          author: verificationResult?.id,
-          company: verificationResult?.companyId,
-          authorType: verificationResult?.role,
-          isDelete: true,
-        });
-        const course = await newCourse.save();
+        const educationList = await EducationList.findOneAndUpdate(
+          { _id: id },
+          { $set: { isDelete: true } },
+          { new: true }
+        );
         return NextResponse.json(
           {
             ...message201,
-            data: course,
+            data: educationList,
           },
           { status: 201 }
         );

@@ -31,7 +31,7 @@ const UpdateScenarioForm: React.FC<IProps> = ({ id }) => {
   useEffect(() => {
     async function fetchtScenarioById() {
       const res = await getScenario({ id });
-      if (res.status) {
+      if (res.success) {
         dispatch(
           handleChangeScenarioData({
             scenarioType: res.data.scenarioType?._id,

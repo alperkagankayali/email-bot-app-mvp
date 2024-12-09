@@ -7,8 +7,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchVideo,
-  handleEducationDataChange,
-  handleSelectedContent,
+  handleAddEducationFormValue,
   handleVideoDataChange,
 } from "@/redux/slice/education";
 import clsx from "clsx";
@@ -21,18 +20,18 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
 
-type IProps = {};
+type IProps = {
+  lang: string;
+};
 const optionsWithDisabled = [
   { label: "Select", value: "select" },
   { label: "Add", value: "add" },
 ];
 
-const VideoTab = ({}: IProps) => {
+const VideoTab = ({ lang }: IProps) => {
   const [value, setValue] = useState("select");
-  const selectVideo = useSelector(
-    (state: RootState) => state.education.selectVideo
-  );
-  const [selected, setSelected] = useState(selectVideo ?? []);
+  const forms = useSelector((state: RootState) => state.education.forms);
+  const [selected, setSelected] = useState([]);
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector((state: RootState) => state.education.videoStatus);
   const data = useSelector((state: RootState) => state.education.videos);
@@ -95,10 +94,16 @@ const VideoTab = ({}: IProps) => {
         {value === "select" && (
           <CheckboxGroup
             onChange={(e) => {
-              dispatch(handleSelectedContent({ type: "selectVideo", data: e }));
+              dispatch(
+                handleAddEducationFormValue({
+                  language: lang,
+                  field: "selectVideo",
+                  value: e,
+                })
+              );
               setSelected(e);
             }}
-            className={"card-checkbox !grid grid-cols-4 gap-10"}
+            className={"card-checkbox !grid grid-cols-3 gap-10"}
             value={selected}
           >
             {data.map((video) => {
@@ -125,14 +130,21 @@ const VideoTab = ({}: IProps) => {
                   description="Are you sure to delete this Video?"
                   onConfirm={() => handleDeleteVideo(video._id)}
                   okText="Yes"
-                  disabled={video?.authorType === "superadmin" && user?.role !== "superadmin"}
+                  disabled={
+                    video?.authorType === "superadmin" &&
+                    user?.role !== "superadmin"
+                  }
                   cancelText="No"
                 >
                   <DeleteOutlined />
                 </Popconfirm>,
               ];
               return (
-                <Checkbox value={video._id} key={video._id} className="card-checkbox-check">
+                <Checkbox
+                  value={video._id}
+                  key={video._id}
+                  className="card-checkbox-check"
+                >
                   <Badge.Ribbon
                     color={video?.authorType === "superadmin" ? "green" : "red"}
                     text={

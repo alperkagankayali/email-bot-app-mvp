@@ -1,17 +1,17 @@
 "use client";
-import { Button, Form, FormProps, Input, notification, Select } from "antd";
+import { Button, Form, FormProps, Input, notification } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { ICourse } from "@/types/courseType";
 import FileUpload from "@/components/fileUpload/inedx";
-import { handleEducationDataChange } from "@/redux/slice/education";
+import { handleAddEducationForm } from "@/redux/slice/education";
 import { useEffect, useState } from "react";
 
-const { Option } = Select;
 type IProps = {
   next: () => void;
+  lang: string;
 };
-const EducationInfoForm = ({ next }: IProps) => {
+const EducationInfoForm = ({ next, lang }: IProps) => {
   const [form] = Form.useForm();
   const [img, setImg] = useState("");
   const dispatch = useDispatch<AppDispatch>();
@@ -24,7 +24,17 @@ const EducationInfoForm = ({ next }: IProps) => {
       notification.error({ message: "Please upload your logo" });
     }
     values.img = img;
-    dispatch(handleEducationDataChange(values));
+    dispatch(
+      handleAddEducationForm({
+        language: lang,
+        values: {
+          img,
+          title: values.title,
+          description: values.description,
+          language: lang,
+        },
+      })
+    );
     next();
   };
 
@@ -84,7 +94,7 @@ const EducationInfoForm = ({ next }: IProps) => {
             Fotoğraf
           </label>
           <div className="relative">
-            <Form.Item<ICourse> name="img" >
+            <Form.Item<ICourse> name="img">
               <FileUpload
                 handleUploadFile={(data) => setImg(data)}
                 defaultValue={img}

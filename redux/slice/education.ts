@@ -7,10 +7,14 @@ import {
   getVideo,
 } from "@/services/service/educationService";
 import { IArticleType } from "@/types/articleType";
-import { ICourse, Content, IEducationCreate } from "@/types/courseType";
+import { ICourse, IContent, IEducationCreate } from "@/types/courseType";
 import { IQuizType } from "@/types/quizType";
 import { IVideoType } from "@/types/videoType";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+
+interface FormValues {
+  [field: string]: string | number | boolean | null | string[] | []; // Alanlar dinamik olabilir
+}
 
 interface IEducationSlice {
   quiz: IQuizType[];
@@ -22,15 +26,14 @@ interface IEducationSlice {
   videos: IVideoType[];
   article: IArticleType[];
   educationContent: ICourse[];
-  createEducation: IEducationCreate | null;
   quizTotalItems: number;
   articleTotalItems: number;
   videoTotalItems: number;
   educationContentTotalItems: number;
-  selectVideo: string[];
-  selectQuiz: string[];
-  selectArticle: string[];
   educationDetail: ICourse | null;
+  forms: {
+    [language: string]: FormValues; // Her dil için form değerleri
+  };
 }
 
 const initialState: IEducationSlice = {
@@ -43,14 +46,11 @@ const initialState: IEducationSlice = {
   videos: [],
   article: [],
   educationContent: [],
-  createEducation: null,
+  forms: {},
   quizTotalItems: 0,
   articleTotalItems: 0,
   videoTotalItems: 0,
   educationContentTotalItems: 0,
-  selectVideo: [],
-  selectQuiz: [],
-  selectArticle: [],
   educationDetail: null,
 };
 
@@ -58,8 +58,29 @@ const educationSlice = createSlice({
   name: "counter",
   initialState,
   reducers: {
-    handleEducationDataChange: (state, action) => {
-      state.createEducation = action.payload;
+    handleAddEducationForm: (
+      state,
+      action: PayloadAction<{ language: string; values: FormValues }>
+    ) => {
+      const { language, values } = action.payload;
+      state.forms[language] = values;
+    },
+    handleAddEducationListValue: (
+      state,
+      action: PayloadAction<{ field: string; value: any }>
+    ) => {
+      const { field, value } = action.payload;
+      state.forms[field] = value;
+    },
+    handleAddEducationFormValue: (
+      state,
+      action: PayloadAction<{ language: string; field: string; value: any }>
+    ) => {
+      const { language, field, value } = action.payload;
+      if (!state.forms[language]) {
+        state.forms[language] = {}; // Eğer dil yoksa başlat
+      }
+      state.forms[language][field] = value;
     },
     handleArticleDataChange: (state, action) => {
       state.article = action.payload;
@@ -72,11 +93,6 @@ const educationSlice = createSlice({
     },
     handleEducationContentDataChange: (state, action) => {
       state.educationContent = action.payload;
-    },
-    handleSelectedContent: (state, action) => {
-      state[
-        action.payload.type as "selectVideo" | "selectQuiz" | "selectArticle"
-      ] = action.payload.data;
     },
   },
   extraReducers(builder) {
@@ -134,9 +150,6 @@ const educationSlice = createSlice({
       })
       .addCase(fetchEducationById.fulfilled, (state, action) => {
         state.educationDetailStatus = "succeeded";
-        state.selectArticle = action.payload.data[0].contents?.filter((e:any) => e.type === "article")?.map((e:any) => e.refId?._id)
-        state.selectQuiz = action.payload.data[0].contents?.filter((e:any) => e.type === "quiz")?.map((e:any) => e.refId?._id)
-        state.selectVideo = action.payload.data[0].contents?.filter((e:any) => e.type === "video")?.map((e:any) => e.refId?._id)
         state.educationDetail = action.payload.data[0];
       })
       .addCase(fetchEducationById.rejected, (state) => {
@@ -184,12 +197,13 @@ export const fetchQuiz = createAsyncThunk(
 );
 
 export const {
-  handleEducationDataChange,
+  handleAddEducationForm,
   handleArticleDataChange,
   handleVideoDataChange,
   handleQuizDataChange,
   handleEducationContentDataChange,
-  handleSelectedContent,
+  handleAddEducationFormValue,
+  handleAddEducationListValue
 } = educationSlice.actions;
 
 export default educationSlice.reducer;

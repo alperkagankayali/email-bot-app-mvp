@@ -11,9 +11,10 @@ export interface ICourse {
   created_at: Date;
   isPublished: boolean;
   isDelete: boolean;
-  contents: Content[];
+  contents: IContent[];
   company: ICompany;
   authorType: "User" | "superadmin";
+  language: string;
   _id: string;
 }
 enum ContentType {
@@ -21,9 +22,9 @@ enum ContentType {
   QUIZ = "quiz",
   ARTICLE = "article",
 }
-export interface Content {
+export interface IContent {
   type: ContentType; // İçerik türü (video, quiz, article)
-  refId:  IArticleType | IVideoType | IQuizType; // Referans belge ID'si
+  refId: IArticleType | IVideoType | IQuizType; // Referans belge ID'si
   order: number; // Sıralama bilgisi
 }
 
@@ -32,5 +33,5 @@ export type IEducationCreate = {
   img: string;
   description: string;
   isPublished: boolean;
-  contents: Content[];
+  contents: IContent[];
 };

@@ -9,12 +9,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchArticle,
   handleArticleDataChange,
-  handleEducationDataChange,
-  handleSelectedContent,
+  handleAddEducationFormValue,
 } from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
-import type { CheckboxProps } from "antd";
 import { deleteArticle, getArticle } from "@/services/service/educationService";
 import { Link } from "@/i18n/routing";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
@@ -22,18 +20,18 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
 
-type IProps = {};
+type IProps = {
+  lang: string;
+};
 const optionsWithDisabled = [
   { label: "Select", value: "select" },
   { label: "Add", value: "add" },
 ];
 
-const ArticleTab = ({}: IProps) => {
+const ArticleTab = ({ lang }: IProps) => {
   const [value, setValue] = useState("select");
-  const selectArticle = useSelector(
-    (state: RootState) => state.education.selectArticle
-  );
-  const [selected, setSelected] = useState(selectArticle ?? []);
+  const forms = useSelector((state: RootState) => state.education.forms);
+  const [selected, setSelected] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector(
     (state: RootState) => state.education.articleStatus
@@ -93,11 +91,15 @@ const ArticleTab = ({}: IProps) => {
           <CheckboxGroup
             onChange={(e) => {
               dispatch(
-                handleSelectedContent({ type: "selectArticle", data: e })
+                handleAddEducationFormValue({
+                  language: lang,
+                  field: "selectArticle",
+                  value: e,
+                })
               );
               setSelected(e);
             }}
-            className={"card-checkbox !grid grid-cols-4 gap-10"}
+            className={"card-checkbox !grid grid-cols-3 gap-10"}
             value={selected}
           >
             {data.map((article) => {
@@ -125,7 +127,11 @@ const ArticleTab = ({}: IProps) => {
                 </Popconfirm>,
               ];
               return (
-                <Checkbox value={article._id} key={article._id} className="card-checkbox-check">
+                <Checkbox
+                  value={article._id}
+                  key={article._id}
+                  className="card-checkbox-check"
+                >
                   <Badge.Ribbon
                     color={
                       article?.authorType === "superadmin" ? "green" : "red"

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 import { message201, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
-import Course from "@/models/course";
+import EducationList from "@/models/educationList";
 
 export async function POST(request: Request) {
   try {
@@ -18,18 +18,16 @@ export async function POST(request: Request) {
         verificationResult?.role === "admin" ||
         verificationResult?.role === "superadmin"
       ) {
-        const newCourse = new Course({
+        const newEducationList = new EducationList({
           ...body,
           author: verificationResult?.id,
           company: verificationResult?.companyId,
-          authorType: verificationResult?.role,
-          isDelete: true,
         });
-        const course = await newCourse.save();
+        const educationList = await newEducationList.save();
         return NextResponse.json(
           {
             ...message201,
-            data: course,
+            data: educationList,
           },
           { status: 201 }
         );

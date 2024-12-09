@@ -7,15 +7,16 @@ import QuizTab from "./quizTab";
 
 type IProps = {
   next: () => void;
+  lang:string
 };
-const EducationContentForm: React.FC<IProps> = ({ next }) => {
+const EducationContentForm: React.FC<IProps> = ({ next,lang }) => {
   const items = [
     {
       label: "Article",
       key: "1",
       children: (
         <>
-          <ArticleTab />
+          <ArticleTab lang={lang} />
         </>
       ),
     },
@@ -24,7 +25,7 @@ const EducationContentForm: React.FC<IProps> = ({ next }) => {
       key: "2",
       children: (
         <>
-          <VideoTab />
+          <VideoTab lang={lang}/>
         </>
       ),
     },
@@ -33,7 +34,7 @@ const EducationContentForm: React.FC<IProps> = ({ next }) => {
       key: "3",
       children: (
         <>
-          <QuizTab />
+          <QuizTab lang={lang}/>
         </>
       ),
     },

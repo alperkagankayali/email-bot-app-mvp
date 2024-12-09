@@ -15,38 +15,23 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Avatar, List, Table } from "antd";
-import type { TableColumnsType } from "antd";
+import { Avatar, List } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { handleEducationDataChange } from "@/redux/slice/education";
 import {
   AccountBookTwoTone,
   BookTwoTone,
   VideoCameraTwoTone,
 } from "@ant-design/icons";
+import { handleAddEducationFormValue } from "@/redux/slice/education";
 
 interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
+  type: "video" | "article" | "quiz";
+  refId: string;
+  order: number;
+  title: string;
+  description: string;
 }
-
-const columns: TableColumnsType<DataType> = [
-  {
-    title: "Name",
-    dataIndex: "name",
-  },
-  {
-    title: "Age",
-    dataIndex: "age",
-  },
-  {
-    title: "Address",
-    dataIndex: "address",
-  },
-];
 
 interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> {
   "data-row-key": string;
@@ -83,64 +68,66 @@ const Row: React.FC<Readonly<RowProps>> = (props) => {
   );
 };
 
-const OrderForm: React.FC = () => {
-  const selectedVideo = useSelector(
-    (state: RootState) => state.education.selectVideo
-  );
-  const selectedArticle = useSelector(
-    (state: RootState) => state.education.selectArticle
-  );
-  const selectedQuiz = useSelector(
-    (state: RootState) => state.education.selectQuiz
-  );
-  const createEducation = useSelector(
-    (state: RootState) => state.education.createEducation
-  );
-  const educationDetail = useSelector(
-    (state: RootState) => state.education.educationDetail
-  );
+type IProps = {
+  lang: string;
+};
+const OrderForm: React.FC<IProps> = ({ lang }) => {
+  const forms = useSelector((state: RootState) => state.education.forms);
+  const video = useSelector((state: RootState) => state.education.videos);
+  const article = useSelector((state: RootState) => state.education.article);
+  const quiz = useSelector((state: RootState) => state.education.quiz);
 
-  const newDataSource = [
-    ...selectedVideo.map((e) => {
-      const findData = educationDetail?.contents.find(
-        (education) => education.type === "video" && education.refId?._id === e
-      );
-      return {
-        type: "video",
-        refId: e,
-        order: findData?.order,
-        title: findData?.refId.title,
-        description: findData?.refId?.description,
-      };
-    }),
-    ...selectedArticle.map((e) => {
-      const findData = educationDetail?.contents.find(
-        (education) =>
-          education.type === "article" && education.refId?._id === e
-      );
-      return {
-        type: "article",
-        refId: e,
-        order: findData?.order,
-        title: findData?.refId.title,
-        description: findData?.refId?.description,
-      };
-    }),
-    ...selectedQuiz.map((e) => {
-      const findData = educationDetail?.contents.find(
-        (education) => education.type === "quiz" && education.refId?._id === e
-      );
-      return {
-        type: "quiz",
-        refId: e,
-        order: findData?.order,
-        title: findData?.refId.title,
-        description: findData?.refId?.description,
-      };
-    }),
-  ];
+  useEffect(() => {
+    if (dataSource.length === 0) {
+      let data: DataType[] = [];
+      if (Object.keys(forms).length > 0) {
+        const selectData = [
+          ...(Array.isArray(forms[lang]["selectVideo"])
+            ? (forms[lang]["selectVideo"] as Array<any>)
+            : []),
+          ...(Array.isArray(forms[lang]["selectArticle"])
+            ? (forms[lang]["selectArticle"] as Array<any>)
+            : []),
+          ...(Array.isArray(forms[lang]["selectQuiz"])
+            ? (forms[lang]["selectQuiz"] as Array<any>)
+            : []),
+        ];
 
-  const [dataSource, setDataSource] = useState(newDataSource);
+        data = selectData.map((e) => {
+          const findArticle = article.some((element) => element._id === e);
+          const findVideo = video.some((element) => element._id === e);
+          const findQuiz = quiz.some((element) => element._id === e);
+          let findData: any = {};
+          if (findArticle) {
+            findData = article.find((element) => element._id === e);
+          } else if (findQuiz) {
+            findData = quiz.find((element) => element._id === e);
+          } else if (findVideo) {
+            findData = video.find((element) => element._id === e);
+          }
+          return {
+            type: findVideo ? "video" : findArticle ? "article" : "quiz",
+            refId: e,
+            order: 0,
+            title: findData?.title,
+            description: findData?.description,
+          };
+        });
+      }
+      dispatch(
+        handleAddEducationFormValue({
+          language: lang,
+          field: "contents",
+          value: data.map((data, index) => {
+            return { type: data.type, refId: data.refId, order: index };
+          }),
+        })
+      );
+      setDataSource(data);
+    }
+  }, [lang, forms]);
+
+  const [dataSource, setDataSource] = useState<DataType[]>([]);
   const dispatch = useDispatch();
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -153,25 +140,34 @@ const OrderForm: React.FC = () => {
 
   const onDragEnd = ({ active, over }: DragEndEvent) => {
     if (active.id !== over?.id) {
-      setDataSource((prev) => {
-        const newData = [...prev];
-        const activeIndex = prev.findIndex((i) => i.refId === active.id);
-        const overIndex = prev.findIndex((i) => i.refId === over?.id);
-        return arrayMove(newData, activeIndex, overIndex);
-      });
+      const newData = [...dataSource];
+      const activeIndex = dataSource.findIndex((i) => i.refId === active.id);
+      const overIndex = dataSource.findIndex((i) => i.refId === over?.id);
+      const arr = arrayMove(newData, activeIndex, overIndex);
+      setDataSource(arr);
+      dispatch(
+        handleAddEducationFormValue({
+          language: lang,
+          field: "contents",
+          value: arr.map((data, index) => {
+            return { type: data.type, refId: data.refId, order: index };
+          }),
+        })
+      );
     }
   };
 
-  useEffect(() => {
-    dispatch(
-      handleEducationDataChange({
-        ...createEducation,
-        contents: dataSource.map((data, index) => {
-          return { ...data, order: index };
-        }),
-      })
-    );
-  }, [dataSource]);
+  // useEffect(() => {
+  //   dispatch(
+  //     handleAddEducationFormValue({
+  //       language: lang,
+  //       field: "contents",
+  //       value: dataSource.map((data, index) => {
+  //         return { type: data.type, refId: data.refId, order: index };
+  //       }),
+  //     })
+  //   );
+  // }, [dataSource]);
 
   return (
     <DndContext

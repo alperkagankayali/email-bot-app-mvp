@@ -11,7 +11,7 @@ const EducationUpdate: React.FC <{
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="menu-academy-article" />
+        <Breadcrumb pageName="menu-academy-education-Edit" />
         <div>
         <EducationAddForm id={id} />
         </div>

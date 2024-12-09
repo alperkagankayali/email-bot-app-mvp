@@ -25,7 +25,7 @@ const UpdateDataEntryForm: React.FC<IProps> = ({ id }) => {
   useEffect(() => {
     async function fetchDataEntry() {
       const res = await getDataEntries(id);
-      if (res.status) {
+      if (res.success) {
         setData(res.data);
       } else {
         message.error(res.message);

@@ -27,7 +27,7 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
   useEffect(() => {
     async function fetchEmailTemplate() {
       const res = await getEmailTemplate(id);
-      if (res.status) {
+      if (res.success) {
         setData(res.data);
       } else {
         message.error(res.message);

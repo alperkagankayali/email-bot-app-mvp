@@ -25,7 +25,7 @@ const UpdateLandingPageForm: React.FC<IProps> = ({ id }) => {
   useEffect(() => {
     async function fetchLandingPage() {
       const res = await getLandingPage(id);
-      if (res.status) {
+      if (res.success) {
         setData(res.data);
       } else {
         message.error(res.message);
