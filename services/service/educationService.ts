@@ -66,6 +66,14 @@ export const getEducationContent = async (limit = 10, page = 1) => {
   return result;
 };
 
+export const getEducationListContent = async (limit = 10, page = 1) => {
+  const queryParams = jsonToQueryString({ limit, page });
+  const url = servicesBaseUrl + finalConfig.GET_EDUCATION_LIST + queryParams;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url, config);
+  return result;
+};
+
 export const getEducationDetail = async (id: string) => {
   const queryParams = jsonToQueryString({ id });
   const url = servicesBaseUrl + finalConfig.GET_BY_ID_EDUCATION_CONTENT + queryParams;
@@ -139,3 +147,10 @@ export const updateEducation = async (id: string, updateData: any) => {
   return result;
 };
 
+
+export const createEducationList = async (data: any) => {
+  const url = servicesBaseUrl + finalConfig.ADD_EDUCATION_LIST;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, data, config);
+  return result;
+};

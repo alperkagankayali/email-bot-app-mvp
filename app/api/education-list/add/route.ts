@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { message201, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import EducationList from "@/models/educationList";
+import Course from "@/models/course";
 
 export async function POST(request: Request) {
   try {
@@ -21,13 +22,19 @@ export async function POST(request: Request) {
         const newEducationList = new EducationList({
           ...body,
           author: verificationResult?.id,
+          authorType:verificationResult?.role,
           company: verificationResult?.companyId,
         });
         const educationList = await newEducationList.save();
+        const courseUpdate = await Course.updateMany(
+          { _id: { $in: body.educations } }, // ID'lerin bulunduğu belgeleri hedef alıyoruz
+          { $set: { isDelete: false } } // isDelete alanını true olarak güncelliyoruz
+        );
         return NextResponse.json(
           {
             ...message201,
             data: educationList,
+            updateData: courseUpdate,
           },
           { status: 201 }
         );

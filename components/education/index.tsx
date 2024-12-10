@@ -4,6 +4,7 @@ import { noImage, randomColor } from "@/constants";
 import { Link } from "@/i18n/routing";
 import {
   fetchContent,
+  fetchEducationList,
   handleEducationContentDataChange,
 } from "@/redux/slice/education";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -46,6 +47,7 @@ const EducationList: React.FC = () => {
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchContent(10));
+      dispatch(fetchEducationList(10));
     }
   }, [status, dispatch]);
 

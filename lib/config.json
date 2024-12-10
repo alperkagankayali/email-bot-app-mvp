@@ -52,5 +52,11 @@
   "DELETE_QUIZ": "/education-content/quiz/delete",
   "DELETE_ARTICLE": "/education-content/article/delete",
   "DELETE_EDUCATION_CONTENT": "/education-content/delete",
-  "SEND_EMAIL": "/email/send/aws"
+  "SEND_EMAIL": "/email/send/aws",
+  "ADD_EDUCATION_LIST": "/education-list/add",
+  "UPDATE_EDUCATION_LIST": "/education-list/update",
+  "DELETE_EDUCATION_LIST": "/education-list/delete",
+  "GET_EDUCATION_LIST": "/education-list"
+
+
 }

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default function ResetPassword() {
-  debugger
+
   return (
     <>
       <ResetPasswordCom locale="tr" />

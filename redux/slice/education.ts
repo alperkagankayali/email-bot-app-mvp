@@ -3,11 +3,13 @@ import {
   getArticle,
   getEducationContent,
   getEducationDetail,
+  getEducationListContent,
   getQuiz,
   getVideo,
 } from "@/services/service/educationService";
 import { IArticleType } from "@/types/articleType";
 import { ICourse, IContent, IEducationCreate } from "@/types/courseType";
+import { IEducationList } from "@/types/educationListType";
 import { IQuizType } from "@/types/quizType";
 import { IVideoType } from "@/types/videoType";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
@@ -23,9 +25,11 @@ interface IEducationSlice {
   videoStatus: "loading" | "succeeded" | "failed" | "idle";
   educationStatus: "loading" | "succeeded" | "failed" | "idle";
   educationDetailStatus: "loading" | "succeeded" | "failed" | "idle";
+  educationListStatus: "loading" | "succeeded" | "failed" | "idle";
   videos: IVideoType[];
   article: IArticleType[];
   educationContent: ICourse[];
+  educationListContent: IEducationList[];
   quizTotalItems: number;
   articleTotalItems: number;
   videoTotalItems: number;
@@ -38,6 +42,8 @@ interface IEducationSlice {
 
 const initialState: IEducationSlice = {
   quiz: [],
+  educationListContent: [],
+  educationListStatus: "idle",
   quizStatus: "idle",
   articleStatus: "idle",
   videoStatus: "idle",
@@ -109,6 +115,17 @@ const educationSlice = createSlice({
         state.videoStatus = "failed";
       });
     builder
+      .addCase(fetchEducationList.pending, (state) => {
+        state.educationListStatus = "loading";
+      })
+      .addCase(fetchEducationList.fulfilled, (state, action) => {
+        state.educationListStatus = "succeeded";
+        state.educationListContent = action.payload.data;
+      })
+      .addCase(fetchEducationList.rejected, (state) => {
+        state.educationListStatus = "failed";
+      });
+    builder
       .addCase(fetchArticle.pending, (state) => {
         state.articleStatus = "loading";
       })
@@ -166,6 +183,14 @@ export const fetchContent = createAsyncThunk(
   }
 );
 
+export const fetchEducationList = createAsyncThunk(
+  "/education-list",
+  async (limit: number) => {
+    const response = await getEducationListContent(limit, 1);
+    return response;
+  }
+);
+
 export const fetchEducationById = createAsyncThunk(
   "/education-content/get",
   async (id: string) => {
@@ -203,7 +228,7 @@ export const {
   handleQuizDataChange,
   handleEducationContentDataChange,
   handleAddEducationFormValue,
-  handleAddEducationListValue
+  handleAddEducationListValue,
 } = educationSlice.actions;
 
 export default educationSlice.reducer;

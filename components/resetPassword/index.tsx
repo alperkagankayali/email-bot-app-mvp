@@ -10,7 +10,6 @@ import {
   updatePassword,
 } from "@/services/service/generalService";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
 import { useTranslations } from "next-intl";
 import Loader from "../common/Loader";
 import { useSearchParams } from "next/navigation";
@@ -32,7 +31,6 @@ export type ISelect = {
 export default function ResetPasswordCom({ locale }: IProps) {
   const [language, setLanguage] = useState<any[]>([]);
   const router = useRouter();
-  const dispatch = useDispatch();
   const t = useTranslations("pages");
   const searchParams = useSearchParams();
   const id = searchParams.get("token");
@@ -69,7 +67,6 @@ export default function ResetPasswordCom({ locale }: IProps) {
 
   useEffect(() => {
     async function fetchResource() {
-      debugger
       const res: any = await getLanguage();
       const newList = res?.data?.map((e: any) => {
         const newObj: any = {};

@@ -9,11 +9,14 @@ import { RootState } from "@/redux/store";
 import EducationAddForm from "./add";
 import clsx from "clsx";
 import { handleAddEducationListValue } from "@/redux/slice/education";
+import { createEducationList } from "@/services/service/educationService";
+import { useRouter } from "@/i18n/routing";
 const { Option } = Select;
 
 const EducationListAdd: React.FC = () => {
   const { token } = theme.useToken();
   const languages = useSelector((state: RootState) => state.language.language);
+  const forms = useSelector((state: RootState) => state.education.forms);
   const [selectLang, setSelectLang] = useState<string[]>([]);
   const dispatch = useDispatch();
   const panelStyle: React.CSSProperties = {
@@ -22,6 +25,7 @@ const EducationListAdd: React.FC = () => {
     borderRadius: token.borderRadiusLG,
     border: "none",
   };
+  const router = useRouter();
 
   const handleChange = (value: string[]) => {
     dispatch(
@@ -63,6 +67,13 @@ const EducationListAdd: React.FC = () => {
     });
   };
 
+  const handleCreateEducationList = async () => {
+    const res = await createEducationList(forms);
+    if(res.success){
+      router.push("/dashboard/education")
+    }
+  }
+
   return (
     <div>
       <Select
@@ -94,12 +105,26 @@ const EducationListAdd: React.FC = () => {
       <div className="flex justify-end">
         <Button
           htmlType="submit"
-          disabled
+          onClick={handleCreateEducationList}
+          disabled={
+            !(
+              !!forms.educations &&
+              Array.isArray(forms.educations) &&
+              forms?.educations?.length > 0
+            )
+          }
           className={clsx(
             "w-64 cursor-pointer rounded-lg border  !p-7  !text-white transition hover:bg-opacity-90",
             {
-              " !bg-primary !border-primary": false,
-              "!border-[#7986ea] !bg-[#7986ea]": true,
+              " !bg-primary !border-primary":
+                !!forms.educations &&
+                Array.isArray(forms.educations) &&
+                forms?.educations?.length > 0,
+              "!border-[#7986ea] !bg-[#7986ea]": !(
+                !!forms.educations &&
+                Array.isArray(forms.educations) &&
+                forms?.educations?.length > 0
+              ),
             }
           )}
         >
