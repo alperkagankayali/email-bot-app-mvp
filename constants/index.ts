@@ -278,3 +278,11 @@ export const languageCodeLists = [
   "za",
   "zu",
 ];
+
+
+export const handleEmailVariableChange = (template: string, variables: Record<string, string>): string  => {
+  return template.replace(/{{(.*?)}}/g, (_, variable) => {
+      // variables içindeki karşılık gelen değeri al veya boş bir string döndür
+      return variables[variable.trim()] || "";
+  });
+}

@@ -31,7 +31,7 @@ export async function POST(request: Request) {
               ...message403,
               message: "Excel'deki email adresleri şirketinizde ekli değil",
             },
-            { status: 403, statusText: "Email address not supported" }
+            { status: 403 }
           );
         }
         const userCreate = new User({
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
             company: body.company,
             data: userCreated,
           },
-          { status: 201, statusText: message201.message }
+          { status: 201 }
         );
       } else {
         const jwtSuperAdmin = jwt.verify(
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
                   ...message403,
                   message: "email adresleri şirketinizde ekli değil",
                 },
-                { status: 403, statusText: "Email address not supported" }
+                { status: 403 }
               );
             }
             const userCreate = new User({
@@ -87,21 +87,21 @@ export async function POST(request: Request) {
                 ...message201,
                 data: userCreated,
               },
-              { status: 201, statusText: message201.message }
+              { status: 201 }
             );
           }
           return NextResponse.json(
             {
               ...message403,
             },
-            { status: 403, statusText: message403.message }
+            { status: 403 }
           );
         }
         return NextResponse.json(
           {
             ...message401,
           },
-          { status: 401, statusText: message401.message }
+          { status: 401 }
         );
       }
     } else {
@@ -109,13 +109,10 @@ export async function POST(request: Request) {
         {
           ...message401,
         },
-        { status: 403, statusText: message401.message }
+        { status: 403 }
       );
     }
   } catch (error: any) {
-    return NextResponse.json(
-      { ...message500 },
-      { status: 500, statusText: error?.message || "" }
-    );
+    return NextResponse.json({ ...message500 }, { status: 500 });
   }
 }

@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     }
     
     // Log the email open event in the database
-    const email = await EmailTemplate.findById(emailId);
+    // const email = await EmailTemplate.findById(emailId);
     
     const scenarios = await Scenario.find(
       {
@@ -40,7 +40,7 @@ export async function GET(request: Request) {
           action: "opened",
         });
         if (!potentialUserAction) {
-          const user = await User.findById(userId);
+          // const user = await User.findById(userId);
           const userActionCreate = new UserAction({
             userId: userId,
             campaingId: campaign._id,

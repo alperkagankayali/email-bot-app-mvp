@@ -10,10 +10,10 @@ import { Button, Form, Input, message, Select } from "antd";
 import type { FormProps } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from "next/navigation";
+import { sendVerificationEmail } from "@/services/service/emailService";
 
 const { Option } = Select;
-
 
 const AddUser = () => {
   const router = useRouter();
@@ -27,10 +27,10 @@ const AddUser = () => {
   );
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
   const company = searchParams.get("company");
-  const role = searchParams.get("role")
-  
+  const role = searchParams.get("role");
+
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchLanguage());
@@ -46,6 +46,17 @@ const AddUser = () => {
   const onFinish: FormProps<IUser>["onFinish"] = async (values) => {
     const res = await createUser(values);
     if (res.success) {
+      // Mail at
+      const result = await sendVerificationEmail(
+        res.data?._id ?? "",
+        {
+          resetLink:
+            "https://email-bot-app-mvp-mx28.vercel.app/en/reset-password?token=" +
+            res.data?._id,
+        },
+        "675756f633beb29459bc4aac"
+      );
+      console.log("res", result);
       message.info(res.message);
       router.push("/dashboard/users/" + res.data.company);
     } else {

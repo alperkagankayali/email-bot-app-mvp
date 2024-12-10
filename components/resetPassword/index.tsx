@@ -7,12 +7,10 @@ import { Button } from "antd";
 import { useRouter } from "@/i18n/routing";
 import {
   getLanguage,
-  handleLogin,
   updatePassword,
 } from "@/services/service/generalService";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
-import { userInfo } from "@/redux/slice/user";
 import { useTranslations } from "next-intl";
 import Loader from "../common/Loader";
 import { useSearchParams } from "next/navigation";
@@ -71,6 +69,7 @@ export default function ResetPasswordCom({ locale }: IProps) {
 
   useEffect(() => {
     async function fetchResource() {
+      debugger
       const res: any = await getLanguage();
       const newList = res?.data?.map((e: any) => {
         const newObj: any = {};
