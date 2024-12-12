@@ -175,8 +175,8 @@ export const fetchContent = createAsyncThunk(
 
 export const fetchEducationList = createAsyncThunk(
   "/education-list",
-  async (language: string) => {
-    const response = await getEducationListContent(10, 1, { language });
+  async (values:any) => {
+    const response = await getEducationListContent(10, 1, values);
     return response;
   }
 );

@@ -273,7 +273,6 @@ const ResourceTable: React.FC = () => {
     // sorter,
     // extra
   ) => {
-    debugger;
     const res: any = await getResourceAll(
       pagination.pageSize,
       pagination.current,

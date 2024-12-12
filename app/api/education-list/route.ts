@@ -15,7 +15,11 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get("limit") || "50"); // Varsayılan limit 10
     const skip = (page - 1) * limit; //
     const id = searchParams.get("id");
-    const language = searchParams.get("language");
+    const language = !!searchParams.get("language")
+      ? searchParams.get("language")?.split("&")
+      : null;
+    const title = searchParams.get("title");
+    const description = searchParams.get("description");
 
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
@@ -40,17 +44,28 @@ export async function GET(request: Request) {
           );
         } else {
           if (verificationResult?.role === "superadmin") {
+            let filter: any = {};
+            let filter2: any = {};
+            if (!!title) filter.title = { $regex: title, $options: "i" }; // Büyük/küçük harf duyarsızlık için `i` ekledik
+            if (!!description) {
+              filter.description = { $regex: description, $options: "i" };
+            }
+            if (!!language) filter2.languages = { $in: language };
+
             const educationTotal = await EducationList.countDocuments({
               isDelete: false,
+              ...filter2,
             });
             const education = await EducationList.find({
               isDelete: false,
+              ...filter2,
             })
               .populate({
                 path: "educations", // `educations` Course tablosuna referans içeriyor
                 match: {
                   isDelete: false, // Course tablosundan sadece silinmemiş belgeler
                   // language: { $in: language }, // Belirtilen dillerle eşleşen belgeler
+                  ...filter,
                   $or: [
                     { language: { $in: language } }, // Belirtilen diller
                     { language: { $exists: true } }, // Eğer belirtilen diller yoksa herhangi bir dil
@@ -65,7 +80,7 @@ export async function GET(request: Request) {
             return NextResponse.json(
               {
                 ...message200,
-                data: education,
+                data: education.filter((e) => e.educations?.length > 0),
                 totalItems: educationTotal,
               },
               { status: 200 }
