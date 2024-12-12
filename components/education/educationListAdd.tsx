@@ -3,14 +3,13 @@ import type { CSSProperties } from "react";
 import React, { useEffect, useState } from "react";
 import { CaretRightOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { CollapseProps } from "antd";
-import { Button, Collapse, Select, theme } from "antd";
+import { Button, Collapse, notification, Select, theme } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import EducationAddForm from "./add";
 import clsx from "clsx";
 import {
   handleAddEducationForm,
-  handleAddEducationFormValue,
   handleAddEducationListValue,
 } from "@/redux/slice/education";
 import {
@@ -19,7 +18,7 @@ import {
   updateEducationList,
 } from "@/services/service/educationService";
 import { useRouter } from "@/i18n/routing";
-import { IContent, ICourse } from "@/types/courseType";
+import { IContent } from "@/types/courseType";
 import { useTranslations } from "next-intl";
 const { Option } = Select;
 type IProps = {
@@ -44,9 +43,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
   const handleChange = (value: string[]) => {
     dispatch(
       handleAddEducationListValue({
-        value: value.map(
-          (e) => e.replaceAll("(", "-").replaceAll(")", "").split("-")[1]
-        ),
+        value: value,
         field: "languages",
       })
     );
@@ -56,7 +53,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
   const genExtra = (lang: string) => (
     <DeleteOutlined
       onClick={(event) => {
-        setSelectLang(selectLang.filter((e) => e !== lang));
+        handleChange(selectLang.filter((e) => e !== lang));
         event.stopPropagation();
       }}
     />
@@ -70,12 +67,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
       return {
         key: index + 1,
         label: e + " Education - " + (index + 1),
-        children: (
-          <EducationAddForm
-            id={id}
-            lang={e.replaceAll("(", "-").replaceAll(")", "").split("-")[1]}
-          />
-        ),
+        children: <EducationAddForm id={id} lang={e} />,
         style: panelStyle,
         extra: genExtra(e),
       };
@@ -84,14 +76,20 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
 
   const handleCreateEducationList = async () => {
     let res = null;
-    debugger
-    if (!!id) {
-      res = await updateEducationList(id, forms);
+    if (selectLang.every((e: string) => !!forms[e])) {
+      if (!!id) {
+        res = await updateEducationList(id, forms);
+      } else {
+        res = await createEducationList(forms);
+      }
+      if (res.success) {
+        router.push("/dashboard/education");
+      }
     } else {
-      res = await createEducationList(forms);
-    }
-    if (res.success) {
-      router.push("/dashboard/education");
+      notification.error({
+        message:
+          "Lütfen seçtiğiniz tüm dilleri doldurunuz yada dil seçimini düzenleyin.",
+      });
     }
   };
 
@@ -124,12 +122,19 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
             handleAddEducationForm({ language: e.language, values: e.values })
           )
         );
-        setSelectLang(
-          response.data.languages?.map((element: string) => {
-            const findLang = languages.find((e) => e.code === element);
-            return findLang?.name + "(" + findLang?.code + ")";
+        dispatch(
+          handleAddEducationListValue({
+            field: "educations",
+            value: newArr.map((e) => e.values?._id),
           })
         );
+        dispatch(
+          handleAddEducationListValue({
+            field: "languages",
+            value: newArr.map((e) => e.language),
+          })
+        );
+        setSelectLang(newArr.map((e) => e.language));
       };
       getDetail();
     }
@@ -149,7 +154,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
       >
         {languages.map((e) => {
           return (
-            <Option key={e.code} value={e.name + "(" + e.code + ")"}>
+            <Option key={e.code} value={e.code}>
               {e.name}
             </Option>
           );
