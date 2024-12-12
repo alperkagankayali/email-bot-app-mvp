@@ -111,7 +111,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
               ]}
             >
               <Radio.Group>
-                <Radio value="single">Single Answer</Radio>
+                <Radio value="single">Single choose</Radio>
                 <Radio
                   value="multiple"
                   disabled={
@@ -120,7 +120,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
                     fieldsState?.question[field.name]?.options?.length === 1
                   }
                 >
-                  Multiple Answer
+                  Multiple choose
                 </Radio>
               </Radio.Group>
             </Form.Item>
