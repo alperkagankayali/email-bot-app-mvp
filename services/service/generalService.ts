@@ -7,7 +7,6 @@ import { IResponseType } from "@/types/responseType";
 import { IUser } from "@/types/userType";
 import { ILandingPage, IScenario } from "@/types/scenarioType";
 
-
 export const getLanguage = async (limit = 10, page = 1, isActive = true) => {
   const queryParams = jsonToQueryString({ isActive, limit, page });
   const url = servicesBaseUrl + finalConfig.GET_LANGUAGES + queryParams;
@@ -27,6 +26,13 @@ export const updateLanguage = async (id: string, updateData: any) => {
   return result;
 };
 
+export const deleteResource = async (id: string) => {
+  const url = servicesBaseUrl + finalConfig.DELETE_RESOURCES;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};
+
 export const getResource = async (code: string) => {
   const queryParams = jsonToQueryString({ code });
   const url = servicesBaseUrl + finalConfig.GET_RESOURCES + queryParams;
@@ -35,8 +41,8 @@ export const getResource = async (code: string) => {
   return result;
 };
 
-export const getResourceAll = async (limit = 10, page = 1, code = "") => {
-  const queryParams = jsonToQueryString({ code, limit, page });
+export const getResourceAll = async (limit = 10, page = 1, filter: any) => {
+  const queryParams = jsonToQueryString({ limit, page, ...filter });
   const url = servicesBaseUrl + finalConfig.GET_ALL_RESOURCES + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);

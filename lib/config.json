@@ -1,6 +1,7 @@
 {
   "GET_LANGUAGES": "/language/get",
   "GET_RESOURCES": "/resource/get",
+  "DELETE_RESOURCES": "/resource/delete",
   "GET_ALL_RESOURCES": "/resource/getAll",
   "CREATE_LANGUAGE": "/language",
   "CREATE_RESOURCES": "/resource",

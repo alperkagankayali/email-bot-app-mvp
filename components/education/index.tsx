@@ -1,6 +1,6 @@
 "use client";
 
-import { noImage, randomColor } from "@/constants";
+import { languageColor, languageEnum, noImage, randomColor } from "@/constants";
 import { Link } from "@/i18n/routing";
 import {
   fetchContent,
@@ -151,8 +151,12 @@ const EducationList: React.FC = () => {
                         </Tag>
                       </div>
                       <div className="my-4">
-                        {item.languages.map((e) => (
-                          <Tag color="#108ee9">{e}</Tag>
+                        {item.languages.map((e: any) => (
+                          <Tag
+                            color={languageColor[e as languageEnum] ?? "blue"}
+                          >
+                            {e}
+                          </Tag>
                         ))}
                       </div>
                     </div>

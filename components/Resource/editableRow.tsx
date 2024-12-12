@@ -6,17 +6,27 @@ import {
   Form,
   Input,
   InputNumber,
+  notification,
   Popconfirm,
+  Popover,
+  Select,
   Table,
   Typography,
 } from "antd";
 import { PaginationType } from "@/types/paginationType";
 import {
+  deleteResource,
   getResourceAll,
   updateResource,
 } from "@/services/service/generalService";
 import AddResource from "./addResources";
-
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { DeleteFilled, DeleteOutlined, DeleteTwoTone } from "@ant-design/icons";
+import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/routing";
+const { Option } = Select;
+const { Search } = Input;
 export interface DataType {
   key: string;
   langKey: string;
@@ -78,17 +88,36 @@ const ResourceTable: React.FC = () => {
     form.setFieldsValue({ name: "", age: "", address: "", ...record });
     setEditingKey(record.key);
   };
-
-  const cancel = () => {
-    setEditingKey("");
-  };
-
+  const languages = useSelector((state: RootState) => state.language.language);
+  const { replace } = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [pagination, setPagination] = useState<PaginationType>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectLanguage, setSelectLanguage] = useState(
+    searchParams.get("language") ?? ""
+  );
+
+  async function fetchLanguage() {
+    const res: any = await getResourceAll(10, 1, {
+      key: searchParams.get("key") ?? "",
+      value: searchParams.get("value") ?? "",
+      language: searchParams.get("language") ?? "",
+    });
+    const newData = res?.data?.map((e: any) => {
+      return {
+        ...e,
+        langKey: e.key,
+        key: e._id,
+      };
+    });
+    setData(newData);
+    setPagination(res.pagination);
+  }
 
   useEffect(() => {
     async function fetchLanguage() {
-      const res: any = await getResourceAll(10, 1, "");
+      const res: any = await getResourceAll(10, 1, {});
       const newData = res?.data?.map((e: any) => {
         return {
           ...e,
@@ -128,6 +157,15 @@ const ResourceTable: React.FC = () => {
       console.log("Validate Failed:", errInfo);
     }
   };
+  const handleDeleteResource = async (id: string) => {
+    const res = await deleteResource(id);
+    if (res.success) {
+      await fetchLanguage();
+      notification.info({ message: "Kayıt silindi" });
+    } else {
+      notification.error({ message: "Kayıt silinemedi" });
+    }
+  };
 
   const columns = [
     {
@@ -149,29 +187,66 @@ const ResourceTable: React.FC = () => {
       dataIndex: "operation",
       render: (_: any, record: DataType) => {
         const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              onClick={() => save(record.key)}
-              style={{ marginInlineEnd: 8 }}
+        return (
+          <div className="flex justify-between">
+            {editable ? (
+              <span>
+                <Typography.Link
+                  onClick={() => save(record.key)}
+                  style={{ marginInlineEnd: 8 }}
+                >
+                  Save
+                </Typography.Link>
+                <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                  <a>Cancel</a>
+                </Popconfirm>
+              </span>
+            ) : (
+              <Typography.Link
+                disabled={editingKey !== ""}
+                onClick={() => edit(record)}
+              >
+                Edit
+              </Typography.Link>
+            )}
+            <Popconfirm
+              title="Delete the article"
+              description="Are you sure to delete this article?"
+              onConfirm={() => handleDeleteResource(record.key)}
+              okText="Yes"
+              cancelText="No"
             >
-              Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
+              <DeleteOutlined className="text-xl cursor-pointer" />
             </Popconfirm>
-          </span>
-        ) : (
-          <Typography.Link
-            disabled={editingKey !== ""}
-            onClick={() => edit(record)}
-          >
-            Edit
-          </Typography.Link>
+          </div>
         );
       },
     },
   ];
+
+  const cancel = () => {
+    setEditingKey("");
+  };
+
+  useEffect(() => {
+    async function fetchLanguage() {
+      const res: any = await getResourceAll(10, 1, {
+        key: searchParams.get("key") ?? "",
+        value: searchParams.get("value") ?? "",
+        language: searchParams.get("language") ?? "",
+      });
+      const newData = res?.data?.map((e: any) => {
+        return {
+          ...e,
+          langKey: e.key,
+          key: e._id,
+        };
+      });
+      setData(newData);
+      setPagination(res.pagination);
+    }
+    fetchLanguage();
+  }, [searchParams]);
 
   const mergedColumns: TableProps<DataType>["columns"] = columns.map((col) => {
     if (!col.editable) {
@@ -198,9 +273,15 @@ const ResourceTable: React.FC = () => {
     // sorter,
     // extra
   ) => {
+    debugger;
     const res: any = await getResourceAll(
       pagination.pageSize,
-      pagination.current
+      pagination.current,
+      {
+        key: searchParams.get("key") ?? "",
+        value: searchParams.get("value") ?? "",
+        language: searchParams.get("language") ?? "",
+      }
     );
     if (!!res?.data) {
       const newData = res?.data?.map((e: any) => {
@@ -214,16 +295,93 @@ const ResourceTable: React.FC = () => {
     }
   };
 
+  const handleSelect = (value: string, type: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (value) {
+      params.set(type, value);
+    } else {
+      params.delete(type);
+    }
+    replace(`${pathname}?${params.toString()}`);
+  };
+
+  const onSearch = (value: any, event: any, info: any, name: string) => {
+    debugger;
+    console.log("event", event);
+    const params = new URLSearchParams(searchParams);
+    if (value.length > 3) {
+      params.set(name, value);
+    } else {
+      params.delete(name);
+    }
+    replace(`${pathname}?${params.toString()}`);
+  };
+
   return (
     <div>
-      <Button
-        onClick={() => setIsModalOpen(true)}
-        type="primary"
-        style={{ marginBottom: 16 }}
-      >
-        Add a resource
-      </Button>
-      <Form form={form} component={false}>
+      <div className="flex justify-between w-full items-center mb-10">
+        <div className="flex justify-between w-full items-center">
+          <Button onClick={() => setIsModalOpen(true)} type="primary">
+            Add a resource
+          </Button>
+          <span className="ml-2">Total {pagination?.totalItems} items</span>
+        </div>
+        {!!data && (
+          <div className="flex items-center">
+            <Search
+              placeholder="input resource key"
+              size="large"
+              name="key"
+              className="!w-64 mr-4 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              allowClear
+              onSearch={(value: any, event: any, info: any) =>
+                onSearch(value, event, info, "key")
+              }
+              enterButton
+            />
+            <Search
+              placeholder="input resource value"
+              size="large"
+              name="value"
+              className="!w-64 mr-4 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              allowClear
+              onSearch={(value: any, event: any, info: any) =>
+                onSearch(value, event, info, "value")
+              }
+              enterButton
+            />
+            <Select
+              size="large"
+              className="w-36 !ml-4"
+              placeholder="Select language"
+              value={selectLanguage}
+              onChange={(value: string) => {
+                setSelectLanguage(value);
+                handleSelect(value, "language");
+              }}
+            >
+              {languages.map((e) => {
+                return (
+                  <Option key={e.code} value={e.code}>
+                    {e.name}
+                  </Option>
+                );
+              })}
+            </Select>
+            <Popover content={"Clear filter"} title="">
+              <DeleteFilled
+                className="ml-2 cursor-pointer"
+                onClick={() => {
+                  setSelectLanguage("");
+                  replace(`${pathname}`);
+                }}
+              />
+            </Popover>
+          </div>
+        )}
+      </div>
+
+      <Form form={form} component={false} className="mt-10">
         <Table<DataType>
           components={{
             body: { cell: EditableCell },

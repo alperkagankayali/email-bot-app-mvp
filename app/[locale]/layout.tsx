@@ -1,14 +1,11 @@
 import { NextIntlClientProvider } from "next-intl";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import {
-  getTranslations,
-  setRequestLocale,
-} from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import StoreProvider from "../StoreProvider";
-import {  routing } from "@/i18n/routing";
+import { routing } from "@/i18n/routing";
 import { ReactNode } from "react";
-import {  getResource } from "@/services/service/generalService";
+import { getResource } from "@/services/service/generalService";
 
 type Props = {
   children: ReactNode;
@@ -20,12 +17,19 @@ export function generateStaticParams() {
 
 export async function generateMetadata({
   params: { locale },
-}: Omit<Props, "children">) {
-  const t = await getTranslations({ locale, namespace: "pages" });
-
-  return {
-    title: t("title"),
-  };
+}: {
+  params: { locale: string };
+}) {
+  try {
+    const t = await getTranslations();
+    return {
+      title: t("title"),
+    };
+  } catch (error) {
+    return {
+      title: "Email MVP",
+    };
+  }
 }
 
 export default async function LocaleLayout({
@@ -33,7 +37,7 @@ export default async function LocaleLayout({
   params: { locale },
 }: {
   children: React.ReactNode;
-  params: { locale: string }
+  params: { locale: string };
 }) {
   setRequestLocale(locale);
   const messages = await getResource(locale);
