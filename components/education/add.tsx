@@ -10,9 +10,7 @@ import {
 } from "@/services/service/educationService";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { useRouter } from "@/i18n/routing";
 import {
-  fetchEducationById,
   handleAddEducationFormValue,
   handleAddEducationListValue,
 } from "@/redux/slice/education";
@@ -24,12 +22,6 @@ type IProps = {
 
 const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
   const forms = useSelector((state: RootState) => state.education.forms);
-  const detailStatus = useSelector(
-    (state: RootState) => state.education.educationDetailStatus
-  );
-  const educationDetail = useSelector(
-    (state: RootState) => state.education.educationDetail
-  );
   const dispatch = useDispatch<AppDispatch>();
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
@@ -91,14 +83,10 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
     marginTop: 16,
   };
 
-  useEffect(() => {
-    if (!!id && educationDetail?._id !== id && detailStatus !== "loading") {
-      dispatch(fetchEducationById(id));
-    }
-  }, [detailStatus, dispatch, id]);
-
+ 
   const onFinish = async () => {
     let res = null;
+    debugger
     if (!!id) {
       res = await updateEducation(id, forms[lang]);
     } else {
@@ -148,11 +136,7 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
       </div>
       <div className="mt-6 flex">
         {current === steps.length - 1 && (
-          <Button
-            type="primary"
-            disabled={isSuccess}
-            onClick={onFinish}
-          >
+          <Button type="primary" disabled={isSuccess} onClick={onFinish}>
             Done
           </Button>
         )}

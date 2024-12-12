@@ -41,6 +41,7 @@ const FileUpload = ({ handleUploadFile, defaultValue, type }: IProps) => {
   const props: UploadProps = {
     name: "file",
     multiple: false,
+    listType:"picture",
     action: servicesBaseUrl + finalConfig.FILE_UPLOAD + "?file=upload",
     beforeUpload: beforeUpload,
     defaultFileList: !!defaultValue

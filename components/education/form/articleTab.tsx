@@ -31,7 +31,7 @@ const optionsWithDisabled = [
 const ArticleTab = ({ lang }: IProps) => {
   const [value, setValue] = useState("select");
   const forms = useSelector((state: RootState) => state.education.forms);
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState((forms[lang]?.selectArticle as string[]) ?? []);
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector(
     (state: RootState) => state.education.articleStatus

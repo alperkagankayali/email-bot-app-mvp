@@ -16,7 +16,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
   const [img, setImg] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const educationDetail = useSelector(
-    (state: RootState) => state.education.educationDetail
+    (state: RootState) => state.education.forms
   );
 
   const onFinish: FormProps<ICourse>["onFinish"] = async (values) => {
@@ -39,12 +39,12 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
   };
 
   useEffect(() => {
-    if (!!educationDetail) {
+    if (!!educationDetail[lang]) {
       form.setFieldsValue({
-        title: educationDetail.title,
-        description: educationDetail.description,
+        title: educationDetail[lang]?.title,
+        description: educationDetail[lang]?.description,
       });
-      setImg(educationDetail.img);
+      setImg(educationDetail[lang]?.img as string);
     }
   }, [educationDetail]);
 

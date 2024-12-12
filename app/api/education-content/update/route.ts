@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         verificationResult?.role === "admin" ||
         verificationResult?.role === "superadmin"
       ) {
-        const findCourse = await Course.findById(id);
+        const findCourse = await Course.findById(updateData._id);
         if (!findCourse) {
           return NextResponse.json(
             {
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
           );
         } else {
           const article = await Course.findOneAndUpdate(
-            { _id: id },
+            { _id: updateData._id },
             { $set: updateData },
             { new: true }
           );

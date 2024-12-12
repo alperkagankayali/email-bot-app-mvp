@@ -24,7 +24,6 @@ interface IEducationSlice {
   articleStatus: "loading" | "succeeded" | "failed" | "idle";
   videoStatus: "loading" | "succeeded" | "failed" | "idle";
   educationStatus: "loading" | "succeeded" | "failed" | "idle";
-  educationDetailStatus: "loading" | "succeeded" | "failed" | "idle";
   educationListStatus: "loading" | "succeeded" | "failed" | "idle";
   videos: IVideoType[];
   article: IArticleType[];
@@ -35,6 +34,7 @@ interface IEducationSlice {
   videoTotalItems: number;
   educationContentTotalItems: number;
   educationDetail: ICourse | null;
+  educationListTotalItems: number;
   forms: {
     [language: string]: FormValues; // Her dil için form değerleri
   };
@@ -48,7 +48,6 @@ const initialState: IEducationSlice = {
   articleStatus: "idle",
   videoStatus: "idle",
   educationStatus: "idle",
-  educationDetailStatus: "idle",
   videos: [],
   article: [],
   educationContent: [],
@@ -57,6 +56,7 @@ const initialState: IEducationSlice = {
   articleTotalItems: 0,
   videoTotalItems: 0,
   educationContentTotalItems: 0,
+  educationListTotalItems: 0,
   educationDetail: null,
 };
 
@@ -69,7 +69,7 @@ const educationSlice = createSlice({
       action: PayloadAction<{ language: string; values: FormValues }>
     ) => {
       const { language, values } = action.payload;
-      state.forms[language] = values;
+      state.forms[language] = { ...state.forms[language], ...values };
     },
     handleAddEducationListValue: (
       state,
@@ -120,6 +120,7 @@ const educationSlice = createSlice({
       })
       .addCase(fetchEducationList.fulfilled, (state, action) => {
         state.educationListStatus = "succeeded";
+        state.educationListTotalItems = action.payload?.totalItems ?? 0;
         state.educationListContent = action.payload.data;
       })
       .addCase(fetchEducationList.rejected, (state) => {
@@ -161,17 +162,6 @@ const educationSlice = createSlice({
       .addCase(fetchContent.rejected, (state) => {
         state.educationStatus = "failed";
       });
-    builder
-      .addCase(fetchEducationById.pending, (state) => {
-        state.educationDetailStatus = "loading";
-      })
-      .addCase(fetchEducationById.fulfilled, (state, action) => {
-        state.educationDetailStatus = "succeeded";
-        state.educationDetail = action.payload.data[0];
-      })
-      .addCase(fetchEducationById.rejected, (state) => {
-        state.educationDetailStatus = "failed";
-      });
   },
 });
 
@@ -185,16 +175,8 @@ export const fetchContent = createAsyncThunk(
 
 export const fetchEducationList = createAsyncThunk(
   "/education-list",
-  async (limit: number) => {
-    const response = await getEducationListContent(limit, 1);
-    return response;
-  }
-);
-
-export const fetchEducationById = createAsyncThunk(
-  "/education-content/get",
-  async (id: string) => {
-    const response = await getEducationDetail(id);
+  async (language: string) => {
+    const response = await getEducationListContent(10, 1, { language });
     return response;
   }
 );

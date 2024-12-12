@@ -32,7 +32,7 @@ const optionsWithDisabled = [
 const QuizTab = ({ lang }: IProps) => {
   const [value, setValue] = useState("select");
   const forms = useSelector((state: RootState) => state.education.forms);
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState((forms[lang]?.selectQuiz as string[]) ?? []);
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
   const status = useSelector((state: RootState) => state.education.quizStatus);

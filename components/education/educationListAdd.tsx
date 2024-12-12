@@ -1,6 +1,6 @@
 "use client";
 import type { CSSProperties } from "react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CaretRightOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { CollapseProps } from "antd";
 import { Button, Collapse, Select, theme } from "antd";
@@ -8,17 +8,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import EducationAddForm from "./add";
 import clsx from "clsx";
-import { handleAddEducationListValue } from "@/redux/slice/education";
-import { createEducationList } from "@/services/service/educationService";
+import {
+  handleAddEducationForm,
+  handleAddEducationFormValue,
+  handleAddEducationListValue,
+} from "@/redux/slice/education";
+import {
+  createEducationList,
+  getEducationListContent,
+  updateEducationList,
+} from "@/services/service/educationService";
 import { useRouter } from "@/i18n/routing";
+import { IContent, ICourse } from "@/types/courseType";
+import { useTranslations } from "next-intl";
 const { Option } = Select;
-
-const EducationListAdd: React.FC = () => {
+type IProps = {
+  id?: string;
+};
+const EducationListAdd: React.FC<IProps> = ({ id }) => {
   const { token } = theme.useToken();
   const languages = useSelector((state: RootState) => state.language.language);
   const forms = useSelector((state: RootState) => state.education.forms);
   const [selectLang, setSelectLang] = useState<string[]>([]);
   const dispatch = useDispatch();
+  const t = useTranslations("pages");
+
   const panelStyle: React.CSSProperties = {
     marginBottom: 24,
     background: "white",
@@ -58,6 +72,7 @@ const EducationListAdd: React.FC = () => {
         label: e + " Education - " + (index + 1),
         children: (
           <EducationAddForm
+            id={id}
             lang={e.replaceAll("(", "-").replaceAll(")", "").split("-")[1]}
           />
         ),
@@ -68,11 +83,57 @@ const EducationListAdd: React.FC = () => {
   };
 
   const handleCreateEducationList = async () => {
-    const res = await createEducationList(forms);
-    if(res.success){
-      router.push("/dashboard/education")
+    let res = null;
+    debugger
+    if (!!id) {
+      res = await updateEducationList(id, forms);
+    } else {
+      res = await createEducationList(forms);
     }
-  }
+    if (res.success) {
+      router.push("/dashboard/education");
+    }
+  };
+
+  useEffect(() => {
+    if (!!id && languages?.length > 0) {
+      const getDetail = async () => {
+        const response = await getEducationListContent(10, 1, { id });
+        let newArr: any[] = [];
+        response.data?.educations?.forEach((e: any) => {
+          let prevValue: Array<any> = [];
+          e?.contents?.forEach((content: IContent) => {
+            const type: string =
+              content.type === "quiz"
+                ? "selectQuiz"
+                : content.type === "article"
+                  ? "selectArticle"
+                  : "selectVideo";
+
+            if (!!e[type] && Array.isArray(e[type])) {
+              prevValue = e[type];
+              e[type] = [...prevValue, content.refId];
+            } else {
+              e[type] = [content.refId];
+            }
+          });
+          newArr.push({ language: e.language, values: e });
+        });
+        newArr.forEach((e) =>
+          dispatch(
+            handleAddEducationForm({ language: e.language, values: e.values })
+          )
+        );
+        setSelectLang(
+          response.data.languages?.map((element: string) => {
+            const findLang = languages.find((e) => e.code === element);
+            return findLang?.name + "(" + findLang?.code + ")";
+          })
+        );
+      };
+      getDetail();
+    }
+  }, [id]);
 
   return (
     <div>
@@ -128,7 +189,7 @@ const EducationListAdd: React.FC = () => {
             }
           )}
         >
-          Kaydet
+          {t("save-btn")}
         </Button>
       </div>
     </div>

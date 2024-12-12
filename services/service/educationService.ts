@@ -66,8 +66,12 @@ export const getEducationContent = async (limit = 10, page = 1) => {
   return result;
 };
 
-export const getEducationListContent = async (limit = 10, page = 1) => {
-  const queryParams = jsonToQueryString({ limit, page });
+export const getEducationListContent = async (
+  limit = 10,
+  page = 1,
+  values = {}
+) => {
+  const queryParams = jsonToQueryString({ limit, page, ...values });
   const url = servicesBaseUrl + finalConfig.GET_EDUCATION_LIST + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
@@ -76,7 +80,8 @@ export const getEducationListContent = async (limit = 10, page = 1) => {
 
 export const getEducationDetail = async (id: string) => {
   const queryParams = jsonToQueryString({ id });
-  const url = servicesBaseUrl + finalConfig.GET_BY_ID_EDUCATION_CONTENT + queryParams;
+  const url =
+    servicesBaseUrl + finalConfig.GET_BY_ID_EDUCATION_CONTENT + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
   return result;
@@ -147,6 +152,16 @@ export const updateEducation = async (id: string, updateData: any) => {
   return result;
 };
 
+export const updateEducationList = async (id: string, updateData: any) => {
+  const url = servicesBaseUrl + finalConfig.UPDATE_EDUCATION_LIST;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(
+    url,
+    { id, updateData },
+    config
+  );
+  return result;
+};
 
 export const createEducationList = async (data: any) => {
   const url = servicesBaseUrl + finalConfig.ADD_EDUCATION_LIST;

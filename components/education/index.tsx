@@ -14,11 +14,9 @@ import {
 } from "@/services/service/educationService";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
-  Avatar,
   Badge,
   Button,
   Card,
-  List,
   Pagination,
   PaginationProps,
   Popconfirm,
@@ -34,20 +32,19 @@ const EducationList: React.FC = () => {
   const t = useTranslations("pages");
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector(
-    (state: RootState) => state.education.educationStatus
+    (state: RootState) => state.education.educationListStatus
   );
   const data = useSelector(
-    (state: RootState) => state.education.educationContent
+    (state: RootState) => state.education.educationListContent
   );
   const user = useSelector((state: RootState) => state.user.user);
   const totalItems = useSelector(
-    (state: RootState) => state.education.educationContentTotalItems
+    (state: RootState) => state.education.educationListTotalItems
   );
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchContent(10));
-      dispatch(fetchEducationList(10));
+      dispatch(fetchEducationList(user?.language ?? ""));
     }
   }, [status, dispatch]);
 
@@ -82,7 +79,8 @@ const EducationList: React.FC = () => {
       </div>
       <div className="grid grid-cols-4 gap-9 mt-5">
         {data.map((item) => {
-          const reduce = item.contents.reduce((acc: any, content) => {
+          const education = item.educations[0];
+          const reduce = education?.contents.reduce((acc: any, content) => {
             if (!acc[content.type]) {
               acc[content.type] = { type: content.type, count: 0 };
             }
@@ -125,29 +123,38 @@ const EducationList: React.FC = () => {
                     width={240}
                     height={100}
                     className="h-30 object-contain bg-[#03162b]"
-                    alt={item.title}
+                    alt={education.title}
                     src={
-                      status === "loading" || !!!item.img ? noImage : item.img
+                      status === "loading" || !!!education.img
+                        ? noImage
+                        : education.img
                     }
                   />
                 }
               >
                 <Meta
-                  title={item.title}
+                  title={education.title}
                   description={
-                    <div className="grid grid-cols-3  gap-2 mt-auto pt-2">
-                      <Tag color="purple" className="!m-0 !pl-1">
-                        {" "}
-                        Article {reduce["article"].count}
-                      </Tag>
-                      <Tag color="#f50" className="!m-0 !pl-1">
-                        {" "}
-                        Quiz {reduce["quiz"]?.count}
-                      </Tag>
-                      <Tag color="#2db7f5" className="!m-0 !pl-1">
-                        {" "}
-                        Video {reduce["video"]?.count}
-                      </Tag>
+                    <div className="mt-auto">
+                      <div className="grid grid-cols-3  gap-2 mt-auto pt-2">
+                        <Tag className="!m-0 !pl-1">
+                          {" "}
+                          Article {reduce["article"].count}
+                        </Tag>
+                        <Tag className="!m-0 !pl-1">
+                          {" "}
+                          Quiz {reduce["quiz"]?.count}
+                        </Tag>
+                        <Tag className="!m-0 !pl-1">
+                          {" "}
+                          Video {reduce["video"]?.count}
+                        </Tag>
+                      </div>
+                      <div className="my-4">
+                        {item.languages.map((e) => (
+                          <Tag color="#108ee9">{e}</Tag>
+                        ))}
+                      </div>
                     </div>
                   }
                 />

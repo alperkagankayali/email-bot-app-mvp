@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useRouter } from "@/i18n/routing";
 import { fetchArticle } from "@/redux/slice/education";
+import { useTranslations } from "next-intl";
 
 type IProps = {
   redirect?: boolean;
@@ -19,6 +20,7 @@ const ArticleForm = ({ redirect = false, articleId }: IProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [form] = Form.useForm();
+  const t = useTranslations("pages");
 
   const onFinish: FormProps<IArticleType>["onFinish"] = async (values) => {
     values.content = content;
@@ -34,7 +36,7 @@ const ArticleForm = ({ redirect = false, articleId }: IProps) => {
         dispatch(fetchArticle(10));
         router.push("/dashboard/academy/article");
       }
-      notification.info({ message: "Başarıyla kaydedildi" });
+      notification.info({ message: t("article-form-success-message") });
     } else {
       notification.error({ message: res?.message });
     }
