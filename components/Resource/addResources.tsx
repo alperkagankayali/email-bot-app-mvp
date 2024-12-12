@@ -1,5 +1,13 @@
 "use client";
-import { Button, Form, FormProps, Input, Modal, Select } from "antd";
+import {
+  Button,
+  Form,
+  FormProps,
+  Input,
+  Modal,
+  notification,
+  Select,
+} from "antd";
 import React, { useEffect } from "react";
 import { DataType } from "./editableRow";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +26,7 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
   const languages = useSelector((state: RootState) => state.language.language);
   const status = useSelector((state: RootState) => state.language.status);
   const dispatch = useDispatch<AppDispatch>();
+  const [form] = Form.useForm();
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchLanguage());
@@ -31,9 +40,15 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
       value: values.value,
       code: values.code,
     });
+    if (res.success) {
+      form.resetFields()
+      notification.info({ message: "Başarı ile kaydedildi" });
+    } else {
+      notification.error({ message: "Kaydedilemedi" });
+    }
     handleAdd({
       ...res.data,
-      langKey: res.data?._id
+      langKey: res.data?._id,
     });
   };
 

@@ -11,7 +11,7 @@ const QuizUpdate: React.FC <{
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="menu-academy-article" />
+        <Breadcrumb pageName="menu-academy-quiz-update" />
         <div>
           <QuizForm redirect={true} quizId={id} />
         </div>

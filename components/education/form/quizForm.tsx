@@ -5,11 +5,15 @@ import {
   Button,
   Card,
   Checkbox,
+  Collapse,
+  CollapseProps,
   Form,
+  FormListFieldData,
   Input,
   notification,
   Radio,
   Space,
+  theme,
 } from "antd";
 import { IQuizType } from "@/types/quizType";
 import {
@@ -21,16 +25,25 @@ import { useRouter } from "@/i18n/routing";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { fetchQuiz } from "@/redux/slice/education";
+import type { CSSProperties } from "react";
 
 type IProps = {
   redirect?: boolean;
   quizId?: string;
 };
+
 const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
   const [fieldsState, setFields] = useState<IQuizType>();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [form] = Form.useForm();
+  const { token } = theme.useToken();
+  const panelStyle: React.CSSProperties = {
+    marginBottom: 24,
+    background: "white",
+    borderRadius: token.borderRadiusLG,
+    border: "none",
+  };
 
   const onFinish = async (values: IQuizType) => {
     let res = null;
@@ -63,6 +76,137 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
       fetchArticleById();
     }
   }, [quizId]);
+
+  const getItems: (
+    panelStyle: CSSProperties,
+    fields: FormListFieldData[],
+    remove: (index: number | number[]) => void
+  ) => CollapseProps["items"] = (panelStyle, fields, remove) => {
+    return fields.map((field, index) => {
+      return {
+        key: index + 1,
+        label: "Question - " + (field.name + 1),
+        children: (
+          <div key={field.key}>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                  message: "Sorunun başlığı zorunludur.",
+                },
+              ]}
+              label="Question"
+              name={[field.name, "title"]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Type"
+              name={[field.name, "type"]}
+              rules={[
+                {
+                  required: true,
+                  message: "Soru tipi zorunludur.",
+                },
+              ]}
+            >
+              <Radio.Group>
+                <Radio value="single">Single Answer</Radio>
+                <Radio
+                  value="multiple"
+                  disabled={
+                    fieldsState?.question[field.name]?.options === undefined ||
+                    fieldsState?.question[field.name]?.options?.length === 0 ||
+                    fieldsState?.question[field.name]?.options?.length === 1
+                  }
+                >
+                  Multiple Answer
+                </Radio>
+              </Radio.Group>
+            </Form.Item>
+            {!!fieldsState &&
+              fieldsState?.question[field.name]?.type === "single" && (
+                <Form.Item label="answer" name={[field.name, "answer"]}>
+                  <Radio.Group>
+                    {!!fieldsState &&
+                      fieldsState?.question[field.name]?.options?.map(
+                        (e, index) => {
+                          return (
+                            <Radio value={e} key={index + e}>
+                              {e}
+                            </Radio>
+                          );
+                        }
+                      )}
+                  </Radio.Group>
+                </Form.Item>
+              )}
+            {!!fieldsState &&
+              fieldsState?.question[field.name]?.type === "multiple" && (
+                <Form.Item label="answer" name={[field.name, "answer"]}>
+                  <Checkbox.Group>
+                    {!!fieldsState &&
+                      fieldsState?.question[field.name]?.options?.map(
+                        (e, index) => {
+                          return (
+                            <Checkbox
+                              value={e}
+                              key={index + e}
+                              className="leading-6"
+                            >
+                              {e}
+                            </Checkbox>
+                          );
+                        }
+                      )}
+                  </Checkbox.Group>
+                </Form.Item>
+              )}
+            {/* Nest Form.List */}
+            <Form.Item label="Options">
+              <Form.List name={[field.name, "options"]}>
+                {(subFields, subOpt) => (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      rowGap: 24,
+                    }}
+                  >
+                    {subFields.map((subField) => (
+                      <Space key={subField.key}>
+                        <Form.Item noStyle name={subField.name}>
+                          <Input placeholder="option" />
+                        </Form.Item>
+
+                        <CloseOutlined
+                          onClick={() => {
+                            subOpt.remove(subField.name);
+                          }}
+                        />
+                      </Space>
+                    ))}
+
+                    <Button type="dashed" onClick={() => subOpt.add()} block>
+                      + Add a option
+                    </Button>
+                  </div>
+                )}
+              </Form.List>
+            </Form.Item>
+          </div>
+        ),
+        extra: (
+          <CloseOutlined
+            onClick={() => {
+              remove(field.name);
+            }}
+          />
+        ),
+        style: panelStyle,
+      };
+    });
+  };
 
   return (
     <div className="">
@@ -104,137 +248,20 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
           {(fields, { add, remove }) => {
             return (
               <div
-                style={{ display: "flex", rowGap: 16, flexDirection: "column" }}
+                style={{
+                  display: "flex",
+                  rowGap: 16,
+                  flexDirection: "column",
+                }}
               >
-                {fields.map((field) => (
-                  <Card
-                    size="small"
-                    title={`Question ${field.name + 1}`}
-                    key={field.key}
-                    extra={
-                      <CloseOutlined
-                        onClick={() => {
-                          remove(field.name);
-                        }}
-                      />
-                    }
-                  >
-                    <Form.Item
-                      rules={[
-                        {
-                          required: true,
-                          message: "Sorunun başlığı zorunludur.",
-                        },
-                      ]}
-                      label="Question"
-                      name={[field.name, "title"]}
-                    >
-                      <Input />
-                    </Form.Item>
-                    <Form.Item
-                      label="Type"
-                      name={[field.name, "type"]}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Soru tipi zorunludur.",
-                        },
-                      ]}
-                    >
-                      <Radio.Group>
-                        <Radio value="single">Single Answer</Radio>
-                        <Radio
-                          value="multiple"
-                          disabled={
-                            fieldsState?.question[field.name]?.options === undefined ||
-                            fieldsState?.question[field.name]?.options
-                              ?.length === 0 ||
-                            fieldsState?.question[field.name]?.options
-                              ?.length === 1 
-                          }
-                        >
-                          Multiple Answer
-                        </Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                    {!!fieldsState &&
-                      fieldsState?.question[field.name]?.type === "single" && (
-                        <Form.Item label="answer" name={[field.name, "answer"]}>
-                          <Radio.Group>
-                            {!!fieldsState &&
-                              fieldsState?.question[field.name]?.options?.map(
-                                (e, index) => {
-                                  return (
-                                    <Radio value={e} key={index + e}>
-                                      {e}
-                                    </Radio>
-                                  );
-                                }
-                              )}
-                          </Radio.Group>
-                        </Form.Item>
-                      )}
-                    {!!fieldsState &&
-                      fieldsState?.question[field.name]?.type ===
-                        "multiple" && (
-                        <Form.Item label="answer" name={[field.name, "answer"]}>
-                          <Checkbox.Group>
-                            {!!fieldsState &&
-                              fieldsState?.question[field.name]?.options?.map(
-                                (e, index) => {
-                                  return (
-                                    <Checkbox
-                                      value={e}
-                                      key={index + e}
-                                      className="leading-6"
-                                    >
-                                      {e}
-                                    </Checkbox>
-                                  );
-                                }
-                              )}
-                          </Checkbox.Group>
-                        </Form.Item>
-                      )}
-                    {/* Nest Form.List */}
-                    <Form.Item label="Options">
-                      <Form.List name={[field.name, "options"]}>
-                        {(subFields, subOpt) => (
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              rowGap: 24,
-                            }}
-                          >
-                            {subFields.map((subField) => (
-                              <Space key={subField.key}>
-                                <Form.Item noStyle name={subField.name}>
-                                  <Input placeholder="option" />
-                                </Form.Item>
-
-                                <CloseOutlined
-                                  onClick={() => {
-                                    subOpt.remove(subField.name);
-                                  }}
-                                />
-                              </Space>
-                            ))}
-
-                            <Button
-                              type="dashed"
-                              onClick={() => subOpt.add()}
-                              block
-                            >
-                              + Add a option
-                            </Button>
-                          </div>
-                        )}
-                      </Form.List>
-                    </Form.Item>
-                  </Card>
-                ))}
-
+                <Collapse
+                  bordered={false}
+                  defaultActiveKey={["1"]}
+                  // expandIcon={({ isActive }) => (
+                  //   <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                  // )}
+                  items={getItems(panelStyle, fields, remove)}
+                />
                 <Button type="dashed" onClick={() => add()} block>
                   + Add a question
                 </Button>
