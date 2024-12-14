@@ -266,8 +266,8 @@ const menuGroups = [
       {
         icon: <BoxPlotOutlined />,
         label: "menu-campaign",
-        route: "/dashboard/campaign",
-        children: [{ label: "menu-news", route: "/dashboard/news" }],
+        route: "#",
+        children: [],
       },
     ],
   },
