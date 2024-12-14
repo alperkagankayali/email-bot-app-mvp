@@ -4,6 +4,9 @@ export const dynamic = "force-dynamic";
 import { message200, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import News from "@/models/news";
+import User from "@/models/user";
+import SuperAdmin from "@/models/superAdmin";
+import Company from "@/models/company";
 
 export async function GET(request: Request) {
   try {
@@ -25,10 +28,21 @@ export async function GET(request: Request) {
       ) {
         if (!!id) {
           const news = await News.findById(id);
+          let author: any = {};
+          if (news?.authorType === "User") {
+            author = await User.findById(news.author)
+              .select("name email")
+              .populate({ path: "company", model: Company }).select("companyName logo")
+              .lean();
+          } else if (news?.authorType === "superadmin") {
+            author = await SuperAdmin.findById(news.author)
+              .select("nameSurname email language")
+              .lean();
+          }
           return NextResponse.json(
             {
               ...message200,
-              data: news,
+              data: { ...news?.toObject(), author: author },
               totalItems: 1,
             },
             { status: 200, statusText: message200.message }
@@ -49,6 +63,10 @@ export async function GET(request: Request) {
                 { authorType: "superadmin" },
               ],
             })
+              .populate({
+                path: "author",
+              })
+              .lean()
               .skip(skip)
               .limit(limit);
             return NextResponse.json(

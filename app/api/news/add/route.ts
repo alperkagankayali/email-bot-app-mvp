@@ -14,10 +14,15 @@ export async function POST(request: Request) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
-      }else if (verificationResult?.role === "admin" || verificationResult?.role === "superadmin")  {
+      } else if (
+        verificationResult?.role === "admin" ||
+        verificationResult?.role === "superadmin"
+      ) {
         const newNews = new News({
           ...body,
           author: verificationResult?.id,
+          authorType:
+            verificationResult?.role === "admin" ? "User" : "SuperAdmin",
           company: verificationResult?.companyId,
         });
         const news = await newNews.save();

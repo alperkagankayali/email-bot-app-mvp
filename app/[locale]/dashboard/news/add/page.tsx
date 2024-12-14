@@ -1,19 +1,19 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import NewsList from "@/components/news";
+import NewsForm from "@/components/news/newsForm";
 
-const News: React.FC = async () => {
+const AddNews: React.FC = async () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="menu-news" />
+        <Breadcrumb pageName="menu-news-add" />
         <div>
-          <NewsList />
+            <NewsForm />
         </div>
       </div>
     </DefaultLayout>
   );
 };
 
-export default News;
+export default AddNews;

@@ -9,6 +9,7 @@ const newsBlogSchema = new Schema<INewsBlog>({
   featuredImageUrl: { type: String, required: true },
   category: { type: String, required: true },
   language: { type: String, required: true },
+  description: { type: String, required: true },
   previewCount: { type: Number, default: 0 },
   tags: { type: [String], default: [] },
   authorType: {
@@ -22,6 +23,7 @@ const newsBlogSchema = new Schema<INewsBlog>({
     refPath: "authorType",
   },
   isPublished: { type: Boolean, default: false },
+  isDelete: { type: Boolean, default: false },
   company: { type: Types.ObjectId, ref: "Company" },
 });
 

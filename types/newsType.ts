@@ -16,4 +16,7 @@ export interface INewsBlog {
   company: ICompany;
   language: string;
   previewCount: number;
+  description: string;
+  _id: string;
+  isDelete: boolean;
 }

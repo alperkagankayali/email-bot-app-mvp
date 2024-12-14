@@ -57,7 +57,9 @@
   "ADD_EDUCATION_LIST": "/education-list/add",
   "UPDATE_EDUCATION_LIST": "/education-list/update",
   "DELETE_EDUCATION_LIST": "/education-list/delete",
-  "GET_EDUCATION_LIST": "/education-list"
-
-
+  "GET_EDUCATION_LIST": "/education-list",
+  "ADD_NEWS": "/news/add",
+  "UPDATE_NEWS": "/news/update",
+  "DELETE_NEWS": "/news/delete",
+  "GET_NEWS": "/news"
 }
