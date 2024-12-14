@@ -7,8 +7,7 @@ import { useEffect, useState } from "react";
 import Loader from "../common/Loader";
 import { useFormatter } from "next-intl";
 import { Tag } from "antd";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { IUser } from "@/types/userType";
 
 type IProps = {
   redirect?: boolean;
@@ -19,7 +18,6 @@ const NewsDetail: React.FC<IProps> = ({ id }) => {
   const [data, setData] = useState<INewsBlog>();
   const [loading, setLoading] = useState<boolean>(true);
   const format = useFormatter();
-  const user = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
     const fetchNes = async (limit: number, page: number) => {
@@ -36,6 +34,9 @@ const NewsDetail: React.FC<IProps> = ({ id }) => {
     return <Loader />;
   } else if (!!data) {
     const dateTime = new Date(data.created_at);
+    const dateTime2 = new Date(data.updated_at);
+    const type = data.authorType?.toLocaleLowerCase();
+
     return (
       <div>
         <h1 className="text-4xl text-black font-bold mb-4">{data.headline}</h1>
@@ -46,37 +47,26 @@ const NewsDetail: React.FC<IProps> = ({ id }) => {
               height={48}
               className="rounded-full bg-slate-200 h-12 object-contain mr-2"
               src={
-                user?.role !== "superadmin"
-                  ? (user?.companyLogo ?? "")
+                type === "user"
+                  ? ((data.author as IUser)?.company.logo ?? "")
                   : "/images/user/user-01.png"
               }
               alt="User"
             />
           </span>
-          <span className="hidden text-right lg:block ml-2">
+          <span className="hidden lg:block ml-2">
             <span className="block text-sm font-medium text-black dark:text-white">
-              {!!user && user.nameSurname}
+              {data.author.nameSurname}
             </span>
             <span className="block text-xs">
-              {!!user && user.role === "superadmin"
+              {type === "superadmin"
                 ? "Super Admin"
-                : user?.department}
-            </span>
-            <span className="block text-xs">
-              {!!user && user.role !== "superadmin" && user?.role}
+                : (data.author as IUser)?.department}
             </span>
           </span>
         </div>
         <p className="mb-4">{data.description}</p>
-        <p className="mb-4">
-          {format.dateTime(dateTime, {
-            hour: "numeric",
-            minute: "numeric",
-            month: "numeric",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </p>
+
         <Image
           className="!w-full mb-4 rounded-md"
           width={1000}
@@ -89,6 +79,28 @@ const NewsDetail: React.FC<IProps> = ({ id }) => {
           className="mb-4"
           dangerouslySetInnerHTML={{ __html: data?.content }}
         ></div>
+        <div className="flex w-full justify-between">
+          <p className="mb-4">
+            Create date:{" "}
+            {format.dateTime(dateTime, {
+              hour: "numeric",
+              minute: "numeric",
+              month: "numeric",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
+          <p className="mb-4">
+            Update date:{" "}
+            {format.dateTime(dateTime2, {
+              hour: "numeric",
+              minute: "numeric",
+              month: "numeric",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
+        </div>
         {data.tags.map((value) => (
           <Tag key={value}>{value}</Tag>
         ))}

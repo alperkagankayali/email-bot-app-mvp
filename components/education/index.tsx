@@ -187,7 +187,7 @@ const EducationList: React.FC = () => {
       <div className="grid grid-cols-4 gap-9 mt-5">
         {data.map((item) => {
           const education = item.educations[0];
-          const reduce = education?.contents.reduce((acc: any, content) => {
+          const reduce = education?.contents?.reduce((acc: any, content) => {
             if (!acc[content.type]) {
               acc[content.type] = { type: content.type, count: 0 };
             }
@@ -246,15 +246,15 @@ const EducationList: React.FC = () => {
                       <div className="grid grid-cols-3  gap-2 mt-auto pt-2">
                         <Tag className="!m-0 !pl-1">
                           {" "}
-                          Article {reduce["article"].count}
+                          Article: {reduce["article"]?.count ?? 0}
                         </Tag>
                         <Tag className="!m-0 !pl-1">
                           {" "}
-                          Quiz {reduce["quiz"]?.count}
+                          Quiz: {reduce["quiz"]?.count ?? 0}
                         </Tag>
                         <Tag className="!m-0 !pl-1">
                           {" "}
-                          Video {reduce["video"]?.count}
+                          Video: {reduce["video"]?.count ?? 0}
                         </Tag>
                       </div>
                       <div className="my-4">

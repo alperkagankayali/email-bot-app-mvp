@@ -16,6 +16,7 @@ export interface ICourse {
   authorType: "User" | "superadmin";
   language: string;
   _id: string;
+  levelOfDifficulty: "easy" | "medium" | "hard";
 }
 enum ContentType {
   VIDEO = "video",

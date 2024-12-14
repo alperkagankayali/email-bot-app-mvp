@@ -21,6 +21,11 @@ const courseSchema = new Schema<ICourse>({
   isPublished: { type: Boolean, default: false },
   company: { type: Types.ObjectId, ref: "Company" },
   language: { type: String, enum: languageCodeLists, required: true },
+  levelOfDifficulty: {
+    type: String,
+    enum: ["easy", "medium", "hard"], // İçerik türü
+    required: true,
+  },
   contents: [
     {
       type: {

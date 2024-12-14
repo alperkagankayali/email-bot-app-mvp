@@ -34,6 +34,9 @@ body {
   height: auto !important;
   @apply !line-clamp-3;
 }
+.ant-card-meta-description{
+  @apply !line-clamp-5;
+}
 .ant-card-actions {
   @apply !mt-auto;
 }

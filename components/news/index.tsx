@@ -5,7 +5,7 @@ import { getNews } from "@/services/service/newsService";
 import { INewsBlog } from "@/types/newsType";
 import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 
-import { Button, Card, Pagination, PaginationProps } from "antd";
+import { Badge, Button, Card, Pagination, PaginationProps } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -68,24 +68,36 @@ const NewsList: React.FC = () => {
             </Link>,
           ];
           return (
-            <Card
-              actions={actions}
+            <Badge.Ribbon
+              className="card-title-ribbon"
+              color={news?.authorType === "superadmin" ? "green" : "red"}
+              text={news?.authorType === "superadmin" ? "Global" : "Local"}
               key={news._id}
-              hoverable
-              loading={loading}
-              style={{ width: 240 }}
-              cover={
-                <Image
-                  width={240}
-                  height={100}
-                  className="h-30 object-cover"
-                  alt={news.headline}
-                  src={loading ? noImage : news.featuredImageUrl}
-                />
-              }
             >
-              <Meta title={news.headline} description={news.description} />
-            </Card>
+              <Card
+                actions={actions}
+                key={news._id}
+                hoverable
+                rootClassName="h-full flex"
+                loading={loading}
+                style={{ width: 240 }}
+                cover={
+                  <Image
+                    width={240}
+                    height={100}
+                    className="h-30 object-cover"
+                    alt={news.headline}
+                    src={loading ? noImage : news.featuredImageUrl}
+                  />
+                }
+              >
+                <Meta
+                  className="!line-clamp-3"
+                  title={news.headline}
+                  description={news.description}
+                />
+              </Card>
+            </Badge.Ribbon>
           );
         })}
       </div>

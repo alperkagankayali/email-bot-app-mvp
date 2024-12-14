@@ -1,5 +1,5 @@
 "use client";
-import { Button, Form, FormProps, Input, notification } from "antd";
+import { Button, Form, FormProps, Input, notification, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { ICourse } from "@/types/courseType";
@@ -85,6 +85,34 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
                 required
                 placeholder="Description"
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              />
+            </Form.Item>
+          </div>
+        </div>
+        <div className="mb-4">
+          <label className="mb-2.5 block font-medium text-black dark:text-white">
+          Level of Difficulty
+          </label>
+          <div className="relative">
+            <Form.Item<ICourse> name="levelOfDifficulty" required>
+              <Select
+                size="large"
+                style={{ width: "100%" }}
+                placeholder="Tags Mode"
+                options={[
+                  {
+                    value: "easy",
+                    label: "easy",
+                  },
+                  {
+                    value: "medium",
+                    label: "medium",
+                  },
+                  {
+                    value: "hard",
+                    label: "hard",
+                  },
+                ]}
               />
             </Form.Item>
           </div>

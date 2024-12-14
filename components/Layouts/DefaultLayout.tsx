@@ -25,8 +25,10 @@ export default function DefaultLayout({
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main>
-            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10"
-            style={{height:'calc(100vh - 80px)'}}>
+            <div
+              className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 mb-2"
+              style={{ height: "calc(100vh - 80px)" }}
+            >
               {children}
             </div>
           </main>

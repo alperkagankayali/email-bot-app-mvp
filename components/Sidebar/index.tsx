@@ -238,22 +238,22 @@ const menuGroups = [
         icon: <ReadOutlined />,
         label: "menu-education-content",
         route: "#",
-        role: ["superadmin"],
+        role: ["superadmin", "admin"],
         children: [
           {
             label: "menu-academy-quiz",
             route: "/dashboard/academy/quiz",
-            role: ["superadmin"],
+            role: ["superadmin","admin"],
           },
           {
             label: "menu-academy-article",
             route: "/dashboard/academy/article",
-            role: ["superadmin"],
+            role: ["superadmin","admin"],
           },
           {
             label: "menu-academy-video",
             route: "/dashboard/academy/video",
-            role: ["superadmin"],
+            role: ["superadmin","admin"],
           },
           { label: "menu-news", route: "/dashboard/news" },
         ],

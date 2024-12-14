@@ -31,8 +31,12 @@ export async function GET(request: Request) {
           let author: any = {};
           if (news?.authorType === "User") {
             author = await User.findById(news.author)
-              .select("name email")
-              .populate({ path: "company", model: Company }).select("companyName logo")
+              .select("nameSurname email department language role")
+              .populate({
+                path: "company",
+                model: Company,
+                select: ["companyName", "logo"],
+              })
               .lean();
           } else if (news?.authorType === "superadmin") {
             author = await SuperAdmin.findById(news.author)
@@ -51,6 +55,23 @@ export async function GET(request: Request) {
           if (verificationResult?.role === "superadmin") {
             const newsTotal = await News.countDocuments({
               isDelete: false,
+            });
+            const news = await News.find({
+              isDelete: false,
+            })
+              .skip(skip)
+              .limit(limit);
+            return NextResponse.json(
+              {
+                ...message200,
+                data: news,
+                totalItems: newsTotal,
+              },
+              { status: 200, statusText: message200.message }
+            );
+          } else {
+            const newsTotal = await News.countDocuments({
+              isDelete: false,
               $or: [
                 { company: verificationResult.companyId },
                 { authorType: "superadmin" },
@@ -63,10 +84,6 @@ export async function GET(request: Request) {
                 { authorType: "superadmin" },
               ],
             })
-              .populate({
-                path: "author",
-              })
-              .lean()
               .skip(skip)
               .limit(limit);
             return NextResponse.json(
@@ -78,30 +95,6 @@ export async function GET(request: Request) {
               { status: 200, statusText: message200.message }
             );
           }
-          const newsTotal = await News.countDocuments({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
-          });
-          const news = await News.find({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
-          })
-            .skip(skip)
-            .limit(limit);
-          return NextResponse.json(
-            {
-              ...message200,
-              data: news,
-              totalItems: newsTotal,
-            },
-            { status: 200, statusText: message200.message }
-          );
         }
       } else {
         return NextResponse.json(
