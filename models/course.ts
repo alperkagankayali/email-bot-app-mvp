@@ -24,7 +24,6 @@ const courseSchema = new Schema<ICourse>({
   levelOfDifficulty: {
     type: String,
     enum: ["easy", "medium", "hard"], // İçerik türü
-    required: true,
   },
   contents: [
     {

@@ -11,16 +11,18 @@ export async function middleware(req: NextRequest) {
   const [, locale, ...segments] = req.nextUrl.pathname.split("/");
 
   const currentUser = req.cookies.get("currentUser")?.value;
-
+console.log('current',currentUser)
   if (pathname.startsWith("/api")) {
     return handleAPIMiddleware(req);
-  } else if (!currentUser && !req.nextUrl.pathname.startsWith("/")) {
-    return Response.redirect(new URL(`/`, req.url));
-  } else if (currentUser && segments.join("/") === "") {
-    return NextResponse.redirect(
-      new URL(`/${locale === "" ? "en" : locale}/dashboard`, req.url)
-    );
-  }
+  } 
+  // else if (!currentUser && !req.nextUrl.pathname.startsWith("/")) {
+  //   return Response.redirect(new URL(`/`, req.url));
+  // } 
+  // else if (currentUser && segments.join("/") === "") {
+  //   return NextResponse.redirect(
+  //     new URL(`/${locale === "" ? "en" : locale}/dashboard`, req.url)
+  //   );
+  // }
   return i18nMiddleware(req);
 }
 

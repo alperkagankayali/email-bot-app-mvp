@@ -32,6 +32,7 @@ instance.interceptors.response.use(
     if (error.response.status === 401) {
       if (typeof window !== "undefined") {
         localStorage.clear();
+        window.location.replace("/");
       }
     }
     if (error.response) {

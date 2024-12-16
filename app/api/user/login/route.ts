@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { ISuperAdmin } from "@/types/superAdmingType";
 import SuperAdmin from "@/models/superAdmin";
-import { message200, message403, message500 } from "@/constants";
+import { cookiesOpt, message200, message403, message500 } from "@/constants";
 import Company from "@/models/company";
 const { createCodec } = require("json-crypto");
 export interface IUserJWT {
@@ -67,12 +67,7 @@ export async function POST(request: Request) {
       );
       const userSesion = { isLoggedIn: true, token, ...user };
       const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
-      cookies().set("currentUser", encryptedSessionData, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24 * 7, // One week
-        path: "/",
-      });
+      cookies().set("currentUser", encryptedSessionData, cookiesOpt);
 
       return NextResponse.json(
         {
