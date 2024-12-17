@@ -7,16 +7,8 @@ import {
   handleEducationContentDataChange,
 } from "@/redux/slice/education";
 import { AppDispatch, RootState } from "@/redux/store";
-import {
-  deleteEducation,
-  getEducationContent,
-} from "@/services/service/educationService";
-import {
-  DeleteFilled,
-  DeleteOutlined,
-  EditOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
+import { deleteEducation } from "@/services/service/educationService";
+import { DeleteFilled, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Badge,
   Button,
@@ -67,13 +59,15 @@ const EducationList: React.FC = () => {
   }, [status, dispatch]);
 
   useEffect(() => {
-    dispatch(
-      fetchEducationList({
-        language: searchParams.get("language") ?? "",
-        title: searchParams.get("title") ?? "",
-        description: searchParams.get("description") ?? "",
-      })
-    );
+    if (status !== "idle") {
+      dispatch(
+        fetchEducationList({
+          language: searchParams.get("language") ?? "",
+          title: searchParams.get("title") ?? "",
+          description: searchParams.get("description") ?? "",
+        })
+      );
+    }
   }, [searchParams, dispatch]);
 
   const handleDeleteEducation = async (id: string) => {
@@ -183,98 +177,100 @@ const EducationList: React.FC = () => {
           </Popover>
         </div>
       )}
-
-      <div className="grid grid-cols-4 gap-9 mt-5">
-        {data.map((item) => {
-          const education = item.educations[0];
-          const reduce = education?.contents?.reduce((acc: any, content) => {
-            if (!acc[content.type]) {
-              acc[content.type] = { type: content.type, count: 0 };
-            }
-            acc[content.type].count += 1; // Tür sayısını artır.
-            return acc;
-          }, {});
-          const actions: React.ReactNode[] = [
-            <Link href={"/dashboard/education/update/" + item._id}>
-              <EditOutlined key="edit" />
-            </Link>,
-            <Popconfirm
-              title="Delete the article"
-              description="Are you sure to delete this article?"
-              onConfirm={() => handleDeleteEducation(item._id)}
-              okText="Yes"
-              cancelText="No"
-              disabled={
-                item?.authorType === "superadmin" && user?.role !== "superadmin"
+      {!!data && (
+        <div className="grid grid-cols-4 gap-9 mt-5">
+          {data.map((item) => {
+            const education = item.educations[0];
+            const reduce = education?.contents?.reduce((acc: any, content) => {
+              if (!acc[content.type]) {
+                acc[content.type] = { type: content.type, count: 0 };
               }
-            >
-              <DeleteOutlined />
-            </Popconfirm>,
-          ];
-          return (
-            <Badge.Ribbon
-              className="card-title-ribbon"
-              color={item?.authorType === "superadmin" ? "green" : "red"}
-              text={item?.authorType === "superadmin" ? "Global" : "Local"}
-              key={item._id}
-            >
-              <Card
-                actions={actions}
-                key={item._id}
-                hoverable
-                rootClassName="flex h-full"
-                loading={status === "loading"}
-                style={{ width: 240 }}
-                cover={
-                  <Image
-                    width={240}
-                    height={100}
-                    className="h-30 object-contain bg-[#03162b]"
-                    alt={education?.title}
-                    src={
-                      status === "loading" || !!!education?.img
-                        ? noImage
-                        : education?.img
-                    }
-                  />
+              acc[content.type].count += 1; // Tür sayısını artır.
+              return acc;
+            }, {});
+            const actions: React.ReactNode[] = [
+              <Link href={"/dashboard/education/update/" + item._id}>
+                <EditOutlined key="edit" />
+              </Link>,
+              <Popconfirm
+                title="Delete the article"
+                description="Are you sure to delete this article?"
+                onConfirm={() => handleDeleteEducation(item._id)}
+                okText="Yes"
+                cancelText="No"
+                disabled={
+                  item?.authorType === "superadmin" &&
+                  user?.role !== "superadmin"
                 }
               >
-                <Meta
-                  title={education.title}
-                  description={
-                    <div className="mt-auto">
-                      <div className="grid grid-cols-3  gap-2 mt-auto pt-2">
-                        <Tag className="!m-0 !pl-1">
-                          {" "}
-                          Article: {reduce["article"]?.count ?? 0}
-                        </Tag>
-                        <Tag className="!m-0 !pl-1">
-                          {" "}
-                          Quiz: {reduce["quiz"]?.count ?? 0}
-                        </Tag>
-                        <Tag className="!m-0 !pl-1">
-                          {" "}
-                          Video: {reduce["video"]?.count ?? 0}
-                        </Tag>
-                      </div>
-                      <div className="my-4">
-                        {item.languages.map((e: any) => (
-                          <Tag
-                            key={e}
-                            color={languageColor[e as languageEnum] ?? "blue"}
-                          >
-                            {e}
-                          </Tag>
-                        ))}
-                      </div>
-                    </div>
+                <DeleteOutlined />
+              </Popconfirm>,
+            ];
+            return (
+              <Badge.Ribbon
+                className="card-title-ribbon"
+                color={item?.authorType === "superadmin" ? "green" : "red"}
+                text={item?.authorType === "superadmin" ? "Global" : "Local"}
+                key={item._id}
+              >
+                <Card
+                  actions={actions}
+                  key={item._id}
+                  hoverable
+                  rootClassName="flex h-full"
+                  loading={status === "loading"}
+                  style={{ width: 240 }}
+                  cover={
+                    <Image
+                      width={240}
+                      height={100}
+                      className="h-30 object-contain bg-[#03162b]"
+                      alt={education?.title}
+                      src={
+                        status === "loading" || !!!education?.img
+                          ? noImage
+                          : education?.img
+                      }
+                    />
                   }
-                />
-              </Card>
-            </Badge.Ribbon>
-          );
-        })}
-      </div>
+                >
+                  <Meta
+                    title={education.title}
+                    description={
+                      <div className="mt-auto">
+                        <div className="grid grid-cols-3  gap-2 mt-auto pt-2">
+                          <Tag className="!m-0 !pl-1">
+                            {" "}
+                            Article: {reduce["article"]?.count ?? 0}
+                          </Tag>
+                          <Tag className="!m-0 !pl-1">
+                            {" "}
+                            Quiz: {reduce["quiz"]?.count ?? 0}
+                          </Tag>
+                          <Tag className="!m-0 !pl-1">
+                            {" "}
+                            Video: {reduce["video"]?.count ?? 0}
+                          </Tag>
+                        </div>
+                        <div className="my-4">
+                          {item.languages.map((e: any) => (
+                            <Tag
+                              key={e}
+                              color={languageColor[e as languageEnum] ?? "blue"}
+                            >
+                              {e}
+                            </Tag>
+                          ))}
+                        </div>
+                      </div>
+                    }
+                  />
+                </Card>
+              </Badge.Ribbon>
+            );
+          })}
+        </div>
+      )}
       <div className="mt-10 mb-20 w-full">
         {!!totalItems && (
           <Pagination

@@ -1,16 +1,18 @@
-'use client';
+"use client";
 
-import DefaultLayout from '@/components/Layouts/DefaultLayout';
-import {useTranslations} from 'next-intl';
-import {useEffect} from 'react';
+import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import { Link } from "@/i18n/routing";
+import { Button, Result } from "antd";
+import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 
 type Props = {
   error: Error;
   reset(): void;
 };
 
-export default function Error({error, reset}: Props) {
-  const t = useTranslations('pages');
+export default function Error({ error, reset }: Props) {
+  const t = useTranslations("pages");
 
   useEffect(() => {
     console.error(error);
@@ -19,18 +21,19 @@ export default function Error({error, reset}: Props) {
   return (
     <DefaultLayout>
       <div>
-        {t.rich('description', {
-          p: (chunks) => <p className="mt-4">{chunks}</p>,
-          retry: (chunks) => (
-            <button
-              className="text-white underline underline-offset-2"
-              onClick={reset}
-              type="button"
-            >
-              {chunks}
-            </button>
-          )
-        })}
+        <Result
+          status="500"
+          title="500"
+          subTitle="Sorry, something went wrong."
+          extra={
+            <div>
+              <p>{error.message}</p>
+              <Link href={"/"} type="primary">
+                Back Home
+              </Link>
+            </div>
+          }
+        />
       </div>
     </DefaultLayout>
   );
