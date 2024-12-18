@@ -1,22 +1,25 @@
+import { servicesBaseUrl } from "@/constants";
 import axios from "axios";
 
 const instance = axios.create({
-  headers: {
-    Authorization: "",
-  },
+  baseURL: servicesBaseUrl,
+  withCredentials: true, // Cookie gönderimini aktif eder
 });
 
 instance.interceptors.request.use(
-  (config) => {
-    if (typeof window !== "undefined") {
-      const accessToken = JSON.parse(localStorage.getItem("token") || "{}");
-      if (accessToken) {
-        if (config.headers) {
-          config.headers.Authorization = `Bearer ${accessToken}`;
-        }
-      }
-    }
-
+  async (config) => {
+    // if (typeof window !== "undefined") {
+    //   const cookies = useCookies();
+    //   const token = cookies.get('token');
+    //   if (token) {
+    //     if (config.headers) {
+    //       config.headers.Authorization = `Bearer ${token}`;
+    //     }
+    //   }
+    // }
+    const fetchToken = await fetch(servicesBaseUrl + "/cookie?name=token");
+    const res = await (await fetchToken).json();
+    config.headers.Authorization = `Bearer ${res}`;
     return config;
   },
   (error) => {
@@ -31,7 +34,6 @@ instance.interceptors.response.use(
   (error) => {
     if (error.response.status === 401) {
       if (typeof window !== "undefined") {
-        localStorage.clear();
         window.location.replace("/");
       }
     }

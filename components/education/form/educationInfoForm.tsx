@@ -32,6 +32,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
           title: values.title,
           description: values.description,
           language: lang,
+          levelOfDifficulty:values.levelOfDifficulty
         },
       })
     );

@@ -65,7 +65,7 @@ export async function GET(request: Request) {
                   // language: { $in: language }, // Belirtilen dillerle eşleşen belgeler
                   ...filter,
                   $or: [
-                    { language: { $in: language } }, // Belirtilen diller
+                    { language: { $nin: language } }, // Belirtilen diller
                     { language: { $exists: true } }, // Eğer belirtilen diller yoksa herhangi bir dil
                   ],
                 },

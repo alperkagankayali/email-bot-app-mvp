@@ -33,7 +33,7 @@ export interface ISuperAdminJWT {
   role: "superadmin";
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request, res: Response) {
   try {
     await connectToDatabase();
     const body = await request.json();
@@ -68,11 +68,15 @@ export async function POST(request: Request) {
       const userSesion = { isLoggedIn: true, token, ...user };
       const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
       cookies().set("currentUser", encryptedSessionData, cookiesOpt);
-
+      cookies().set("token", token, cookiesOpt);
       return NextResponse.json(
         {
           ...message200,
-          data: { token: token, type: "Bearer", user: superAdmin },
+          data: {
+            token: token,
+            type: "Bearer",
+            user: { ...(superAdmin as any)?.toObject(), password: "" },
+          },
         },
         { status: 200 }
       );
@@ -98,17 +102,12 @@ export async function POST(request: Request) {
           companyLogo: user?.company?.logo,
         },
         jwtKey,
-        { expiresIn: "2h" }
+        { expiresIn: "10d" }
       );
       const userSesion = { isLoggedIn: true, token, ...user };
       const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
-      cookies().set("currentUser", encryptedSessionData, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24 * 7, // One week
-        path: "/",
-      });
-
+      cookies().set("currentUser", encryptedSessionData, cookiesOpt);
+      cookies().set("token", token, cookiesOpt);
       return NextResponse.json(
         {
           ...message200,
@@ -117,7 +116,6 @@ export async function POST(request: Request) {
             type: "Bearer",
             user: {
               email: user?.email,
-              password: user?.password,
               id: user?._id,
               department: user.department,
               language: user.language,

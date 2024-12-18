@@ -10,14 +10,13 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const [, locale, ...segments] = req.nextUrl.pathname.split("/");
 
-  const currentUser = req.cookies.get("currentUser")?.value;
-console.log('current',currentUser)
+  // console.log("current-------", currentUser);
   if (pathname.startsWith("/api")) {
     return handleAPIMiddleware(req);
-  } 
+  }
   // else if (!currentUser && !req.nextUrl.pathname.startsWith("/")) {
   //   return Response.redirect(new URL(`/`, req.url));
-  // } 
+  // }
   // else if (currentUser && segments.join("/") === "") {
   //   return NextResponse.redirect(
   //     new URL(`/${locale === "" ? "en" : locale}/dashboard`, req.url)
@@ -27,6 +26,7 @@ console.log('current',currentUser)
 }
 
 async function handleAPIMiddleware(req: NextRequest) {
+
   const user = await handleAuthControl(req);
   // const apiKey = req.headers.get('x-api-key'); // API anahtarı kontrolü
   // if (!user) {

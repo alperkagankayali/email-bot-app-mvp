@@ -8,6 +8,7 @@ import { redirect } from "@/i18n/routing";
 
 export async function logoutUser() {
   const cookieStore = await cookies();
+  cookieStore.delete("token");
   cookieStore.delete("currentUser");
 }
 

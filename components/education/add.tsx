@@ -137,10 +137,10 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
       <div className="mt-6 flex">
         {current === steps.length - 1 && (
           <Button type="primary" disabled={isSuccess} onClick={onFinish}>
-            Done
+            Education Save
           </Button>
         )}
-        {current > 0 && (
+        {!isSuccess && current > 0 &&   (
           <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
             Previous
           </Button>
