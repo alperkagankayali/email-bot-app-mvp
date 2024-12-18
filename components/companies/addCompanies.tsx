@@ -22,6 +22,7 @@ import {
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 dayjs.extend(customParseFormat);
 const { RangePicker } = DatePicker;
@@ -127,11 +128,12 @@ const AddCompanies = ({
     setLogo(x);
   };
   const options: SelectProps["options"] = [];
+  const t = useTranslations("pages");
 
   return (
     <div>
       <Modal
-        title="Şirket Ekle"
+        title={t("add-companies-button")}
         open={isModalOpen}
         onCancel={() => {
           setLogo("");
@@ -150,14 +152,14 @@ const AddCompanies = ({
         >
           <div className="mb-4">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Company name
+              {t("companies-name")}
             </label>
             <div className="relative">
               <Form.Item<DataType> name="companyName">
                 <Input
                   size="large"
                   type="text"
-                  placeholder="Company name"
+                  placeholder={t("companies-name")}
                   className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </Form.Item>
@@ -166,7 +168,7 @@ const AddCompanies = ({
 
           <div className="mb-6">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Value
+              {t("companies-image")}
             </label>
             <div className="relative">
               <FileUpload
@@ -177,7 +179,7 @@ const AddCompanies = ({
           </div>
           <div className="mb-4">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Lisans Süresi
+              {t("companies-licance-date")}
             </label>
             <div className="relative">
               <Form.Item<DataType> name="lisanceStartDate">
@@ -205,14 +207,14 @@ const AddCompanies = ({
           </div>
           <div className="mb-4">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Email Domains
+              {t("companies-email-domains")}
             </label>
             <div className="relative">
               <Form.Item<DataType> name="emailDomainAddress">
                 <Select
                   mode="tags"
                   style={{ width: "100%" }}
-                  placeholder="Tags Mode"
+                  placeholder={t("companies-email-domains")}
                   // onChange={handleChange}
                   options={options}
                 />
@@ -222,7 +224,7 @@ const AddCompanies = ({
                   htmlType="submit"
                   className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
                 >
-                  Kaydet
+                  {t("save-button")}
                 </Button>
               </Form.Item>
             </div>

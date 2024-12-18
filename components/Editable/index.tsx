@@ -5,6 +5,7 @@ import { Checkbox, Form, notification, Table } from "antd";
 import { getLanguage, updateLanguage } from "@/services/service/generalService";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { PaginationType } from "@/types/paginationType";
+import { useTranslations } from "next-intl";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
@@ -141,21 +142,22 @@ const Editable: React.FC = () => {
     }
     fetchLanguage();
   }, []);
+  const t = useTranslations("pages");
 
   const defaultColumns: (ColumnTypes[number] & {
     editable?: boolean;
     dataIndex: string;
   })[] = [
     {
-      title: "name",
+      title: t("langauge-name"),
       dataIndex: "name",
     },
     {
-      title: "code",
+      title: t("langauge-code"),
       dataIndex: "code",
     },
     {
-      title: "Active",
+      title: t("langauge-active"),
       dataIndex: "isActive",
       editable: true,
       render: (text, record) =>
