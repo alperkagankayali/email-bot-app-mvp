@@ -6,6 +6,7 @@ import StoreProvider from "../StoreProvider";
 import { routing } from "@/i18n/routing";
 import { ReactNode } from "react";
 import { getResource } from "@/services/service/generalService";
+import Loader from "@/components/common/Loader";
 
 type Props = {
   children: ReactNode;
@@ -42,15 +43,26 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getResource(locale);
 
-  return (
-    <html lang={locale}>
-      <body>
-        <StoreProvider>
-          <NextIntlClientProvider locale={locale} messages={messages.data}>
-            <AntdRegistry>{children}</AntdRegistry>
-          </NextIntlClientProvider>
-        </StoreProvider>
-      </body>
-    </html>
-  );
+  if (!!messages.success) {
+    return (
+      <html lang={locale}>
+        <body>
+          <StoreProvider>
+            <NextIntlClientProvider locale={locale} messages={messages.data}>
+              <AntdRegistry>{children}</AntdRegistry>
+            </NextIntlClientProvider>
+          </StoreProvider>
+        </body>
+      </html>
+    );
+  } else {
+    return (
+      <html>
+        <body>
+          {" "}
+          <Loader />{" "}
+        </body>{" "}
+      </html>
+    );
+  }
 }
