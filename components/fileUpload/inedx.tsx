@@ -6,7 +6,7 @@ import { message, Upload } from "antd";
 import finalConfig from "@/lib/config.json";
 import type { GetProp } from "antd";
 import { v4 as uuidv4 } from "uuid";
-import { servicesBaseUrl } from "@/constants";
+import { getBase64, servicesBaseUrl } from "@/constants";
 const { Dragger } = Upload;
 type IProps = {
   handleUploadFile: (x: string) => void;
@@ -41,7 +41,7 @@ const FileUpload = ({ handleUploadFile, defaultValue, type }: IProps) => {
   const props: UploadProps = {
     name: "file",
     multiple: false,
-    listType:"picture",
+    listType: "picture",
     action: servicesBaseUrl + finalConfig.FILE_UPLOAD + "?file=upload",
     beforeUpload: beforeUpload,
     defaultFileList: !!defaultValue

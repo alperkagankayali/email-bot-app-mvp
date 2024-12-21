@@ -13,30 +13,32 @@ type IProps = {
 };
 const EducationInfoForm = ({ next, lang }: IProps) => {
   const [form] = Form.useForm();
-  const [img, setImg] = useState("");
-  const dispatch = useDispatch<AppDispatch>();
   const educationDetail = useSelector(
     (state: RootState) => state.education.forms
   );
+  const [img, setImg] = useState((educationDetail[lang]?.img as string) ?? "");
+  const dispatch = useDispatch<AppDispatch>();
 
   const onFinish: FormProps<ICourse>["onFinish"] = async (values) => {
     if (img === "") {
       notification.error({ message: "Please upload your logo" });
-    }
-    values.img = img;
-    dispatch(
-      handleAddEducationForm({
-        language: lang,
-        values: {
-          img,
-          title: values.title,
-          description: values.description,
+    } else {
+      values.img = img;
+      dispatch(
+        handleAddEducationForm({
           language: lang,
-          levelOfDifficulty:values.levelOfDifficulty
-        },
-      })
-    );
-    next();
+          values: {
+            ...(!!educationDetail[lang] ? educationDetail[lang] : {}),
+            img,
+            title: values.title,
+            description: values.description,
+            language: lang,
+            levelOfDifficulty: values.levelOfDifficulty,
+          },
+        })
+      );
+      next();
+    }
   };
 
   useEffect(() => {
@@ -44,6 +46,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
       form.setFieldsValue({
         title: educationDetail[lang]?.title,
         description: educationDetail[lang]?.description,
+        levelOfDifficulty: educationDetail[lang]?.levelOfDifficulty,
       });
       setImg(educationDetail[lang]?.img as string);
     }
@@ -79,11 +82,10 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
             Description
           </label>
           <div className="relative">
-            <Form.Item<ICourse> name="description" required>
+            <Form.Item<ICourse> name="description">
               <Input
                 size="large"
                 type="text"
-                required
                 placeholder="Description"
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
@@ -92,14 +94,19 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
         </div>
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-          Level of Difficulty
+            Level of Difficulty
           </label>
           <div className="relative">
-            <Form.Item<ICourse> name="levelOfDifficulty" required>
+            <Form.Item<ICourse>
+              name="levelOfDifficulty"
+              rules={[
+                { required: true, message: "Zorluk derecesi alanını giriniz" },
+              ]}
+            >
               <Select
                 size="large"
                 style={{ width: "100%" }}
-                placeholder="Tags Mode"
+                placeholder="level of difficulty"
                 options={[
                   {
                     value: "easy",

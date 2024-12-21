@@ -1,14 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Badge, Card, Modal } from "antd";
+import { Badge, Card, Modal, Pagination, PaginationProps } from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchLandingPage } from "@/redux/slice/scenario";
+import {
+  fetchLandingPage,
+  handleChangeLandingPage,
+} from "@/redux/slice/scenario";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { EditOutlined, EyeOutlined, SettingOutlined } from "@ant-design/icons";
+import { getLandingPage } from "@/services/service/generalService";
 
 const { Meta } = Card;
 
@@ -17,12 +21,25 @@ const LandingPageList: React.FC = () => {
     (state: RootState) => state.scenario.landingPageStatus
   );
   const data = useSelector((state: RootState) => state.scenario.landingPage);
+  const totalItems = useSelector(
+    (state: RootState) => state.scenario.landingPageTotalItem
+  );
   const dispatch = useDispatch<AppDispatch>();
   const t = useTranslations("pages");
+  const [pageSize, setPageSize] = useState(6);
+
   const [open, setOpen] = useState({
     show: false,
     data: "",
   });
+
+  const onChange: PaginationProps["onChange"] = async (page, pageNumber) => {
+    const res = await getLandingPage("", pageNumber, page);
+    if (res.success && !!data) {
+      dispatch(handleChangeLandingPage(res.data));
+    }
+    setPageSize(pageNumber);
+  };
 
   useEffect(() => {
     if (status === "idle") {
@@ -84,6 +101,20 @@ const LandingPageList: React.FC = () => {
             </Badge.Ribbon>
           );
         })}
+      </div>
+      <div className="mt-10 mb-20 w-full">
+        {!!data && (
+          <Pagination
+            onChange={onChange}
+            total={totalItems}
+            pageSize={pageSize}
+            showTotal={(total) => `Total ${total} items`}
+            showSizeChanger
+            defaultPageSize={6}
+            align="center"
+            pageSizeOptions={[6, 12, 18]}
+          />
+        )}
       </div>
       <Modal
         title=""

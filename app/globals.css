@@ -28,13 +28,22 @@ body {
 .ant-card {
   @apply flex flex-col;
 }
-
+.card-meta {
+  height: 100%;
+}
+.card-meta .ant-card-meta-detail {
+  display: flex;
+  flex-direction: column;
+}
+.card-meta .ant-card-meta-detail .ant-card-meta-description {
+  margin-top: auto;
+}
 .ant-card-meta-title {
   white-space: normal !important;
   height: auto !important;
   @apply !line-clamp-3;
 }
-.ant-card-meta-description{
+.ant-card-meta-description {
   @apply !line-clamp-5;
 }
 .ant-card-actions {
@@ -67,7 +76,7 @@ input:-webkit-autofill:active {
 }
 
 .card-title-ribbon {
-  inset-inline-end: -30px !important;
+  inset-inline-end: -8px !important;
   top: 0px !important;
 }
 .ant-card-body {

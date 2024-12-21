@@ -11,9 +11,11 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import {
+  handleAddEducationFormReset,
   handleAddEducationFormValue,
   handleAddEducationListValue,
 } from "@/redux/slice/education";
+import Loader from "../common/Loader";
 
 type IProps = {
   id?: string;
@@ -34,6 +36,13 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
   const prev = () => {
     setCurrent(current - 1);
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(handleAddEducationFormReset());
+    };
+  }, []);
+
   const steps = [
     {
       title: "Education Info",
@@ -83,7 +92,6 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
     marginTop: 16,
   };
 
- 
   const onFinish = async () => {
     let res = null;
     debugger
@@ -128,26 +136,26 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
     }
   };
 
-  return (
-    <>
-      <Steps current={current} items={isSuccess ? steps2 : items} />
-      <div style={contentStyle}>
-        {isSuccess ? steps2[0]?.content : steps[current]?.content}
-      </div>
-      <div className="mt-6 flex">
-        {current === steps.length - 1 && (
-          <Button type="primary" disabled={isSuccess} onClick={onFinish}>
-            Education Save
-          </Button>
-        )}
-        {!isSuccess && current > 0 &&   (
-          <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
-            Previous
-          </Button>
-        )}
-      </div>
-    </>
-  );
+    return (
+      <>
+        <Steps current={current} items={isSuccess ? steps2 : items} />
+        <div style={contentStyle}>
+          {isSuccess ? steps2[0]?.content : steps[current]?.content}
+        </div>
+        <div className="mt-6 flex">
+          {current === steps.length - 1 && (
+            <Button type="primary" disabled={isSuccess} onClick={onFinish}>
+              Education Save
+            </Button>
+          )}
+          {!isSuccess && current > 0 && (
+            <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
+              Previous
+            </Button>
+          )}
+        </div>
+      </>
+    );
 };
 
 export default EducationAddForm;

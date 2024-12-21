@@ -1,4 +1,7 @@
 import { IResponseType } from "@/types/responseType";
+import type { GetProp, UploadProps } from "antd";
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 export const servicesBaseUrl =
   process.env.NODE_ENV === "production"
@@ -15,6 +18,18 @@ export function jsonToQueryString(json: any) {
       .join("&")
   );
 }
+
+export function queryStringTo(str: string) {
+  return Object.fromEntries(new URLSearchParams(str));
+}
+
+export const getBase64 = (file: FileType): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 
 export const message200: IResponseType = {
   status: 200,
@@ -661,8 +676,8 @@ export const handleEmailVariableChange = (
 };
 
 export const cookiesOpt = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24 * 7, // One week
-        path: "/",
-      }
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 60 * 60 * 24 * 7, // One week
+  path: "/",
+};
