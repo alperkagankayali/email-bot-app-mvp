@@ -89,11 +89,11 @@ const VideoList: React.FC = () => {
                   }}
                 />,
                 <Popconfirm
-                  title="Delete the article"
-                  description="Are you sure to delete this article?"
+                  title={t("delete-document")}
+                  description={t("delete-document-2")}
                   onConfirm={() => handleDeleteVideo(video._id)}
-                  okText="Yes"
-                  cancelText="No"
+                  okText={t("yes-btn")}
+                  cancelText={t("no-btn")}
                 >
                   <DeleteOutlined />
                 </Popconfirm>,

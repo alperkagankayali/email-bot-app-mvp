@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { handleChangeScenarioData } from "@/redux/slice/scenario";
+import { useTranslations } from "next-intl";
 
 const { Option } = Select;
 type IProps = {
@@ -61,6 +62,8 @@ const FirstTabForm = ({
     }
   }, [scenarioData]);
 
+  const t = useTranslations("pages");
+
   return (
     <>
       <Form
@@ -72,7 +75,7 @@ const FirstTabForm = ({
       >
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Title
+            {t("label")}
           </label>
           <div className="relative">
             <Form.Item<IScenario> name="title" required>
@@ -81,7 +84,7 @@ const FirstTabForm = ({
                 size="large"
                 type="text"
                 required
-                placeholder="Title"
+                placeholder={t("label")}
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </Form.Item>
@@ -90,7 +93,7 @@ const FirstTabForm = ({
         {!!data && data?.length > 0 && (
           <div className="mb-4">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Scenario Type
+              {t("scenario-type")}{" "}
             </label>
             <div className="relative">
               <Form.Item<IScenario>
@@ -105,7 +108,7 @@ const FirstTabForm = ({
                 <Select
                   size="large"
                   defaultValue={scenarioData?.scenarioType}
-                  placeholder="scenario type"
+                  placeholder={t("scenario-type")}
                 >
                   {data?.map((scenario) => {
                     return (
@@ -126,7 +129,7 @@ const FirstTabForm = ({
         {!!languages && languages?.length > 0 && (
           <div className="mb-4">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Language
+              {t("menu-language")}
             </label>
             <div className="relative">
               <Form.Item<IScenario>
@@ -142,7 +145,7 @@ const FirstTabForm = ({
                   size="large"
                   className=""
                   defaultValue={scenarioData?.language}
-                  placeholder="language"
+                  placeholder={t("menu-language")}
                 >
                   {languages.map((e) => {
                     return (
@@ -176,7 +179,7 @@ const FirstTabForm = ({
               htmlType="submit"
               className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
             >
-              Kaydet ve Devam Et
+              {t("save-and-continue")}
             </Button>
           </Form.Item>
         </div>

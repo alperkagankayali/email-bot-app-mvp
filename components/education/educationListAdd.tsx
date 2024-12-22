@@ -145,7 +145,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
       <Select
         mode="multiple"
         allowClear
-        placeholder="Please select language"
+        placeholder={t("select-language")}
         style={{ width: "100%" }}
         size="large"
         rootClassName="!mb-6"

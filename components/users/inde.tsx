@@ -249,10 +249,10 @@ const UserTable = ({ id }: IProps) => {
                   // onClick={() => save(record.key)}
                   style={{ marginInlineEnd: 8 }}
                 >
-                  Save
+                  {t("save-btn")}
                 </Typography.Link>
-                <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                  <a>Cancel</a>
+                <Popconfirm title={t("sure-to-cancel")} onConfirm={cancel}>
+                  <a> {t("cancel-btn")} </a>
                 </Popconfirm>
               </span>
             ) : (
@@ -260,7 +260,7 @@ const UserTable = ({ id }: IProps) => {
                 disabled={editingKey !== ""}
                 // onClick={() => edit(record._id)}
               >
-                Edit
+                {t("resources-edit")}
               </Typography.Link>
             )}
             {user?.role === "superadmin" && (
@@ -270,7 +270,7 @@ const UserTable = ({ id }: IProps) => {
                 className="ml-3"
                 onClick={() => handleLogin(record._id)}
               >
-                Login
+                {t("login-loginButton")}
               </Button>
             )}
           </>

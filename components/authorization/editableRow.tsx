@@ -1,14 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import type { TableProps } from "antd";
-import {
-  Form,
-  Table,
-  Tag,
-} from "antd";
-import {
-  getAuthorization,
-} from "@/services/service/generalService";
+import { Form, Table, Tag } from "antd";
+import { getAuthorization } from "@/services/service/generalService";
+import { useTranslations } from "next-intl";
 
 export interface DataType {
   key: string;
@@ -16,7 +11,7 @@ export interface DataType {
     pageName: string;
     url: string;
   };
-  isAuthorization: boolean
+  isAuthorization: boolean;
 }
 
 const AuthorizationTable: React.FC = () => {
@@ -38,32 +33,37 @@ const AuthorizationTable: React.FC = () => {
     }
     fetchAuthorization();
   }, []);
+  const t = useTranslations("pages");
 
   const columns = [
     {
-      title: "pageName",
+      title: t("page-name"),
       dataIndex: "pageName",
       render: (_: any, record: DataType) => {
         return <>{record?.page?.pageName}</>;
       },
     },
     {
-      title: "url",
+      title: "Url",
       dataIndex: "url",
       render: (_: any, record: DataType) => {
         return <>{record?.page?.url}</>;
       },
     },
     {
-      title: "role",
+      title: t("user-table-role"),
       dataIndex: "role",
       editable: true,
     },
     {
-      title: "Yetki Durumu",
+      title: t("is-authorization"),
       dataIndex: "isAuthorization",
       render: (_: any, record: DataType) => {
-        return <Tag color={record?.isAuthorization ? "blue-inverse" : "red-inverse"}>{record?.isAuthorization ? "yetkili":"yetkisiz"}</Tag>;
+        return (
+          <Tag color={record?.isAuthorization ? "blue-inverse" : "red-inverse"}>
+            {record?.isAuthorization ? "yetkili" : "yetkisiz"}
+          </Tag>
+        );
       },
     },
   ];
@@ -89,9 +89,7 @@ const AuthorizationTable: React.FC = () => {
     // filters,
     // sorter,
     // extra
-  ) => {
-    
-  };
+  ) => {};
 
   return (
     <div>

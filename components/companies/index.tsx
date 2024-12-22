@@ -77,7 +77,7 @@ const CompaniesTable: React.FC = () => {
       ),
     },
     {
-      title: t("companies-operation"),
+      title: t("resources-operation"),
       dataIndex: "operation",
       render: (_, record) => (
         <Button
@@ -86,7 +86,7 @@ const CompaniesTable: React.FC = () => {
             setIsModalOpen(true);
           }}
         >
-          {t("companies-edit-button")}
+          {t("resources-edit")}
         </Button>
       ),
     },

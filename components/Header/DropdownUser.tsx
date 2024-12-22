@@ -11,6 +11,7 @@ import { UserSwitchOutlined } from "@ant-design/icons";
 import { Button, Popover } from "antd";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { userInfo } from "@/redux/slice/user";
+import { useTranslations } from "next-intl";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -34,6 +35,7 @@ const DropdownUser = () => {
     hide();
     router.push("/dashboard");
   };
+  const t = useTranslations("pages");
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -176,7 +178,7 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                My Profile
+                {t("my-profile")}
               </Link>
             </li>
             <li>
@@ -197,7 +199,7 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                My Contacts
+                {t("my-contacts")}
               </Link>
             </li>
             <li>
@@ -222,10 +224,11 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                Account Settings
+                {t("account-settings")}
               </Link>
             </li>
           </ul>
+          
           <button
             className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             onClick={async () => {
@@ -251,7 +254,7 @@ const DropdownUser = () => {
                 fill=""
               />
             </svg>
-            Log Out
+            {t("log-out")}
           </button>
         </div>
       )}

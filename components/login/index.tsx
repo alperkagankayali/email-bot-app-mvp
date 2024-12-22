@@ -166,7 +166,7 @@ export default function Login({ locale }: IProps) {
                           size="large"
                           type="email"
                           variant="borderless"
-                          placeholder="Enter your email"
+                          placeholder={t("enter-your-mail")}
                           className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                       </Form.Item>
@@ -190,7 +190,7 @@ export default function Login({ locale }: IProps) {
                       >
                         <Input.Password
                           size="large"
-                          placeholder="6+ Characters, 1 Capital letter"
+                          placeholder={t("password-text")}
                           className="w-full rounded-lg border border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                       </Form.Item>

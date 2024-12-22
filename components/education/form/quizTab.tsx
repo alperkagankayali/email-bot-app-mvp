@@ -17,6 +17,7 @@ import { deleteQuiz, getQuiz } from "@/services/service/educationService";
 import { Link } from "@/i18n/routing";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { IQuestion } from "@/types/quizType";
+import { useTranslations } from "next-intl";
 
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
@@ -72,6 +73,7 @@ const QuizTab = ({ lang }: IProps) => {
       handleQuizDataChange(data?.filter((e) => e._id !== res.data?._id))
     );
   };
+  const t = useTranslations("pages");
 
   return (
     <>
@@ -116,15 +118,15 @@ const QuizTab = ({ lang }: IProps) => {
                   onClick={() => setOpen({ show: true, data: quiz.question })}
                 />,
                 <Popconfirm
-                  title="Delete the quiz"
+                  title={t("delete-document")}
                   disabled={
                     quiz?.authorType === "superadmin" &&
                     user?.role !== "superadmin"
                   }
-                  description="Are you sure to delete this quiz?"
+                  description={t("delete-document-2")}
                   onConfirm={() => handleDeletQuiz(quiz._id)}
-                  okText="Yes"
-                  cancelText="No"
+                  okText={t("yes-btn")}
+                  cancelText={t("no-btn")}
                 >
                   <DeleteOutlined />
                 </Popconfirm>,

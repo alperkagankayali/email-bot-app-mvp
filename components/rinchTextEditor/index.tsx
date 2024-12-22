@@ -2,6 +2,7 @@
 import React, { useMemo, useRef } from "react";
 import JoditEditor from "jodit-react";
 import { fileUploadAws } from "@/services/service/generalService";
+import { useTranslations } from "next-intl";
 type ImageHandlerProps = {
   onUpload?: (file: File) => Promise<string>;
   content: string;
@@ -16,7 +17,7 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({
   const config = useMemo(
     () => ({
       readonly: false,
-      placeholder: "Start typings...",
+      placeholder: "Start Typing...",
       extraButtons: [
         {
           name: "uploadToAws",

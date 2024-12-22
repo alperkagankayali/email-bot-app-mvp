@@ -126,7 +126,7 @@ const EducationList: React.FC = () => {
       {!!data && (
         <div className="flex items-center justify-between">
           <Search
-            placeholder="input education list title"
+            placeholder={t("education-title")}
             size="large"
             name="title"
             className="!w-full mr-4 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -137,7 +137,7 @@ const EducationList: React.FC = () => {
             enterButton
           />
           <Search
-            placeholder="input education list description"
+            placeholder={t("education-description")}
             size="large"
             name="value"
             className="!w-full mr-4 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -151,7 +151,7 @@ const EducationList: React.FC = () => {
             mode="multiple"
             size="large"
             className="w-full !ml-4"
-            placeholder="Select language"
+            placeholder={t("resources-language")}
             value={selectLanguage}
             onChange={(value: string[]) => {
               setSelectLanguage(value);
@@ -166,7 +166,7 @@ const EducationList: React.FC = () => {
               );
             })}
           </Select>
-          <Popover content={"Clear filter"} title="">
+          <Popover content={t("clear-filter")} title="">
             <DeleteFilled
               className="ml-2 cursor-pointer"
               onClick={() => {
@@ -193,11 +193,11 @@ const EducationList: React.FC = () => {
                 <EditOutlined key="edit" />
               </Link>,
               <Popconfirm
-                title="Delete the article"
-                description="Are you sure to delete this article?"
+                title={t("delete-document")}
+                description={t("delete-document-2")}
                 onConfirm={() => handleDeleteEducation(item._id)}
-                okText="Yes"
-                cancelText="No"
+                okText={t("yes-btn")}
+                cancelText={t("no-btn")}
                 disabled={
                   item?.authorType === "superadmin" &&
                   user?.role !== "superadmin"

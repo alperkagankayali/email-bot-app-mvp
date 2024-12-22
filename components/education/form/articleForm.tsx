@@ -109,8 +109,8 @@ const ArticleForm = ({ redirect = false, articleId }: IProps) => {
                 htmlType="submit"
                 className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
               >
-                Kaydet
-              </Button>
+                  {t("save-btn")}
+                  </Button>
             </Form.Item>
           </div>
         </div>

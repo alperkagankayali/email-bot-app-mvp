@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useRouter } from "@/i18n/routing";
 import { fetchVideo } from "@/redux/slice/education";
+import { useTranslations } from "next-intl";
 
 type IProps = {
   redirect?: boolean;
@@ -57,6 +58,7 @@ const VideoForm = ({ redirect, videoId }: IProps) => {
       fetchArticleById();
     }
   }, [videoId]);
+  const t = useTranslations("pages");
 
   return (
     <div className="mb-6 flex w-full">
@@ -103,6 +105,7 @@ const VideoForm = ({ redirect, videoId }: IProps) => {
           <label className="mb-2.5 block font-medium text-black dark:text-white">
             Video
           </label>
+          
           <div className="relative">
             <Form.Item<IVideoType> name="videolink">
               <FileUpload
@@ -116,7 +119,8 @@ const VideoForm = ({ redirect, videoId }: IProps) => {
                 htmlType="submit"
                 className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
               >
-                Kaydet
+                                  {t("save-btn")}
+
               </Button>
             </Form.Item>
           </div>

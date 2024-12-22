@@ -80,12 +80,12 @@ const QuizList: React.FC = () => {
                   onClick={() => setOpen({ show: true, data: quiz.question })}
                 />,
                 <Popconfirm
-                  title="Delete the quiz"
+                  title={t("delete-document")}
                   disabled={quiz?.authorType === "superadmin" && user?.role !== "superadmin"}
-                  description="Are you sure to delete this quiz?"
+                  description={t("delete-document-2")}
                   onConfirm={() => handleDeletQuiz(quiz._id)}
-                  okText="Yes"
-                  cancelText="No"
+                  okText={t("yes-btn")}
+                  cancelText={t("no-btn")}
                 >
                   <DeleteOutlined />
                 </Popconfirm>,

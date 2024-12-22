@@ -25,6 +25,7 @@ import { RootState } from "@/redux/store";
 import { DeleteFilled, DeleteOutlined, DeleteTwoTone } from "@ant-design/icons";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 const { Option } = Select;
 const { Search } = Input;
 export interface DataType {
@@ -166,24 +167,25 @@ const ResourceTable: React.FC = () => {
       notification.error({ message: "Kayıt silinemedi" });
     }
   };
+  const t = useTranslations("pages");
 
   const columns = [
     {
-      title: "Key",
+      title: t("resources-key"),
       dataIndex: "langKey",
       editable: true,
     },
     {
-      title: "value",
+      title: t("resources-value"),
       dataIndex: "value",
       editable: true,
     },
     {
-      title: "language",
+      title: t("resources-language"),
       dataIndex: "code",
     },
     {
-      title: "operation",
+      title: t("resources-operation"),
       dataIndex: "operation",
       render: (_: any, record: DataType) => {
         const editable = isEditing(record);
@@ -195,10 +197,10 @@ const ResourceTable: React.FC = () => {
                   onClick={() => save(record.key)}
                   style={{ marginInlineEnd: 8 }}
                 >
-                  Save
+                  {t("save-btn")}
                 </Typography.Link>
-                <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                  <a>Cancel</a>
+                <Popconfirm title={t("sure-to-cancel")} onConfirm={cancel}>
+                  <a>{t("cancel-btn")}</a>
                 </Popconfirm>
               </span>
             ) : (
@@ -206,15 +208,15 @@ const ResourceTable: React.FC = () => {
                 disabled={editingKey !== ""}
                 onClick={() => edit(record)}
               >
-                Edit
+                {t("resources-edit")}
               </Typography.Link>
             )}
             <Popconfirm
-              title="Delete the article"
-              description="Are you sure to delete this article?"
+              title={t("delete-document")}
+              description={t("delete-document-2")}
               onConfirm={() => handleDeleteResource(record.key)}
-              okText="Yes"
-              cancelText="No"
+              okText={t("yes-btn")}
+              cancelText={t("no-btn")}
             >
               <DeleteOutlined className="text-xl cursor-pointer" />
             </Popconfirm>
@@ -321,14 +323,14 @@ const ResourceTable: React.FC = () => {
       <div className="flex justify-between w-full items-center mb-10">
         <div className="flex justify-between w-full items-center">
           <Button onClick={() => setIsModalOpen(true)} type="primary">
-            Add a resource
+            {t("add-a-resource")}{" "}
           </Button>
           <span className="ml-2">Total {pagination?.totalItems} items</span>
         </div>
         {!!data && (
           <div className="flex items-center">
             <Search
-              placeholder="input resource key"
+              placeholder={t("input-resource-key")}
               size="large"
               name="key"
               className="!w-64 mr-4 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -339,7 +341,7 @@ const ResourceTable: React.FC = () => {
               enterButton
             />
             <Search
-              placeholder="input resource value"
+              placeholder={t("input-resource-value")}
               size="large"
               name="value"
               className="!w-64 mr-4 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -367,7 +369,7 @@ const ResourceTable: React.FC = () => {
                 );
               })}
             </Select>
-            <Popover content={"Clear filter"} title="">
+            <Popover content={t("clear-filter")} title="">
               <DeleteFilled
                 className="ml-2 cursor-pointer"
                 onClick={() => {

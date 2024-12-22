@@ -6,6 +6,7 @@ import { ICourse } from "@/types/courseType";
 import FileUpload from "@/components/fileUpload/inedx";
 import { handleAddEducationForm } from "@/redux/slice/education";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type IProps = {
   next: () => void;
@@ -32,7 +33,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
           title: values.title,
           description: values.description,
           language: lang,
-          levelOfDifficulty:values.levelOfDifficulty
+          levelOfDifficulty: values.levelOfDifficulty,
         },
       })
     );
@@ -49,6 +50,8 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
     }
   }, [educationDetail]);
 
+  const t = useTranslations("pages");
+
   return (
     <>
       <Form
@@ -60,7 +63,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
       >
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Title
+            {t("label")}
           </label>
           <div className="relative">
             <Form.Item<ICourse> name="title" required>
@@ -68,7 +71,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
                 size="large"
                 type="text"
                 required
-                placeholder="Title"
+                placeholder={t("label")}
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </Form.Item>
@@ -76,7 +79,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
         </div>
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Description
+            {t("description")}
           </label>
           <div className="relative">
             <Form.Item<ICourse> name="description" required>
@@ -84,34 +87,35 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
                 size="large"
                 type="text"
                 required
-                placeholder="Description"
+                placeholder={t("description")}
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </Form.Item>
           </div>
         </div>
+
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-          Level of Difficulty
+            {t("level-of-difficulty")}
           </label>
           <div className="relative">
             <Form.Item<ICourse> name="levelOfDifficulty" required>
               <Select
                 size="large"
                 style={{ width: "100%" }}
-                placeholder="Tags Mode"
+                placeholder={t("level-of-difficulty")}
                 options={[
                   {
                     value: "easy",
-                    label: "easy",
+                    label: t("easy"),
                   },
                   {
                     value: "medium",
-                    label: "medium",
+                    label: t("medium"),
                   },
                   {
                     value: "hard",
-                    label: "hard",
+                    label: t("hard"),
                   },
                 ]}
               />
@@ -120,7 +124,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
         </div>
         <div className="mb-6">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Fotoğraf
+            {t("image")}
           </label>
           <div className="relative">
             <Form.Item<ICourse> name="img">
@@ -131,13 +135,14 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
             </Form.Item>
           </div>
         </div>
+
         <div className="mb-4">
           <Form.Item>
             <Button
               htmlType="submit"
               className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
             >
-              Kaydet ve Devam Et
+              {t("save-and-continue")}
             </Button>
           </Form.Item>
         </div>

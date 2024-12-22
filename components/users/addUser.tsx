@@ -177,7 +177,7 @@ const AddUser = () => {
               htmlType="submit"
               className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
             >
-               {t("save-button")}
+               {t("save-btn")}
             </Button>
           </Form.Item>
         </div>

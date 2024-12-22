@@ -127,7 +127,7 @@ const ScenarioList: React.FC = () => {
         {!!data && (
           <div className="flex items-center">
             <Search
-              placeholder="input scenario name"
+              placeholder={t("input-scenario-name")}
               size="large"
               className="!w-72 mr-4 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               allowClear
@@ -139,7 +139,7 @@ const ScenarioList: React.FC = () => {
                 size="large"
                 className="w-50 "
                 value={selectScenarioType}
-                placeholder="scenario type"
+                placeholder={t("scenario-type")}
                 onChange={(value: string) => {
                   setSelectSecenariType(value);
                   handleSelect(value, "scenarioType");
@@ -176,7 +176,7 @@ const ScenarioList: React.FC = () => {
                 );
               })}
             </Select>
-            <Popover content={"Clear filter"} title="">
+            <Popover content={t("clear-filter")} title="">
               <DeleteFilled
                 className="ml-2 cursor-pointer"
                 onClick={() => {
@@ -206,11 +206,11 @@ const ScenarioList: React.FC = () => {
               }
             />,
             <Popconfirm
-              title="Delete the scenario"
-              description="Are you sure to delete this scenario?"
+              title={t("delete-document")}
+              description={t("delete-document-2")}
               onConfirm={() => handleDeleteEmailTemplate(scenario._id)}
-              okText="Yes"
-              cancelText="No"
+              okText={t("yes-btn")}
+              cancelText={t("no-btn")}
             >
               <DeleteOutlined />
             </Popconfirm>,

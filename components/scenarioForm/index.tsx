@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import TemplateAddForm from "./templateAddForm";
 import TemplateList from "./templateList";
+import { useTranslations } from "next-intl";
 
 type IProps = {
   handleCreateScenario: () => void;
@@ -43,14 +44,15 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
   const changeTab = (key: string) => {
     setTabKey(key);
   };
+  const t = useTranslations("pages");
 
   const steps = [
     {
-      title: "Scenario Info",
+      title: t("menu-scenario-template"),
       content: <FirstTabForm next={next} />,
     },
     {
-      title: "Emmail Template",
+      title: t("menu-mail"),
       content: (
         <div>
           <Tabs
@@ -60,14 +62,14 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
             items={[
               {
                 key: "1",
-                label: "Create new one",
+                label: t("create-new-one"),
                 children: (
                   <TemplateAddForm changeTab={changeTab} type="emailTemplate" />
                 ),
               },
               {
                 key: "2",
-                label: "Choose existing one",
+                label: t("choose-existing-one"),
                 children: (
                   <TemplateList
                     current={current}
@@ -82,7 +84,7 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
       ),
     },
     {
-      title: "Landing Page",
+      title: t("menu-landing-pages"),
       content: (
         <div>
           <Tabs
@@ -92,7 +94,7 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
             items={[
               {
                 key: "1",
-                label: "Create new one",
+                label: t("create-new-one"),
                 children: (
                   <TemplateAddForm changeTab={changeTab} type="landingPage" />
                 ),
@@ -114,7 +116,7 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
       ),
     },
     {
-      title: "Data Entry",
+      title: t("menu-data-entries"),
       content:
         scenarioType?.find((e) => e._id === (newScenario?.scenarioType ?? ""))
           ?.title === "data_entry" ? (
@@ -148,8 +150,8 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
         ) : (
           <>
             <p>
-              If the scenario type is not a data entry, no selection can be made
-              in this field. Click Done to save.
+            {t("data-entry-check-message")}
+
             </p>
           </>
         ),
@@ -171,12 +173,12 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
       <div className="mt-6 flex">
         {current === steps.length - 1 && (
           <Button type="primary" onClick={handleCreateScenario}>
-            Done
+            {t("done-btn")}
           </Button>
         )}
         {current > 0 && (
           <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
-            Previous
+            {t("previous-btn")}
           </Button>
         )}
       </div>

@@ -14,6 +14,7 @@ import {
   handleAddEducationFormValue,
   handleAddEducationListValue,
 } from "@/redux/slice/education";
+import { useTranslations } from "next-intl";
 
 type IProps = {
   id?: string;
@@ -34,17 +35,19 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
   const prev = () => {
     setCurrent(current - 1);
   };
+  const t = useTranslations("pages");
+
   const steps = [
     {
-      title: "Education Info",
+      title: t("education-info"),
       content: <EducationInfoForm next={next} lang={lang} />,
     },
     {
-      title: "Education Content",
+      title: t("education-content"),
       content: <EducationContentForm next={next} lang={lang} />,
     },
     {
-      title: "Education Content Order ",
+      title: t("education-content-order"),
       content: (
         <>
           <OrderForm lang={lang} />
@@ -54,13 +57,13 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
   ];
   const steps2 = [
     {
-      title: "Education Created",
+      title: t("education-created"),
       key: 0,
       content: (
         <Result
           status="success"
-          title="Successfully education created!"
-          subTitle="Lütfen seçmiş olduğunuz tüm dilleri de eklereyerek kaydetme işlemini tamamlayınız."
+          title={t("education-created-message")}
+          subTitle={t("education-created-message-2")}
         />
       ),
     },
@@ -83,10 +86,9 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
     marginTop: 16,
   };
 
- 
   const onFinish = async () => {
     let res = null;
-    debugger
+    debugger;
     if (!!id) {
       res = await updateEducation(id, forms[lang]);
     } else {
@@ -137,12 +139,12 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
       <div className="mt-6 flex">
         {current === steps.length - 1 && (
           <Button type="primary" disabled={isSuccess} onClick={onFinish}>
-            Education Save
+            {t("save-btn")}
           </Button>
         )}
-        {!isSuccess && current > 0 &&   (
+        {!isSuccess && current > 0 && (
           <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
-            Previous
+            {t("previous-btn")}
           </Button>
         )}
       </div>
