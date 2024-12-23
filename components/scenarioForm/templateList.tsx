@@ -40,7 +40,7 @@ type IProps = {
 
 const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
   const itemName = type + "TotalItem";
-  
+
   const [pageSize, setPageSize] = useState(6);
   const emailTemplateStatus = useSelector(
     (state: RootState) => state.scenario.emailTemplateStatus
@@ -114,11 +114,10 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
   ]);
 
   useEffect(() => {
-    if(!!scenarioData[type]){
-      console.log('template list useeffect')
-      setSelected(scenarioData[type])
+    if (!!scenarioData[type]) {
+      setSelected(scenarioData[type]);
     }
-  },[type])
+  }, [type]);
 
   return (
     <div className="flex flex-col items-start">
@@ -229,7 +228,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
         }}
         className="w-full mt-10 cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
       >
-        Kaydet ve Devam Et
+        {t("save-and-continue")}
       </Button>
       <Modal
         title=""

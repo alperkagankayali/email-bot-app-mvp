@@ -9,7 +9,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { INewsBlog } from "@/types/newsType";
-import FileUpload from "../fileUpload/inedx";
+import FileUpload from "../fileUpload";
 import {
   createNews,
   getNews,
@@ -83,7 +83,7 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
               <Input
                 size="large"
                 type="text"
-                placeholder="headline"
+                placeholder={t("label")}
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </Form.Item>
@@ -91,7 +91,7 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
         </div>
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Description
+            {t("description")}
           </label>
           <div className="relative">
             <Form.Item<INewsBlog> name="description" required>
@@ -102,7 +102,7 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
                 maxLength={500}
                 minLength={50}
                 required
-                placeholder="Description"
+                placeholder={t("description")}
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </Form.Item>
@@ -110,7 +110,7 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
         </div>
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Category
+            {t("category")}
           </label>
           <div className="relative">
             <Form.Item<INewsBlog> name="category" required>
@@ -118,7 +118,7 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
                 size="large"
                 type="text"
                 required
-                placeholder="Category"
+                placeholder={t("category")}
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </Form.Item>
@@ -126,7 +126,7 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
         </div>
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Tags
+            {t("tags")}
           </label>
           <div className="relative">
             <Form.Item<INewsBlog> name="tags" required>
@@ -134,7 +134,7 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
                 mode="tags"
                 size="large"
                 style={{ width: "100%" }}
-                placeholder="Tags Mode"
+                placeholder={t("tags")}
                 options={[
                   {
                     value: "IT",
@@ -147,7 +147,8 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
         </div>
         <div className="mb-6">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Fotoğraf
+          {t("image")}
+
           </label>
           <div className="relative">
             <Form.Item<INewsBlog> name="featuredImageUrl">
@@ -160,7 +161,7 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
         </div>
         <div className="mb-6">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Language
+          {t("resources-language")}
           </label>
           <div className="relative">
             <Form.Item<INewsBlog> name="language">
@@ -178,7 +179,7 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
         </div>
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Content
+          {t("content")}
           </label>
           <div className="relative">
             <Form.Item<INewsBlog> name="content">
@@ -189,7 +190,7 @@ const NewsForm = ({ redirect = false, id }: IProps) => {
                 htmlType="submit"
                 className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
               >
-                Kaydet
+                {t("save-btn")}
               </Button>
             </Form.Item>
           </div>

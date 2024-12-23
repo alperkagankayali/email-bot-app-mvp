@@ -3,8 +3,9 @@ import { ILandingPage } from "@/types/scenarioType";
 import { Button, Form, Input, Select } from "antd";
 import type { FormInstance, FormProps } from "antd";
 import RinchTextEditor from "../rinchTextEditor";
-import FileUpload from "../fileUpload/inedx";
+import FileUpload from "../fileUpload";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 const { Option } = Select;
 type IProps = {
   handleSave: (x: ILandingPage) => void;
@@ -33,6 +34,7 @@ const TemplateForm = ({
   const onFinish: FormProps<ILandingPage>["onFinish"] = async (values) => {
     await handleSave({ ...values, img: fileUrl, content });
   };
+  const t = useTranslations("pages");
 
   return (
     <div className="mb-6 flex">
@@ -46,7 +48,7 @@ const TemplateForm = ({
       >
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Title
+            {t("label")}
           </label>
           <div className="relative">
             <Form.Item<ILandingPage> name="title">
@@ -62,7 +64,7 @@ const TemplateForm = ({
         </div>
         <div className="mb-6">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Image
+            {t("image")}
           </label>
 
           <div className="relative">
@@ -76,7 +78,7 @@ const TemplateForm = ({
         </div>
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Content
+            {t("content")}
           </label>
           <div className="relative">
             <Form.Item<ILandingPage> name="content">
@@ -87,7 +89,7 @@ const TemplateForm = ({
                 htmlType="submit"
                 className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
               >
-                Kaydet
+                {t("save-btn")}
               </Button>
             </Form.Item>
           </div>

@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchLanguage } from "@/redux/slice/language";
 import { createResource } from "@/services/service/generalService";
+import { useTranslations } from "next-intl";
 const { Option } = Select;
 
 type IProps = {
@@ -41,7 +42,7 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
       code: values.code,
     });
     if (res.success) {
-      form.resetFields()
+      form.resetFields();
       notification.info({ message: "Başarı ile kaydedildi" });
     } else {
       notification.error({ message: "Kaydedilemedi" });
@@ -51,11 +52,12 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
       langKey: res.data?._id,
     });
   };
+  const t = useTranslations("pages");
 
   return (
     <div>
       <Modal
-        title="Dil kaynağı ekle"
+        title={t("add-a-resource")}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={""}
@@ -68,14 +70,14 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
         >
           <div className="mb-4">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Key
+              {t("resources-key")}
             </label>
             <div className="relative">
               <Form.Item<DataType> name="langKey">
                 <Input
                   size="large"
                   type="text"
-                  placeholder="Key"
+                  placeholder={t("resources-key")}
                   className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </Form.Item>
@@ -84,7 +86,7 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
 
           <div className="mb-6">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Value
+              {t("resources-value")}
             </label>
 
             <div className="relative">
@@ -92,7 +94,7 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
                 <Input
                   size="large"
                   type="text"
-                  placeholder="Value"
+                  placeholder={t("resources-value")}
                   className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </Form.Item>
@@ -100,7 +102,7 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
           </div>
           <div className="mb-4">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Code
+              {t("resources-language")}
             </label>
             <div className="relative">
               <Form.Item<DataType> name="code">
@@ -119,7 +121,7 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
                   htmlType="submit"
                   className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
                 >
-                  Kaydet
+                  {t("save-btn")}
                 </Button>
               </Form.Item>
             </div>

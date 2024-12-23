@@ -16,6 +16,7 @@ import VideoForm from "./videoForm";
 import { deleteVideo, getVideo } from "@/services/service/educationService";
 import { Link } from "@/i18n/routing";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { useTranslations } from "next-intl";
 
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
@@ -74,6 +75,7 @@ const VideoTab = ({ lang }: IProps) => {
       handleVideoDataChange(data?.filter((e) => e._id !== res.data?._id))
     );
   };
+  const t = useTranslations("pages");
 
   const onChangeVideoSelect = (e: string[]) => {
     const dataFormat = e.map((element: any) => {
@@ -140,15 +142,15 @@ const VideoTab = ({ lang }: IProps) => {
                   }}
                 />,
                 <Popconfirm
-                  title="Delete the Video"
-                  description="Are you sure to delete this Video?"
+                  title={t("delete-document")}
+                  description={t("delete-document-2")}
                   onConfirm={() => handleDeleteVideo(video._id)}
-                  okText="Yes"
+                  okText={t("yes-btn")}
                   disabled={
                     video?.authorType === "superadmin" &&
                     user?.role !== "superadmin"
                   }
-                  cancelText="No"
+                  cancelText={t("no-btn")}
                 >
                   <DeleteOutlined />
                 </Popconfirm>,

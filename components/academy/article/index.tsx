@@ -78,12 +78,12 @@ const ArticleList: React.FC = () => {
                   onClick={() => setOpen({ show: true, data: article.content })}
                 />,
                 <Popconfirm
-                  title="Delete the article"
-                  description="Are you sure to delete this article?"
+                  title={t("delete-document")}
+                  description={t("delete-document-2")}
                   onConfirm={() => handleDeletArticle(article._id)}
-                  okText="Yes"
+                  okText={t("yes-btn")}
                   disabled={article?.authorType === "superadmin" && user?.role !== "superadmin"}
-                  cancelText="No"
+                  cancelText={t("no-btn")}
                 >
                   <DeleteOutlined />
                 </Popconfirm>,

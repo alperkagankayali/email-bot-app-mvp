@@ -147,16 +147,13 @@ const UserTable = ({ id }: IProps) => {
     if (arrUser.length > 3) {
       notification.error({
         message:
-          "En fazla 3 kullanıcı ile login olabilirsin, diğer kullanıcılardan çıkış yapman gerekiyor.",
+         t("switch-account-max-count-error"),
       });
-    } 
-    else if (findUser) {
+    } else if (findUser) {
       notification.error({
-        message:
-          "Bu kullanıcı ile zaten giriş yapılmış.",
+        message: t("switch-account-some-login-failed"),
       });
-    }
-    else {
+    } else {
       const res = await handleOtherLogin(id);
       if (res.success) {
         localStorage.setItem("token", JSON.stringify(res?.data?.token));
@@ -174,23 +171,23 @@ const UserTable = ({ id }: IProps) => {
   };
   const columns = [
     {
-      title: "Adı Soyadı",
+      title: t("user-table-name-surname"),
       dataIndex: "nameSurname",
       editable: true,
     },
     {
-      title: "department",
+      title: t("user-table-department"),
       dataIndex: "department",
     },
     {
-      title: "company",
+      title: t("user-table-company"),
       dataIndex: "company",
       render: (_: any, record: DataType) => {
         return <>{record?.company?.companyName}</>;
       },
     },
     {
-      title: "role",
+      title: t("user-table-role"),
       dataIndex: "role",
       render: (_: any, record: DataType) => {
         return (
@@ -210,15 +207,15 @@ const UserTable = ({ id }: IProps) => {
       },
     },
     {
-      title: "email",
+      title: t("user-table-email"),
       dataIndex: "email",
     },
     {
-      title: "language",
+      title: t("user-table-language"),
       dataIndex: "language",
     },
     {
-      title: "lisanceStartDate",
+      title: t("user-table-lisance-start-date"),
       dataIndex: "lisanceStartDate",
       render: (_: any, record: DataType) => {
         return (
@@ -229,7 +226,7 @@ const UserTable = ({ id }: IProps) => {
       },
     },
     {
-      title: "lisanceEndDate",
+      title: t("user-table-lisance-end-date"),
       dataIndex: "lisanceEndDate",
       render: (_: any, record: DataType) => {
         return (
@@ -240,7 +237,7 @@ const UserTable = ({ id }: IProps) => {
       },
     },
     {
-      title: "operation",
+      title: t("user-table-lisance-operation"),
       dataIndex: "operation",
       render: (_: any, record: DataType) => {
         const editable = isEditing(record);
@@ -252,10 +249,10 @@ const UserTable = ({ id }: IProps) => {
                   // onClick={() => save(record.key)}
                   style={{ marginInlineEnd: 8 }}
                 >
-                  Save
+                  {t("save-btn")}
                 </Typography.Link>
-                <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                  <a>Cancel</a>
+                <Popconfirm title={t("sure-to-cancel")} onConfirm={cancel}>
+                  <a> {t("cancel-btn")} </a>
                 </Popconfirm>
               </span>
             ) : (
@@ -263,7 +260,7 @@ const UserTable = ({ id }: IProps) => {
                 disabled={editingKey !== ""}
                 // onClick={() => edit(record._id)}
               >
-                Edit
+                {t("resources-edit")}
               </Typography.Link>
             )}
             {user?.role === "superadmin" && (
@@ -273,7 +270,7 @@ const UserTable = ({ id }: IProps) => {
                 className="ml-3"
                 onClick={() => handleLogin(record._id)}
               >
-                Login
+                {t("login-loginButton")}
               </Button>
             )}
           </>
@@ -309,7 +306,8 @@ const UserTable = ({ id }: IProps) => {
   ) => {
     const res: any = await getResourceAll(
       pagination.pageSize,
-      pagination.current
+      pagination.current,
+      {}
     );
     if (!!res?.data) {
       const newData = res?.data?.map((e: any) => {
@@ -342,7 +340,7 @@ const UserTable = ({ id }: IProps) => {
             className="ml-2 "
             style={{ marginBottom: 16 }}
           >
-            Kullanıcı Yükle
+            {t("add-user-excel")}
           </Button>
         </div>
       </div>

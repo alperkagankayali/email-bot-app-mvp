@@ -4,15 +4,17 @@ import { Button, Tabs } from "antd";
 import ArticleTab from "./articleTab";
 import VideoTab from "./videoTab";
 import QuizTab from "./quizTab";
+import { useTranslations } from "next-intl";
 
 type IProps = {
   next: () => void;
-  lang:string
+  lang: string;
 };
-const EducationContentForm: React.FC<IProps> = ({ next,lang }) => {
+const EducationContentForm: React.FC<IProps> = ({ next, lang }) => {
+  const t = useTranslations("pages");
   const items = [
     {
-      label: "Article",
+      label: t("menu-academy-article"),
       key: "1",
       children: (
         <>
@@ -21,26 +23,25 @@ const EducationContentForm: React.FC<IProps> = ({ next,lang }) => {
       ),
     },
     {
-      label: "Video",
+      label: t("menu-academy-video"),
       key: "2",
       children: (
         <>
-          <VideoTab lang={lang}/>
+          <VideoTab lang={lang} />
         </>
       ),
     },
     {
-      label: "Quiz",
+      label: t("menu-academy-quiz"),
       key: "3",
       children: (
         <>
-          <QuizTab lang={lang}/>
+          <QuizTab lang={lang} />
         </>
       ),
     },
   ];
 
-  
   return (
     <>
       <Tabs
@@ -53,16 +54,16 @@ const EducationContentForm: React.FC<IProps> = ({ next,lang }) => {
         type="card"
         className="w-full"
         items={items}
-        tabBarExtraContent={<p>Select or Create Education Content</p>}
+        tabBarExtraContent={<p> {t("select-or-create")}</p>}
       />
+
       <div className="mb-4">
         <Button
           onClick={next}
           size="small"
-
           className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90 mt-4"
         >
-          Kaydet ve Devam Et
+          {t("save-and-continue")}
         </Button>
       </div>
     </>

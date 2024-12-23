@@ -64,6 +64,7 @@ const DataEntriesList: React.FC = () => {
                 key={dataEntry._id}
                 hoverable
                 loading={status === "loading"}
+                rootClassName="flex h-full"
                 style={{ width: 240 }}
                 cover={
                   <Image

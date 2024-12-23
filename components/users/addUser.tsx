@@ -12,11 +12,13 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
 import { sendVerificationEmail } from "@/services/service/emailService";
+import { useTranslations } from "next-intl";
 
 const { Option } = Select;
 
 const AddUser = () => {
   const router = useRouter();
+  const t = useTranslations("pages");
   const languages = useSelector((state: RootState) => state.language.language);
   const status = useSelector((state: RootState) => state.language.status);
   const companies = useSelector(
@@ -73,14 +75,14 @@ const AddUser = () => {
     >
       <div className="mb-4">
         <label className="mb-2.5 block font-medium text-black dark:text-white">
-          Name Surname
+          {t("user-table-name-surname")}
         </label>
         <div className="relative">
           <Form.Item<IUser> name="nameSurname">
             <Input
               size="large"
               type="text"
-              placeholder="Name Surname"
+              placeholder={t("user-table-name-surname")}
               className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
           </Form.Item>
@@ -89,7 +91,7 @@ const AddUser = () => {
 
       <div className="mb-6">
         <label className="mb-2.5 block font-medium text-black dark:text-white">
-          Email
+          {t("user-table-email")}
         </label>
 
         <div className="relative">
@@ -97,7 +99,7 @@ const AddUser = () => {
             <Input
               size="large"
               type="text"
-              placeholder="Email"
+              placeholder={t("user-table-email")}
               className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
           </Form.Item>
@@ -105,14 +107,14 @@ const AddUser = () => {
       </div>
       <div className="mb-4">
         <label className="mb-2.5 block font-medium text-black dark:text-white">
-          Department
+          {t("user-table-department")}
         </label>
         <div className="relative">
           <Form.Item<IUser> name="department">
             <Input
               size="large"
               type="text"
-              placeholder="department"
+              placeholder={t("user-table-department")}
               className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
           </Form.Item>
@@ -121,7 +123,7 @@ const AddUser = () => {
       {!!user && companies?.length > 0 && (
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Companies
+            {t("user-table-company")}
           </label>
           <div className="relative">
             <Form.Item<IUser> name="company">
@@ -143,20 +145,20 @@ const AddUser = () => {
       )}
       <div className="mb-4">
         <label className="mb-2.5 block font-medium text-black dark:text-white">
-          Role
+          {t("user-table-role")}
         </label>
         <div className="relative">
           <Form.Item<IUser> name="role">
             <Select size="large" defaultValue={role}>
-              <Option value="user">Kullanıcı</Option>
-              <Option value="admin">Admin</Option>
+              <Option value="user">{t("user-table-user-option")}</Option>
+              <Option value="admin">{t("user-table-admin-option")}</Option>
             </Select>
           </Form.Item>
         </div>
       </div>
       <div className="mb-4">
         <label className="mb-2.5 block font-medium text-black dark:text-white">
-          Language
+          {t("user-table-language")}
         </label>
         <div className="relative">
           <Form.Item<IUser> name="language">
@@ -175,7 +177,7 @@ const AddUser = () => {
               htmlType="submit"
               className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
             >
-              Kaydet
+               {t("save-btn")}
             </Button>
           </Form.Item>
         </div>

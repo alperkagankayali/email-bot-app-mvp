@@ -64,15 +64,13 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
         </div>
         <ul className="list-disc mt-4">
           <li className="ml-6">
-            Oluşturduğunuz csv formatında company alanına tabloda gördünüğüz
-            değeri yazınız
+          {t("csv-rule-1")}
           </li>
           <li className="ml-6">
-            Oluşturduğunuz csv formatında role admin yada user yazmalısınız.
+          {t("csv-rule-2")}
           </li>
           <li className="ml-6">
-            Oluşturduğunuz csv formatında language alanına dil code yazınız iki
-            haneli olacak şekilde en-tr-de
+          {t("csv-rule-3")}
           </li>
         </ul>
         <p></p>

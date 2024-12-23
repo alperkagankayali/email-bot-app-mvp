@@ -223,7 +223,7 @@ const EducationList: React.FC = () => {
                 {filter.levelOfDifficulty}
               </Tag>
             )}
-            <Popover content={"Clear filter"} title="">
+            <Popover content={t("clear-filter")} title="">
               <DeleteFilled
                 className="ml-2 cursor-pointer"
                 onClick={() => {
@@ -250,7 +250,7 @@ const EducationList: React.FC = () => {
         {!!data && (
           <div className="flex flex-col ">
             <Search
-              placeholder="input education list title"
+              placeholder={t("education-title")}
               size="large"
               name="title"
               defaultValue={filter.title}
@@ -263,7 +263,7 @@ const EducationList: React.FC = () => {
               enterButton
             />
             <Search
-              placeholder="input education list description"
+              placeholder={t("education-description")}
               size="large"
               name="description"
               defaultValue={filter.description}
@@ -279,7 +279,7 @@ const EducationList: React.FC = () => {
               mode="multiple"
               size="large"
               className="w-full !mt-4"
-              placeholder="Select language"
+              placeholder={t("resources-language")}
               value={filter.language}
               onChange={(value: string[]) => {
                 setFilter({ ...filter, language: value });
@@ -350,11 +350,11 @@ const EducationList: React.FC = () => {
                   <EditOutlined key="edit" />
                 </Link>,
                 <Popconfirm
-                  title="Delete the article"
-                  description="Are you sure to delete this article?"
+                  title={t("delete-document")}
+                  description={t("delete-document-2")}
                   onConfirm={() => handleDeleteEducation(item._id)}
-                  okText="Yes"
-                  cancelText="No"
+                  okText={t("yes-btn")}
+                  cancelText={t("no-btn")}
                   disabled={
                     item?.authorType === "superadmin" &&
                     user?.role !== "superadmin"

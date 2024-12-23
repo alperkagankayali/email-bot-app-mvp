@@ -26,6 +26,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { fetchQuiz } from "@/redux/slice/education";
 import type { CSSProperties } from "react";
+import { useTranslations } from "next-intl";
 
 type IProps = {
   redirect?: boolean;
@@ -85,33 +86,33 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
     return fields.map((field, index) => {
       return {
         key: index + 1,
-        label: "Question - " + (field.name + 1),
+        label: t("question") + (field.name + 1),
         children: (
           <div key={field.key}>
             <Form.Item
               rules={[
                 {
                   required: true,
-                  message: "Sorunun başlığı zorunludur.",
+                  message: t("necessary-title"),
                 },
               ]}
-              label="Question"
+              label={t("question")}
               name={[field.name, "title"]}
             >
               <Input />
             </Form.Item>
             <Form.Item
-              label="Type"
+              label={t("type")}
               name={[field.name, "type"]}
               rules={[
                 {
                   required: true,
-                  message: "Soru tipi zorunludur.",
+                  message: t("necessary-title-2"),
                 },
               ]}
             >
               <Radio.Group>
-                <Radio value="single">Single choose</Radio>
+                <Radio value="single">{t("single-choose")}</Radio>
                 <Radio
                   value="multiple"
                   disabled={
@@ -120,13 +121,13 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
                     fieldsState?.question[field.name]?.options?.length === 1
                   }
                 >
-                  Multiple choose
+                  {t("multiple-choose")}
                 </Radio>
               </Radio.Group>
             </Form.Item>
             {!!fieldsState &&
               fieldsState?.question[field.name]?.type === "single" && (
-                <Form.Item label="answer" name={[field.name, "answer"]}>
+                <Form.Item label={t("answer")} name={[field.name, "answer"]}>
                   <Radio.Group>
                     {!!fieldsState &&
                       fieldsState?.question[field.name]?.options?.map(
@@ -143,7 +144,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
               )}
             {!!fieldsState &&
               fieldsState?.question[field.name]?.type === "multiple" && (
-                <Form.Item label="answer" name={[field.name, "answer"]}>
+                <Form.Item label={t("answer")} name={[field.name, "answer"]}>
                   <Checkbox.Group>
                     {!!fieldsState &&
                       fieldsState?.question[field.name]?.options?.map(
@@ -163,7 +164,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
                 </Form.Item>
               )}
             {/* Nest Form.List */}
-            <Form.Item label="Options">
+            <Form.Item label={t("options")}>
               <Form.List name={[field.name, "options"]}>
                 {(subFields, subOpt) => (
                   <div
@@ -176,7 +177,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
                     {subFields.map((subField) => (
                       <Space key={subField.key}>
                         <Form.Item noStyle name={subField.name}>
-                          <Input placeholder="option" />
+                          <Input placeholder={t("options")} />
                         </Form.Item>
 
                         <CloseOutlined
@@ -188,7 +189,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
                     ))}
 
                     <Button type="dashed" onClick={() => subOpt.add()} block>
-                      + Add a option
+                      + {t("add-a-option")} 
                     </Button>
                   </div>
                 )}
@@ -207,6 +208,8 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
       };
     });
   };
+
+  const t = useTranslations("pages");
 
   return (
     <div className="">
@@ -227,7 +230,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
           layout="vertical"
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}
-          label="Title"
+          label={t("label")}
           name="title"
           rules={[{ required: true }]}
           className="!mb-10"
@@ -239,7 +242,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}
           name="description"
-          label="Description"
+          label={t("description")}
           className="!mb-10"
         >
           <Input.TextArea rows={1} />
@@ -263,14 +266,14 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
                   items={getItems(panelStyle, fields, remove)}
                 />
                 <Button type="dashed" onClick={() => add()} block>
-                  + Add a question
+                  + {t("add-a-question")}
                 </Button>
               </div>
             );
           }}
         </Form.List>
         <Button type="primary" htmlType="submit" className="mt-4 w-full mb-10">
-          Kaydet
+          {t("save-btn")}
         </Button>
         {/* <Form.Item noStyle shouldUpdate>
           {() => (

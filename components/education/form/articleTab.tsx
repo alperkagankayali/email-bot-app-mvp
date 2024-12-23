@@ -16,6 +16,7 @@ import { Checkbox } from "antd";
 import { deleteArticle, getArticle } from "@/services/service/educationService";
 import { Link } from "@/i18n/routing";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { useTranslations } from "next-intl";
 
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
@@ -76,6 +77,8 @@ const ArticleTab = ({ lang }: IProps) => {
       handleArticleDataChange(data?.filter((e) => e._id !== res.data?._id))
     );
   };
+    const t = useTranslations("pages");
+  
 
   const onChangeArticleSelect = (e: string[]) => {
     const dataFormat = e.map((element: any) => {
@@ -128,15 +131,15 @@ const ArticleTab = ({ lang }: IProps) => {
                   onClick={() => setOpen({ show: true, data: article.content })}
                 />,
                 <Popconfirm
-                  title="Delete the article"
-                  description="Are you sure to delete this article?"
+                  title={t("delete-document")}
+                  description={t("delete-document-2")}
                   onConfirm={() => handleDeletArticle(article._id)}
-                  okText="Yes"
+                  okText={t("yes-btn")}
                   disabled={
                     article?.authorType === "superadmin" &&
                     user?.role !== "superadmin"
                   }
-                  cancelText="No"
+                  cancelText={t("no-btn")}
                 >
                   <DeleteOutlined />
                 </Popconfirm>,

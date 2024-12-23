@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import AddCompanies from "./addCompanies";
 import dayjs from "dayjs";
+import { useTranslations } from "next-intl";
 interface DataType {
   key: string;
   companyName: string;
@@ -17,9 +18,11 @@ interface DataType {
 }
 
 const CompaniesTable: React.FC = () => {
+  const t = useTranslations("pages");
+
   const columns: TableProps<DataType>["columns"] = [
     {
-      title: "Logo",
+      title: t("companies-logo"),
       dataIndex: "logo",
       key: "logo",
       render: (_, { logo, companyName, key }) => (
@@ -29,7 +32,7 @@ const CompaniesTable: React.FC = () => {
       ),
     },
     {
-      title: "Company Name",
+      title: t("companies-name"),
       dataIndex: "companyName",
       key: "name",
       render: (_, { companyName, key }) => (
@@ -38,7 +41,7 @@ const CompaniesTable: React.FC = () => {
     },
 
     {
-      title: "Lisance Start Date",
+      title: t("companies-start-date"),
       dataIndex: "lisanceStartDate",
       key: "lisanceStartDate",
       render: (text) => (
@@ -46,7 +49,7 @@ const CompaniesTable: React.FC = () => {
       ),
     },
     {
-      title: "Lisance End Date",
+      title: t("companies-end-date"),
       dataIndex: "lisanceEndDate",
       key: "lisanceEndDate",
       render: (text) => (
@@ -54,7 +57,7 @@ const CompaniesTable: React.FC = () => {
       ),
     },
     {
-      title: "Email Domain Address",
+      title: t("companies-email-domains"),
       key: "emailDomainAddress",
       dataIndex: "emailDomainAddress",
       render: (_, { emailDomainAddress }) => (
@@ -74,7 +77,7 @@ const CompaniesTable: React.FC = () => {
       ),
     },
     {
-      title: "operation",
+      title: t("resources-operation"),
       dataIndex: "operation",
       render: (_, record) => (
         <Button
@@ -83,7 +86,7 @@ const CompaniesTable: React.FC = () => {
             setIsModalOpen(true);
           }}
         >
-          Edit
+          {t("resources-edit")}
         </Button>
       ),
     },
@@ -129,7 +132,7 @@ const CompaniesTable: React.FC = () => {
         type="primary"
         style={{ marginBottom: 16 }}
       >
-        Add a compaines
+        {t("add-companies-button")}
       </Button>
       <AddCompanies
         isEditig={isEditing}

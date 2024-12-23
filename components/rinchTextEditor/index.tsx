@@ -2,6 +2,7 @@
 import React, { useMemo, useRef } from "react";
 import JoditEditor from "jodit-react";
 import { fileUploadAws } from "@/services/service/generalService";
+import { useTranslations } from "next-intl";
 type ImageHandlerProps = {
   onUpload?: (file: File) => Promise<string>;
   content: string;
@@ -13,10 +14,11 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({
   setContent,
 }) => {
   const editor = useRef<any>(null);
+  const t = useTranslations("pages");  
   const config = useMemo(
     () => ({
       readonly: false,
-      placeholder: "Start typings...",
+      placeholder: t("rinch-text-editor-placeholder"),
       extraButtons: [
         {
           name: "uploadToAws",
@@ -34,9 +36,7 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({
                 try {
                   const imageUrl = await fileUploadAws(formData, "upload");
                   editor.selection.insertImage(imageUrl.data.url);
-                } catch (error) {
-                  console.error("Image upload failed", error);
-                }
+                } catch (error) {}
               }
             };
             input.click();
