@@ -11,12 +11,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import {
-  handleAddEducationFormReset,
   handleAddEducationFormValue,
   handleAddEducationListValue,
 } from "@/redux/slice/education";
 import { useTranslations } from "next-intl";
-import Loader from "../common/Loader";
 
 type IProps = {
   id?: string;
@@ -38,12 +36,6 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
     setCurrent(current - 1);
   };
   const t = useTranslations("pages");
-
-  useEffect(() => {
-    return () => {
-      dispatch(handleAddEducationFormReset());
-    };
-  }, []);
 
   const steps = [
     {

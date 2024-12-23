@@ -10,6 +10,7 @@ import EducationAddForm from "./add";
 import clsx from "clsx";
 import {
   handleAddEducationForm,
+  handleAddEducationFormReset,
   handleAddEducationListValue,
 } from "@/redux/slice/education";
 import {
@@ -76,6 +77,12 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
     });
   };
 
+  useEffect(() => {
+    return () => {
+      dispatch(handleAddEducationFormReset());
+    };
+  }, []);
+
   const handleCreateEducationList = async () => {
     let res = null;
     if (selectLang.every((e: string) => !!forms[e])) {
@@ -100,9 +107,9 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
       const getDetail = async () => {
         const response = await getEducationListContent(10, 1, { id });
         let newArr: any[] = [];
-        setLoading(false)
+        setLoading(false);
         response.data?.educations?.forEach((e: any) => {
-          debugger
+          debugger;
           let prevValue: Array<any> = [];
           e?.contents?.forEach((content: IContent) => {
             const type: string =

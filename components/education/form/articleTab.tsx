@@ -32,7 +32,9 @@ const optionsWithDisabled = [
 const ArticleTab = ({ lang }: IProps) => {
   const [value, setValue] = useState("select");
   const forms = useSelector((state: RootState) => state.education.forms);
-  const [selected, setSelected] = useState((forms[lang]?.selectArticle as string[]) ?? []);
+  const [selected, setSelected] = useState<string[]>(
+    (forms[lang]?.selectArticle as string[]) ?? []
+  );
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector(
     (state: RootState) => state.education.articleStatus
@@ -77,6 +79,28 @@ const ArticleTab = ({ lang }: IProps) => {
   };
     const t = useTranslations("pages");
   
+
+  const onChangeArticleSelect = (e: string[]) => {
+    const dataFormat = e.map((element: any) => {
+      const findArticle = data.find((article) => article._id === element);
+      return {
+        type: "article",
+        refId: findArticle?._id,
+        order: 0,
+        title: findArticle?.title,
+        description: findArticle?.description,
+      };
+    });
+    dispatch(
+      handleAddEducationFormValue({
+        language: lang,
+        field: "selectArticle",
+        value: dataFormat,
+      })
+    );
+    setSelected(e);
+  };
+
   return (
     <>
       <Radio.Group
@@ -92,16 +116,7 @@ const ArticleTab = ({ lang }: IProps) => {
 
         {value === "select" && (
           <CheckboxGroup
-            onChange={(e) => {
-              dispatch(
-                handleAddEducationFormValue({
-                  language: lang,
-                  field: "selectArticle",
-                  value: e,
-                })
-              );
-              setSelected(e);
-            }}
+            onChange={onChangeArticleSelect}
             className={"card-checkbox !grid grid-cols-3 gap-10"}
             value={selected}
           >
