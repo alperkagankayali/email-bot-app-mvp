@@ -3,7 +3,7 @@ import { Button, Form, Input, notification, Select } from "antd";
 import type { FormProps } from "antd";
 import { useEffect, useState } from "react";
 import { IVideoType } from "@/types/videoType";
-import FileUpload from "@/components/fileUpload/inedx";
+import FileUpload from "@/components/fileUpload";
 import {
   createVideo,
   getVideo,

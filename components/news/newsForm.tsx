@@ -9,7 +9,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { INewsBlog } from "@/types/newsType";
-import FileUpload from "../fileUpload/inedx";
+import FileUpload from "../fileUpload";
 import {
   createNews,
   getNews,

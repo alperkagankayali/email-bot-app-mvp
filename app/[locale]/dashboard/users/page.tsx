@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import UserTable from "@/components/users/inde";
+import UserTable from "@/components/users";
 import { getCookieUser } from "@/app/actions";
 
 export const metadata: Metadata = {

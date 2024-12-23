@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchLanguage } from "@/redux/slice/language";
-import FileUpload from "../fileUpload/inedx";
+import FileUpload from "../fileUpload";
 import type { SelectProps } from "antd";
 import {
   createCompany,

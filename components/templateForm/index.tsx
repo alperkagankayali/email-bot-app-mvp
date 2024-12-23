@@ -3,7 +3,7 @@ import { ILandingPage } from "@/types/scenarioType";
 import { Button, Form, Input, Select } from "antd";
 import type { FormInstance, FormProps } from "antd";
 import RinchTextEditor from "../rinchTextEditor";
-import FileUpload from "../fileUpload/inedx";
+import FileUpload from "../fileUpload";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 const { Option } = Select;

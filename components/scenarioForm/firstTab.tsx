@@ -1,7 +1,7 @@
 "use client";
 import { IScenario } from "@/types/scenarioType";
 import { Button, Form, FormProps, Input, notification, Select } from "antd";
-import FileUpload from "../fileUpload/inedx";
+import FileUpload from "../fileUpload";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";

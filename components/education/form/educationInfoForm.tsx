@@ -3,7 +3,7 @@ import { Button, Form, FormProps, Input, notification, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { ICourse } from "@/types/courseType";
-import FileUpload from "@/components/fileUpload/inedx";
+import FileUpload from "@/components/fileUpload";
 import { handleAddEducationForm } from "@/redux/slice/education";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
