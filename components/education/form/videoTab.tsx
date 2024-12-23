@@ -31,7 +31,9 @@ const optionsWithDisabled = [
 const VideoTab = ({ lang }: IProps) => {
   const [value, setValue] = useState("select");
   const forms = useSelector((state: RootState) => state.education.forms);
-  const [selected, setSelected] = useState((forms[lang]?.selectVideo as string[]) ?? []);
+  const [selected, setSelected] = useState(
+    (forms[lang]?.selectVideo as string[]) ?? []
+  );
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector((state: RootState) => state.education.videoStatus);
   const data = useSelector((state: RootState) => state.education.videos);
@@ -73,6 +75,27 @@ const VideoTab = ({ lang }: IProps) => {
     );
   };
 
+  const onChangeVideoSelect = (e: string[]) => {
+    const dataFormat = e.map((element: any) => {
+      const findData = data.find((article) => article._id === element);
+      return {
+        type: "video",
+        refId: findData?._id,
+        order: 0,
+        title: findData?.title,
+        description: findData?.description,
+      };
+    });
+    dispatch(
+      handleAddEducationFormValue({
+        language: lang,
+        field: "selectVideo",
+        value: dataFormat,
+      })
+    );
+    setSelected(e);
+  };
+
   return (
     <>
       <Radio.Group
@@ -93,16 +116,7 @@ const VideoTab = ({ lang }: IProps) => {
 
         {value === "select" && (
           <CheckboxGroup
-            onChange={(e) => {
-              dispatch(
-                handleAddEducationFormValue({
-                  language: lang,
-                  field: "selectVideo",
-                  value: e,
-                })
-              );
-              setSelected(e);
-            }}
+            onChange={onChangeVideoSelect}
             className={"card-checkbox !grid grid-cols-3 gap-10"}
             value={selected}
           >

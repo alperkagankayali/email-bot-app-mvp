@@ -39,6 +39,8 @@ const EducationContentForm: React.FC<IProps> = ({ next,lang }) => {
       ),
     },
   ];
+
+  
   return (
     <>
       <Tabs

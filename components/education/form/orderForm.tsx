@@ -24,11 +24,7 @@ import {
   VideoCameraTwoTone,
 } from "@ant-design/icons";
 import { handleAddEducationFormValue } from "@/redux/slice/education";
-import {
-  getArticle,
-  getQuiz,
-  getVideo,
-} from "@/services/service/educationService";
+import Loader from "@/components/common/Loader";
 
 interface DataType {
   type: "video" | "article" | "quiz";
@@ -79,83 +75,34 @@ type IProps = {
 const OrderForm: React.FC<IProps> = ({ lang }) => {
   const forms = useSelector((state: RootState) => state.education.forms);
 
-  const dataCreate = async () => {
-    debugger
-    let data: DataType[] = [];
-    if (Array.isArray(forms[lang]["selectVideo"])) {
-      const res = forms[lang]["selectVideo"].map(async (e) => {
-        const findVideo = await getVideo(10, 1, e);
-        if (findVideo.success) {
-          return {
-            type: "video",
-            refId: findVideo.data?._id,
-            order: 0,
-            title: findVideo.data?.title,
-            description: findVideo.data?.description,
-          };
-        }
-      });
-      await Promise.all(res).then((e: any) => {
-        data.push(...e);
-      });
-    }
-    if (Array.isArray(forms[lang]["selectArticle"])) {
-      const res = forms[lang]["selectArticle"].map(async (e) => {
-        const findData = await getArticle(10, 1, e);
-        if (findData.success) {
-          return {
-            type: "article",
-            refId: findData.data?._id,
-            order: 0,
-            title: findData.data?.title,
-            description: findData.data?.description,
-          };
-        }
-      });
-      await Promise.all(res).then((e: any) => {
-        data.push(...e);
-      });
-    }
-    if (Array.isArray(forms[lang]["selectQuiz"])) {
-      const res = forms[lang]["selectQuiz"].map(async (e) => {
-        const findData = await getQuiz(10, 1, e);
-        if (findData.success) {
-          return {
-            type: "quiz",
-            refId: findData.data?._id,
-            order: 0,
-            title: findData.data?.title,
-            description: findData.data?.description,
-          };
-        }
-      });
-      await Promise.all(res).then((e: any) => {
-        data.push(...e);
-      });
-    }
-    return data;
-  };
-
   useEffect(() => {
-    if (dataSource.length === 0) {
-      const fetchData = async () => {
-        const data = await dataCreate();
-        dispatch(
-          handleAddEducationFormValue({
-            language: lang,
-            field: "contents",
-            value: data.map((data, index) => {
-              return { type: data.type, refId: data.refId, order: index };
-            }),
-          })
-        );
-        setDataSource(data);
-      };
-      fetchData();
+    if (
+      !!forms[lang] &&
+      forms[lang].contents === undefined &&
+      Array.isArray(forms[lang].selectVideo) &&
+      Array.isArray(forms[lang].selectArticle) &&
+      Array.isArray(forms[lang].selectQuiz)
+    ) {
+      debugger;
+      const orderData = [
+        ...(forms[lang].selectVideo as DataType[]),
+        ...(forms[lang].selectArticle as DataType[]),
+        ...(forms[lang].selectQuiz as DataType[]),
+      ];
+      dispatch(
+        handleAddEducationFormValue({
+          language: lang,
+          field: "contents",
+          value: orderData,
+        })
+      );
+      setDataSource(orderData);
     }
   }, [lang, forms]);
 
-  const [dataSource, setDataSource] = useState<DataType[]>([]);
+  const [dataSource, setDataSource] = useState<DataType[]>(
+    !!forms[lang] ? (forms[lang].contents as DataType[]) : []
+  );
   const dispatch = useDispatch();
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -178,73 +125,63 @@ const OrderForm: React.FC<IProps> = ({ lang }) => {
           language: lang,
           field: "contents",
           value: arr.map((data, index) => {
-            return { type: data.type, refId: data.refId, order: index };
+            return { ...data, order: index };
           }),
         })
       );
     }
   };
 
-  // useEffect(() => {
-  //   dispatch(
-  //     handleAddEducationFormValue({
-  //       language: lang,
-  //       field: "contents",
-  //       value: dataSource.map((data, index) => {
-  //         return { type: data.type, refId: data.refId, order: index };
-  //       }),
-  //     })
-  //   );
-  // }, [dataSource]);
-
-  return (
-    <DndContext
-      sensors={sensors}
-      modifiers={[restrictToVerticalAxis]}
-      onDragEnd={onDragEnd}
-    >
-      <SortableContext
-        items={dataSource.map((i) => i.refId) ?? []}
-        strategy={verticalListSortingStrategy}
+  if (Array.isArray(dataSource)) {
+    return (
+      <DndContext
+        sensors={sensors}
+        modifiers={[restrictToVerticalAxis]}
+        onDragEnd={onDragEnd}
       >
-        <List
-          itemLayout="horizontal"
-          dataSource={dataSource}
-          renderItem={(item, index) => (
-            <Row data-row-key={item.refId} key={item.refId}>
-              <List.Item className="w-full">
-                <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      size={{
-                        xs: 14,
-                        sm: 22,
-                        md: 30,
-                        lg: 44,
-                        xl: 60,
-                        xxl: 60,
-                      }}
-                      icon={
-                        item.type === "video" ? (
-                          <VideoCameraTwoTone />
-                        ) : item.type === "article" ? (
-                          <BookTwoTone />
-                        ) : (
-                          <AccountBookTwoTone />
-                        )
-                      }
-                    />
-                  }
-                  title={<p>{item.title}</p>}
-                  description={item.description}
-                />
-              </List.Item>
-            </Row>
-          )}
-        />
-      </SortableContext>
-    </DndContext>
-  );
+        <SortableContext
+          items={dataSource.map((i) => i.refId) ?? []}
+          strategy={verticalListSortingStrategy}
+        >
+          <List
+            itemLayout="horizontal"
+            dataSource={dataSource}
+            renderItem={(item, index) => (
+              <Row data-row-key={item.refId} key={item.refId}>
+                <List.Item className="w-full">
+                  <List.Item.Meta
+                    avatar={
+                      <Avatar
+                        size={{
+                          xs: 14,
+                          sm: 22,
+                          md: 30,
+                          lg: 44,
+                          xl: 60,
+                          xxl: 60,
+                        }}
+                        icon={
+                          item.type === "video" ? (
+                            <VideoCameraTwoTone />
+                          ) : item.type === "article" ? (
+                            <BookTwoTone />
+                          ) : (
+                            <AccountBookTwoTone />
+                          )
+                        }
+                      />
+                    }
+                    title={<p>{item.title}</p>}
+                    description={item.description}
+                  />
+                </List.Item>
+              </Row>
+            )}
+          />
+        </SortableContext>
+      </DndContext>
+    );
+  } else return <Loader />;
 };
 
 export default OrderForm;

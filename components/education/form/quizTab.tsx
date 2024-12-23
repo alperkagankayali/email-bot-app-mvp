@@ -32,7 +32,9 @@ const optionsWithDisabled = [
 const QuizTab = ({ lang }: IProps) => {
   const [value, setValue] = useState("select");
   const forms = useSelector((state: RootState) => state.education.forms);
-  const [selected, setSelected] = useState((forms[lang]?.selectQuiz as string[]) ?? []);
+  const [selected, setSelected] = useState(
+    (forms[lang]?.selectQuiz as string[]) ?? []
+  );
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
   const status = useSelector((state: RootState) => state.education.quizStatus);
@@ -73,6 +75,27 @@ const QuizTab = ({ lang }: IProps) => {
     );
   };
 
+  const onChangeQuizSelect = (e: string[]) => {
+    const dataFormat = e.map((element: any) => {
+      const findData = data.find((article) => article._id === element);
+      return {
+        type: "quiz",
+        refId: findData?._id,
+        order: 0,
+        title: findData?.title,
+        description: findData?.description,
+      };
+    });
+    dispatch(
+      handleAddEducationFormValue({
+        language: lang,
+        field: "selectQuiz",
+        value: dataFormat,
+      })
+    );
+    setSelected(e);
+  };
+
   return (
     <>
       <Radio.Group
@@ -92,16 +115,7 @@ const QuizTab = ({ lang }: IProps) => {
 
         {value === "select" && (
           <CheckboxGroup
-            onChange={(e) => {
-              dispatch(
-                handleAddEducationFormValue({
-                  language: lang,
-                  field: "selectQuiz",
-                  value: e,
-                })
-              );
-              setSelected(e);
-            }}
+            onChange={onChangeQuizSelect}
             className={"card-checkbox !grid grid-cols-3 gap-10"}
             value={selected}
           >

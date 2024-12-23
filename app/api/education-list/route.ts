@@ -1,9 +1,10 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
-import { message200, message401, message500 } from "@/constants";
+import { message200, message401, message404, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import EducationList from "@/models/educationList";
+import { Types } from "mongoose";
 import Course from "@/models/course";
 
 const getFilter = (url: string) => {
@@ -57,18 +58,204 @@ export async function GET(request: Request) {
           }
         }
         if (!!id) {
-          const education = await EducationList.findById(id).populate({
-            path: "educations",
-            model: Course,
-          });
-          return NextResponse.json(
+          const education = await EducationList.aggregate([
             {
-              ...message200,
-              data: education,
-              totalItems: 1,
+              $match: { _id: new Types.ObjectId(id), isDelete: false },
             },
-            { status: 200 }
-          );
+
+            // Educations içindeki kursları getiriyoruz
+            {
+              $lookup: {
+                from: "courses",
+                localField: "educations",
+                foreignField: "_id",
+                as: "educations",
+                pipeline: [
+                  {
+                    $match: { isDelete: false },
+                  },
+                  {
+                    $lookup: {
+                      from: "videos",
+                      localField: "contents.refId",
+                      foreignField: "_id",
+                      as: "contentsVideo",
+                      pipeline: [
+                        {
+                          $project: { _id: 1, title: 1, description: 1 },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    $lookup: {
+                      from: "quizzes",
+                      localField: "contents.refId",
+                      foreignField: "_id",
+                      as: "contentsQuiz",
+                      pipeline: [
+                        {
+                          $project: { _id: 1, title: 1, description: 1 },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    $lookup: {
+                      from: "articles",
+                      localField: "contents.refId",
+                      foreignField: "_id",
+                      as: "contentsArticle",
+                      pipeline: [
+                        {
+                          $project: { _id: 1, title: 1, description: 1 },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    $addFields: {
+                      contents: {
+                        $map: {
+                          input: "$contents",
+                          as: "content",
+                          in: {
+                            type: "$$content.type",
+                            refId: {
+                              $switch: {
+                                branches: [
+                                  {
+                                    case: { $eq: ["$$content.type", "video"] },
+                                    then: {
+                                      $arrayElemAt: [
+                                        {
+                                          $filter: {
+                                            input: "$contentsVideo",
+                                            as: "video",
+                                            cond: {
+                                              $eq: [
+                                                "$$video._id",
+                                                "$$content.refId",
+                                              ],
+                                            },
+                                          },
+                                        },
+                                        0,
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    case: { $eq: ["$$content.type", "quiz"] },
+                                    then: {
+                                      $arrayElemAt: [
+                                        {
+                                          $filter: {
+                                            input: "$contentsQuiz",
+                                            as: "quiz",
+                                            cond: {
+                                              $eq: [
+                                                "$$quiz._id",
+                                                "$$content.refId",
+                                              ],
+                                            },
+                                          },
+                                        },
+                                        0,
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    case: {
+                                      $eq: ["$$content.type", "article"],
+                                    },
+                                    then: {
+                                      $arrayElemAt: [
+                                        {
+                                          $filter: {
+                                            input: "$contentsArticle",
+                                            as: "article",
+                                            cond: {
+                                              $eq: [
+                                                "$$article._id",
+                                                "$$content.refId",
+                                              ],
+                                            },
+                                          },
+                                        },
+                                        0,
+                                      ],
+                                    },
+                                  },
+                                ],
+                                default: null,
+                              },
+                            },
+                            order: "$$content.order",
+                            _id: "$$content._id",
+                          },
+                        },
+                      },
+                    },
+                  },
+                  {
+                    $addFields: {
+                      contents: {
+                        $map: {
+                          input: "$contents",
+                          as: "content",
+                          in: {
+                            type: "$$content.type",
+                            refId: "$$content.refId._id",
+                            title: "$$content.refId.title",
+                            description: "$$content.refId.description",
+                            order: "$$content.order",
+                            _id: "$$content._id",
+                          },
+                        },
+                      },
+                    },
+                  },
+                  {
+                    $project: {
+                      contentsVideo: 0,
+                      contentsQuiz: 0,
+                      contentsArticle: 0,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                author: 1,
+                authorType: 1,
+                isDelete: 1,
+                educations: 1,
+                languages: 1,
+                created_at: 1,
+              },
+            },
+          ]);
+          if (education.length) {
+            return NextResponse.json(
+              {
+                ...message200,
+                data: education[0],
+                totalItems: 1,
+              },
+              { status: 200 }
+            );
+          } else {
+            return NextResponse.json(
+              {
+                ...message404,
+                data: [],
+                totalItems: 1,
+              },
+              { status: 400 }
+            );
+          }
         } else {
           if (verificationResult?.role === "superadmin") {
             const educationTotal = await EducationList.countDocuments({
@@ -90,6 +277,7 @@ export async function GET(request: Request) {
                     { language: { $exists: true } }, // Eğer belirtilen diller yoksa herhangi bir dil
                   ],
                 },
+
                 select:
                   "title description author isPublished contents language levelOfDifficulty img", // Sadece gerekli alanlar
                 model: Course,

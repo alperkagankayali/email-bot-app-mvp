@@ -11,11 +11,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import {
-  handleAddEducationFormReset,
   handleAddEducationFormValue,
   handleAddEducationListValue,
 } from "@/redux/slice/education";
-import Loader from "../common/Loader";
 
 type IProps = {
   id?: string;
@@ -36,12 +34,6 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
   const prev = () => {
     setCurrent(current - 1);
   };
-
-  useEffect(() => {
-    return () => {
-      dispatch(handleAddEducationFormReset());
-    };
-  }, []);
 
   const steps = [
     {
