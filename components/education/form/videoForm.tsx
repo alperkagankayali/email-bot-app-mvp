@@ -105,7 +105,7 @@ const VideoForm = ({ redirect, videoId }: IProps) => {
           <label className="mb-2.5 block font-medium text-black dark:text-white">
             Video
           </label>
-          
+
           <div className="relative">
             <Form.Item<IVideoType> name="videolink">
               <FileUpload
@@ -119,8 +119,7 @@ const VideoForm = ({ redirect, videoId }: IProps) => {
                 htmlType="submit"
                 className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
               >
-                                  {t("save-btn")}
-
+                {t("save-btn")}
               </Button>
             </Form.Item>
           </div>

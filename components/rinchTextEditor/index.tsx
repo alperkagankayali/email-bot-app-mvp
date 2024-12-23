@@ -14,10 +14,11 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({
   setContent,
 }) => {
   const editor = useRef<any>(null);
+  const t = useTranslations("pages");  
   const config = useMemo(
     () => ({
       readonly: false,
-      placeholder: "Start Typing...",
+      placeholder: t("rinch-text-editor-placeholder"),
       extraButtons: [
         {
           name: "uploadToAws",
@@ -35,9 +36,7 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({
                 try {
                   const imageUrl = await fileUploadAws(formData, "upload");
                   editor.selection.insertImage(imageUrl.data.url);
-                } catch (error) {
-                  console.error("Image upload failed", error);
-                }
+                } catch (error) {}
               }
             };
             input.click();

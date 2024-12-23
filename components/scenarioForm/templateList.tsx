@@ -115,7 +115,6 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
 
   useEffect(() => {
     if (!!scenarioData[type]) {
-      console.log("template list useeffect");
       setSelected(scenarioData[type]);
     }
   }, [type]);

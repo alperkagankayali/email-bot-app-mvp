@@ -6,7 +6,7 @@ import EducationList from "@/components/education";
 const Education: React.FC = async () => {
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-242.5">
+      <div className="mx-auto">
         <Breadcrumb pageName="menu-education" />
         <div>
           <EducationList />

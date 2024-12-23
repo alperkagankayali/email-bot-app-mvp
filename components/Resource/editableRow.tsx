@@ -84,6 +84,7 @@ const ResourceTable: React.FC = () => {
   const [editingKey, setEditingKey] = useState("");
 
   const isEditing = (record: DataType) => record.key === editingKey;
+  const t = useTranslations("pages");
 
   const edit = (record: Partial<DataType> & { key: React.Key }) => {
     form.setFieldsValue({ name: "", age: "", address: "", ...record });
@@ -162,12 +163,11 @@ const ResourceTable: React.FC = () => {
     const res = await deleteResource(id);
     if (res.success) {
       await fetchLanguage();
-      notification.info({ message: "Kayıt silindi" });
+      notification.info({ message: t("success-200")});
     } else {
-      notification.error({ message: "Kayıt silinemedi" });
+      notification.error({ message: t("danger-500") });
     }
   };
-  const t = useTranslations("pages");
 
   const columns = [
     {
@@ -325,7 +325,7 @@ const ResourceTable: React.FC = () => {
           <Button onClick={() => setIsModalOpen(true)} type="primary">
             {t("add-a-resource")}{" "}
           </Button>
-          <span className="ml-2">Total {pagination?.totalItems} items</span>
+          <span className="ml-2"> {t('total-items', {totalItems: pagination?.totalItems})}</span>
         </div>
         {!!data && (
           <div className="flex items-center">

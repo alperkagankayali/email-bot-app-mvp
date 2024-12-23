@@ -6,27 +6,38 @@ import { verifyToken } from "@/lib/jwt";
 import EducationList from "@/models/educationList";
 import Course from "@/models/course";
 
+const getFilter = (url: string) => {
+  const { searchParams } = new URL(url);
+  const levelOfDifficulty = searchParams.get("levelOfDifficulty");
+  const title = searchParams.get("title");
+  const description = searchParams.get("description");
+  let filter: any = {};
+  if (!!title) filter.title = { $regex: title, $options: "i" }; // Büyük/küçük harf duyarsızlık için `i` ekledik
+  if (!!levelOfDifficulty)
+    filter.levelOfDifficulty = { $regex: levelOfDifficulty, $options: "i" }; // Büyük/küçük harf duyarsızlık için `i` ekledik
+  if (!!description) {
+    filter.description = { $regex: description, $options: "i" };
+  }
+  return filter;
+};
+
 export async function GET(request: Request) {
   try {
     await connectToDatabase();
+    let filter2: any = {};
+    const filter = getFilter(request.url);
     const { searchParams } = new URL(request.url);
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     const page = parseInt(searchParams.get("page") || "1"); // Varsayılan 1. sayfa
     const limit = parseInt(searchParams.get("limit") || "50"); // Varsayılan limit 10
     const skip = (page - 1) * limit; //
+    const authorType = searchParams.get("authorType");
     const id = searchParams.get("id");
     const language = !!searchParams.get("language")
       ? searchParams.get("language")?.split("&")
       : null;
-    const title = searchParams.get("title");
-    const description = searchParams.get("description");
-    let filter: any = {};
-    let filter2: any = {};
-    if (!!title) filter.title = { $regex: title, $options: "i" }; // Büyük/küçük harf duyarsızlık için `i` ekledik
-    if (!!description) {
-      filter.description = { $regex: description, $options: "i" };
-    }
-    if (!!language) filter2.languages = { $in: language };
+    if (!!language) filter2.languages = { $all: language };
+
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
@@ -35,6 +46,16 @@ export async function GET(request: Request) {
         verificationResult?.role === "admin" ||
         verificationResult?.role === "superadmin"
       ) {
+        if (!!authorType) {
+          if (authorType.split("&").length > 1) {
+            filter2["$or"] = [
+              { company: verificationResult.companyId },
+              { authorType: "superadmin" },
+            ];
+          } else {
+            filter2.authorType = authorType;
+          }
+        }
         if (!!id) {
           const education = await EducationList.findById(id).populate({
             path: "educations",
@@ -70,7 +91,7 @@ export async function GET(request: Request) {
                   ],
                 },
                 select:
-                  "title description author isPublished contents language", // Sadece gerekli alanlar
+                  "title description author isPublished contents language levelOfDifficulty img", // Sadece gerekli alanlar
                 model: Course,
               })
               .skip(skip)
@@ -87,18 +108,10 @@ export async function GET(request: Request) {
           const educationTotal = await EducationList.countDocuments({
             isDelete: false,
             ...filter2,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
           });
           const education = await EducationList.find({
             isDelete: false,
             ...filter2,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
           })
             .populate({
               path: "educations", // `educations` Course tablosuna referans içeriyor
@@ -111,7 +124,8 @@ export async function GET(request: Request) {
                   { language: { $exists: true } }, // Eğer belirtilen diller yoksa herhangi bir dil
                 ],
               },
-              select: "title description author isPublished contents language", // Sadece gerekli alanlar
+              select:
+                "title description author isPublished contents language levelOfDifficulty img", // Sadece gerekli alanlar
               model: Course,
             })
             .skip(skip)

@@ -44,7 +44,7 @@ const AuthorizationTable: React.FC = () => {
       },
     },
     {
-      title: "Url",
+      title: t("url"),
       dataIndex: "url",
       render: (_: any, record: DataType) => {
         return <>{record?.page?.url}</>;
@@ -61,7 +61,7 @@ const AuthorizationTable: React.FC = () => {
       render: (_: any, record: DataType) => {
         return (
           <Tag color={record?.isAuthorization ? "blue-inverse" : "red-inverse"}>
-            {record?.isAuthorization ? "yetkili" : "yetkisiz"}
+            {record?.isAuthorization ? t("user-unauthorized") : t("user-authorized") }
           </Tag>
         );
       },

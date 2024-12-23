@@ -48,7 +48,7 @@ const TemplateForm = ({
       >
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-          {t("label")}
+            {t("label")}
           </label>
           <div className="relative">
             <Form.Item<ILandingPage> name="title">
@@ -64,7 +64,7 @@ const TemplateForm = ({
         </div>
         <div className="mb-6">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-          {t("image")}
+            {t("image")}
           </label>
 
           <div className="relative">
@@ -78,8 +78,7 @@ const TemplateForm = ({
         </div>
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-          {t("content")}
-
+            {t("content")}
           </label>
           <div className="relative">
             <Form.Item<ILandingPage> name="content">
@@ -90,8 +89,7 @@ const TemplateForm = ({
                 htmlType="submit"
                 className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
               >
-                                                  {t("save-btn")}
-
+                {t("save-btn")}
               </Button>
             </Form.Item>
           </div>

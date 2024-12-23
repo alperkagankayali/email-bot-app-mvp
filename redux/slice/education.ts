@@ -64,6 +64,9 @@ const educationSlice = createSlice({
   name: "counter",
   initialState,
   reducers: {
+    handleAddEducationFormReset: (state) => {
+      state.forms = {};
+    },
     handleAddEducationForm: (
       state,
       action: PayloadAction<{ language: string; values: FormValues }>
@@ -175,7 +178,7 @@ export const fetchContent = createAsyncThunk(
 
 export const fetchEducationList = createAsyncThunk(
   "/education-list",
-  async (values:any) => {
+  async (values: any) => {
     const response = await getEducationListContent(10, 1, values);
     return response;
   }
@@ -211,6 +214,7 @@ export const {
   handleEducationContentDataChange,
   handleAddEducationFormValue,
   handleAddEducationListValue,
+  handleAddEducationFormReset,
 } = educationSlice.actions;
 
 export default educationSlice.reducer;

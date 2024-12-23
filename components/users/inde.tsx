@@ -147,11 +147,11 @@ const UserTable = ({ id }: IProps) => {
     if (arrUser.length > 3) {
       notification.error({
         message:
-          "En fazla 3 kullanıcı ile login olabilirsin, diğer kullanıcılardan çıkış yapman gerekiyor.",
+         t("switch-account-max-count-error"),
       });
     } else if (findUser) {
       notification.error({
-        message: "Bu kullanıcı ile zaten giriş yapılmış.",
+        message: t("switch-account-some-login-failed"),
       });
     } else {
       const res = await handleOtherLogin(id);

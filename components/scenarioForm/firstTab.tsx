@@ -93,7 +93,7 @@ const FirstTabForm = ({
         {!!data && data?.length > 0 && (
           <div className="mb-4">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
-              {t("scenario-type")}{" "}
+              {t("scenario-type")}
             </label>
             <div className="relative">
               <Form.Item<IScenario>

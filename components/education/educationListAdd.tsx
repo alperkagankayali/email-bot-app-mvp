@@ -20,6 +20,7 @@ import {
 import { useRouter } from "@/i18n/routing";
 import { IContent } from "@/types/courseType";
 import { useTranslations } from "next-intl";
+import Loader from "../common/Loader";
 const { Option } = Select;
 type IProps = {
   id?: string;
@@ -29,6 +30,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
   const languages = useSelector((state: RootState) => state.language.language);
   const forms = useSelector((state: RootState) => state.education.forms);
   const [selectLang, setSelectLang] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(!!id);
   const dispatch = useDispatch();
   const t = useTranslations("pages");
 
@@ -98,7 +100,9 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
       const getDetail = async () => {
         const response = await getEducationListContent(10, 1, { id });
         let newArr: any[] = [];
+        setLoading(false)
         response.data?.educations?.forEach((e: any) => {
+          debugger
           let prevValue: Array<any> = [];
           e?.contents?.forEach((content: IContent) => {
             const type: string =
@@ -139,6 +143,10 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
       getDetail();
     }
   }, [id]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div>

@@ -24,6 +24,11 @@ import {
   VideoCameraTwoTone,
 } from "@ant-design/icons";
 import { handleAddEducationFormValue } from "@/redux/slice/education";
+import {
+  getArticle,
+  getQuiz,
+  getVideo,
+} from "@/services/service/educationService";
 
 interface DataType {
   type: "video" | "article" | "quiz";
@@ -73,57 +78,80 @@ type IProps = {
 };
 const OrderForm: React.FC<IProps> = ({ lang }) => {
   const forms = useSelector((state: RootState) => state.education.forms);
-  const video = useSelector((state: RootState) => state.education.videos);
-  const article = useSelector((state: RootState) => state.education.article);
-  const quiz = useSelector((state: RootState) => state.education.quiz);
+
+  const dataCreate = async () => {
+    debugger
+    let data: DataType[] = [];
+    if (Array.isArray(forms[lang]["selectVideo"])) {
+      const res = forms[lang]["selectVideo"].map(async (e) => {
+        const findVideo = await getVideo(10, 1, e);
+        if (findVideo.success) {
+          return {
+            type: "video",
+            refId: findVideo.data?._id,
+            order: 0,
+            title: findVideo.data?.title,
+            description: findVideo.data?.description,
+          };
+        }
+      });
+      await Promise.all(res).then((e: any) => {
+        data.push(...e);
+      });
+    }
+    if (Array.isArray(forms[lang]["selectArticle"])) {
+      const res = forms[lang]["selectArticle"].map(async (e) => {
+        const findData = await getArticle(10, 1, e);
+        if (findData.success) {
+          return {
+            type: "article",
+            refId: findData.data?._id,
+            order: 0,
+            title: findData.data?.title,
+            description: findData.data?.description,
+          };
+        }
+      });
+      await Promise.all(res).then((e: any) => {
+        data.push(...e);
+      });
+    }
+    if (Array.isArray(forms[lang]["selectQuiz"])) {
+      const res = forms[lang]["selectQuiz"].map(async (e) => {
+        const findData = await getQuiz(10, 1, e);
+        if (findData.success) {
+          return {
+            type: "quiz",
+            refId: findData.data?._id,
+            order: 0,
+            title: findData.data?.title,
+            description: findData.data?.description,
+          };
+        }
+      });
+      await Promise.all(res).then((e: any) => {
+        data.push(...e);
+      });
+    }
+    return data;
+  };
 
   useEffect(() => {
     if (dataSource.length === 0) {
-      let data: DataType[] = [];
-      if (Object.keys(forms).length > 0) {
-        const selectData = [
-          ...(Array.isArray(forms[lang]["selectVideo"])
-            ? (forms[lang]["selectVideo"] as Array<any>)
-            : []),
-          ...(Array.isArray(forms[lang]["selectArticle"])
-            ? (forms[lang]["selectArticle"] as Array<any>)
-            : []),
-          ...(Array.isArray(forms[lang]["selectQuiz"])
-            ? (forms[lang]["selectQuiz"] as Array<any>)
-            : []),
-        ];
-
-        data = selectData.map((e) => {
-          const findArticle = article.some((element) => element._id === e);
-          const findVideo = video.some((element) => element._id === e);
-          const findQuiz = quiz.some((element) => element._id === e);
-          let findData: any = {};
-          if (findArticle) {
-            findData = article.find((element) => element._id === e);
-          } else if (findQuiz) {
-            findData = quiz.find((element) => element._id === e);
-          } else if (findVideo) {
-            findData = video.find((element) => element._id === e);
-          }
-          return {
-            type: findVideo ? "video" : findArticle ? "article" : "quiz",
-            refId: e,
-            order: 0,
-            title: findData?.title,
-            description: findData?.description,
-          };
-        });
-      }
-      dispatch(
-        handleAddEducationFormValue({
-          language: lang,
-          field: "contents",
-          value: data.map((data, index) => {
-            return { type: data.type, refId: data.refId, order: index };
-          }),
-        })
-      );
-      setDataSource(data);
+      const fetchData = async () => {
+        const data = await dataCreate();
+        dispatch(
+          handleAddEducationFormValue({
+            language: lang,
+            field: "contents",
+            value: data.map((data, index) => {
+              return { type: data.type, refId: data.refId, order: index };
+            }),
+          })
+        );
+        setDataSource(data);
+      };
+      fetchData();
     }
   }, [lang, forms]);
 
