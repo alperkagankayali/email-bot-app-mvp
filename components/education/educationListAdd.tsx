@@ -90,7 +90,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
     } else {
       notification.error({
         message:
-          "Lütfen seçtiğiniz tüm dilleri doldurunuz yada dil seçimini düzenleyin.",
+          t("education-list-add-info-message"),
       });
     }
   };
