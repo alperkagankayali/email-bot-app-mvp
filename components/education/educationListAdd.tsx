@@ -109,7 +109,6 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
         let newArr: any[] = [];
         setLoading(false);
         response.data?.educations?.forEach((e: any) => {
-          debugger;
           let prevValue: Array<any> = [];
           e?.contents?.forEach((content: IContent) => {
             const type: string =

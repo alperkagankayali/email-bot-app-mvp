@@ -15,6 +15,7 @@ import {
   handleAddEducationListValue,
 } from "@/redux/slice/education";
 import { useTranslations } from "next-intl";
+import PreviewEducation from "./previewEducatio";
 
 type IProps = {
   id?: string;
@@ -40,7 +41,7 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
   const steps = [
     {
       title: t("education-info"),
-      content: <EducationInfoForm next={next} lang={lang}  />,
+      content: <EducationInfoForm next={next} lang={lang} />,
     },
     {
       title: t("education-content"),
@@ -51,6 +52,14 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
       content: (
         <>
           <OrderForm lang={lang} />
+        </>
+      ),
+    },
+    {
+      title: t("education-preview-form"),
+      content: (
+        <>
+          <PreviewEducation next={next} lang={lang} />
         </>
       ),
     },
@@ -88,7 +97,6 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
 
   const onFinish = async () => {
     let res = null;
-    debugger;
     if (!!id) {
       res = await updateEducation(id, forms[lang]);
     } else {
@@ -129,7 +137,7 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
       notification.error({ message: res.message });
     }
   };
-
+ 
   return (
     <>
       <Steps current={current} items={isSuccess ? steps2 : items} />
@@ -140,6 +148,11 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
         {current === steps.length - 1 && (
           <Button type="primary" disabled={isSuccess} onClick={onFinish}>
             {t("save-btn")}
+          </Button>
+        )}
+        {current + 1 === steps.length - 1 && (
+          <Button type="primary" disabled={isSuccess} onClick={next}>
+            {t("next-btn")}
           </Button>
         )}
         {!isSuccess && current > 0 && (

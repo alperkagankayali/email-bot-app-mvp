@@ -307,8 +307,6 @@ const ResourceTable: React.FC = () => {
   };
 
   const onSearch = (value: any, event: any, info: any, name: string) => {
-    debugger;
-    console.log("event", event);
     const params = new URLSearchParams(searchParams);
     if (value.length > 3) {
       params.set(name, value);

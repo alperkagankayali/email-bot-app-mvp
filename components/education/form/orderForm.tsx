@@ -83,7 +83,6 @@ const OrderForm: React.FC<IProps> = ({ lang }) => {
       Array.isArray(forms[lang].selectArticle) &&
       Array.isArray(forms[lang].selectQuiz)
     ) {
-      debugger;
       const orderData = [
         ...(forms[lang].selectVideo as DataType[]),
         ...(forms[lang].selectArticle as DataType[]),
