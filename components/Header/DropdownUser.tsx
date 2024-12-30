@@ -12,6 +12,7 @@ import { Button, Popover } from "antd";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { userInfo } from "@/redux/slice/user";
 import { useTranslations } from "next-intl";
+import { setCookie } from "@/services/service/generalService";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -28,9 +29,11 @@ const DropdownUser = () => {
     setOpen(newOpen);
   };
 
-  const changeUser = (user: any) => {
+  const changeUser = async (user: any) => {
     localStorage.setItem("token", JSON.stringify(user.token));
     localStorage.setItem("user", JSON.stringify(user));
+    const res = await setCookie("token", user.token);
+    console.log("res",res);
     dispatch(userInfo(user.user));
     hide();
     router.push("/dashboard");
@@ -228,7 +231,7 @@ const DropdownUser = () => {
               </Link>
             </li>
           </ul>
-          
+
           <button
             className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             onClick={async () => {

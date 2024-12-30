@@ -40,7 +40,6 @@ export async function GET(request: Request) {
           );
           const compaing = await Campaign.find({ isDelete: false })
             .populate("userList")
-            .populate("scenario")
             .skip(skip)
             .limit(limit);
           return NextResponse.json(

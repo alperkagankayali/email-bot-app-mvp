@@ -262,11 +262,12 @@ const menuGroups = [
   },
   {
     name: "menu-campaign",
+    role: ["admin"],
     menuItems: [
       {
         icon: <BoxPlotOutlined />,
         label: "menu-campaign",
-        route: "#",
+        route: "/dashboard/campaign",
         children: [],
       },
     ],

@@ -61,5 +61,10 @@
   "ADD_NEWS": "/news/add",
   "UPDATE_NEWS": "/news/update",
   "DELETE_NEWS": "/news/delete",
-  "GET_NEWS": "/news"
+  "GET_NEWS": "/news",
+  "ADD_CAMPAIGN": "/campaign/add",
+  "UPDATE_CAMPAIGN": "/campaign/update",
+  "DELETE_CAMPAIGN": "/campaign/delete",
+  "GET_CAMPAIGN": "/campaign",
+  "SET_COOKIE":"/cookie"
 }

@@ -137,10 +137,15 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
       notification.error({ message: res.message });
     }
   };
- 
+
   return (
     <>
-      <Steps current={current} items={isSuccess ? steps2 : items} />
+      <Steps
+        type="navigation"
+        current={current}
+        onChange={(value) => setCurrent(value)}
+        items={isSuccess ? steps2 : items}
+      />
       <div style={contentStyle}>
         {isSuccess ? steps2[0]?.content : steps[current]?.content}
       </div>

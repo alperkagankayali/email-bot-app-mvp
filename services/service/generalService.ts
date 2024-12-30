@@ -294,3 +294,11 @@ export const updatePassword = async (id: string, password: string) => {
   );
   return result;
 };
+
+export const setCookie = async (name: string, token: string) => {
+  const queryParams = jsonToQueryString({ name, token });
+  const url = servicesBaseUrl + finalConfig.SET_COOKIE + queryParams;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, {}, config);
+  return result;
+};

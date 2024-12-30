@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import { ISuperAdminJWT, IUserJWT } from "../login/route";
 import { message200, message401, message500 } from "@/constants";
 import Company from "@/models/company";
-
+import { Types } from "mongoose";
 export async function GET(request: Request) {
   try {
     await connectToDatabase();
@@ -18,17 +18,43 @@ export async function GET(request: Request) {
       const jwtSuperAdmin = jwt.verify(
         token.split(" ")[1],
         jwtKey
-      ) as ISuperAdminJWT;
-      if (jwtSuperAdmin.role === "superadmin") {
+      ) as (ISuperAdminJWT | IUserJWT);
+      if ((jwtSuperAdmin.role === "superadmin"|| jwtSuperAdmin.role === "admin") && !!id) {
         const userTotal = await User.countDocuments({ company: id });
         const files = await User.find({ company: id }).populate({
           path: "company",
           model: Company,
         });
+        const groupedUsers = await User.aggregate([
+          {
+            $match: { company: new Types.ObjectId(id)}, // Silinmemiş kursları getiriyoruz.
+          },
+          {
+            $group: {
+              _id: "$department", // Department alanına göre grupla
+              // name: "$department",
+              users: {
+                $push: {
+                  _id: "$_id",
+                  nameSurname: "$nameSurname",
+                  email: "$email",
+                  language: "$language",
+                  company: "$company",
+                  role: "$role",
+                  createdAt: "$createdAt",
+                },
+              },
+            },
+          },
+          {
+            $sort: { _id: 1 }, // Department adlarına göre sıralama
+          },
+        ]);
         return NextResponse.json(
           {
             ...message200,
             data: files,
+            department:groupedUsers,
             totalItems: userTotal,
           },
           { status: 200 }
