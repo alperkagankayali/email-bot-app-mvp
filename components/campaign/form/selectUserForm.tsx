@@ -141,7 +141,6 @@ const SelectUserForm: React.FC<IProps> = ({ targetKeys, setTargetKeys }) => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      debugger
       const res: any = await getUserById(currentUser?.companyId ?? "");
       if (res.success) {
         setDepartment(

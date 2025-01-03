@@ -24,12 +24,13 @@ const campaignSchema = new Schema<ICampaign>({
   isDelete: { type: Boolean, default: false },
   isActive: { type: Boolean, default: false },
   created_at: { type: Date, default: Date.now },
-  startDate: { type: Date},
+  startDate: { type: Date },
   endDate: { type: Date },
   type: { type: String, enum: ["news", "education", "phishing"] },
   scenario: [{ type: Types.ObjectId, ref: "Scenario" }],
   news: { type: Types.ObjectId, ref: "News" },
   education: { type: Types.ObjectId, ref: "EducationList" },
+  scenarioType: { type: Types.ObjectId, ref: "ScenarioType" },
 });
 
 const Campaign =

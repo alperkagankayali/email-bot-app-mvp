@@ -2,6 +2,8 @@ import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { handleAuthControl } from "./middlewares/auth";
 import { routing } from "./i18n/routing";
+import { cookies } from "next/headers";
+
 const cache = new Map();
 
 const i18nMiddleware = createMiddleware(routing);
@@ -26,7 +28,8 @@ export async function middleware(req: NextRequest) {
 }
 
 async function handleAPIMiddleware(req: NextRequest) {
-
+  const cookieStore = await cookies();
+  console.log("-----coookies-----", cookieStore.get("token"));
   const user = await handleAuthControl(req);
   // const apiKey = req.headers.get('x-api-key'); // API anahtarı kontrolü
   // if (!user) {

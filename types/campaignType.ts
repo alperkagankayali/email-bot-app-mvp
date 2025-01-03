@@ -1,6 +1,6 @@
 import { IEducationList } from "./educationListType";
 import { INewsBlog } from "./newsType";
-import { IScenario } from "./scenarioType";
+import { IScenario, IScenarioType } from "./scenarioType";
 import { ISuperAdmin } from "./superAdmingType";
 import { IUser } from "./userType";
 
@@ -20,4 +20,6 @@ export interface ICampaign {
   news: INewsBlog;
   education: IEducationList;
   _id: string;
+  isEducation: boolean;
+  scenarioType: IScenarioType;
 }
