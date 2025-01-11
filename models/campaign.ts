@@ -26,6 +26,7 @@ const campaignSchema = new Schema<ICampaign>({
   created_at: { type: Date, default: Date.now },
   startDate: { type: Date },
   endDate: { type: Date },
+  availableDate: { type: Number },
   type: { type: String, enum: ["news", "education", "phishing"] },
   scenario: [{ type: Types.ObjectId, ref: "Scenario" }],
   news: { type: Types.ObjectId, ref: "News" },

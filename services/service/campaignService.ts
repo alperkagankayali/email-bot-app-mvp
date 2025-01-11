@@ -5,8 +5,13 @@ import headers from "@/lib/header.json";
 import { IResponseType } from "@/types/responseType";
 import { ICampaign } from "@/types/campaignType";
 
-export const getCampaign = async (limit = 10, page = 1, id = "") => {
-  const queryParams = jsonToQueryString({ limit, page, id });
+export const getCampaign = async (
+  limit = 10,
+  page = 1,
+  id = "",
+  filter?: {}
+) => {
+  const queryParams = jsonToQueryString({ limit, page, id, ...filter });
   const url = servicesBaseUrl + finalConfig.GET_CAMPAIGN + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);

@@ -22,4 +22,5 @@ export interface ICampaign {
   _id: string;
   isEducation: boolean;
   scenarioType: IScenarioType;
+  availableDate: number;
 }

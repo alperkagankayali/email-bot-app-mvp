@@ -14,6 +14,7 @@ import {
   Radio,
   Space,
   theme,
+  Typography,
 } from "antd";
 import { IQuizType } from "@/types/quizType";
 import {

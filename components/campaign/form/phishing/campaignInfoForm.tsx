@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect } from "react";
 import { ICampaign } from "@/types/campaignType";
-import { DatePicker, Form, Input, Radio, Select } from "antd";
+import { Form, Input, Radio, Select, Switch } from "antd";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchScenarioType } from "@/redux/slice/scenario";
@@ -13,6 +12,14 @@ type IPorps = {
   isEducation: boolean;
   setIsEducation: (x: boolean) => void;
 };
+
+const options = [
+  { label: "One a Week", value: 7 },
+  { label: "One a Day", value: 1 },
+  { label: "One a Two Week", value: 14 },
+  { label: "One a Month", value: 30 },
+];
+
 const CampaignInfoForm: React.FC<IPorps> = ({
   isEducation,
   setIsEducation,
@@ -128,14 +135,14 @@ const CampaignInfoForm: React.FC<IPorps> = ({
               },
             ]}
           >
-            <Radio.Group
+            <Switch
               className="float-start"
-              onChange={(e) => setIsEducation(e.target.value === "1")}
-              defaultValue={isEducation ? "1" : "0"}
-            >
-              <Radio value="1"> Yes </Radio>
-              <Radio value="0"> No </Radio>
-            </Radio.Group>
+              checkedChildren="Yes"
+              unCheckedChildren="No"
+              defaultValue={false}
+              checked={isEducation}
+              onChange={(clicked) => setIsEducation(clicked)}
+            />
           </Form.Item>
         </div>
       </div>
@@ -146,7 +153,7 @@ const CampaignInfoForm: React.FC<IPorps> = ({
           </label>
           <div className="relative w-full">
             <Form.Item<ICampaign>
-              name="created_at"
+              name="availableDate"
               rules={[
                 {
                   required: true,
@@ -154,10 +161,11 @@ const CampaignInfoForm: React.FC<IPorps> = ({
                 },
               ]}
             >
-              <DatePicker
-                format={"DD/MM/YYYY"}
-                placeholder="Education Avilable Date"
-                className="w-4/12 float-start"
+              <Radio.Group
+                block
+                options={options}
+                optionType="button"
+                buttonStyle="solid"
               />
             </Form.Item>
           </div>

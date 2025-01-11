@@ -67,7 +67,7 @@ const menuGroups = [
           {
             label: "menu-mail",
             route: "/dashboard/scenario/email-templates",
-            role: ["superadmin"],
+            role: ["superadmin","admin"],
           },
           {
             label: "menu-landing-pages",

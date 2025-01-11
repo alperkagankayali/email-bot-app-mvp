@@ -4,14 +4,13 @@ export const dynamic = "force-dynamic";
 import { message200, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import Campaign from "@/models/campaign";
-import Scenario from "@/models/scenario";
-import User from "@/models/user";
 
 export async function GET(request: Request) {
   try {
     await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
+    const order = searchParams.get("order");
     const page = parseInt(searchParams.get("page") || "1"); // Varsayılan 1. sayfa
     const limit = parseInt(searchParams.get("limit") || "10"); // Varsayılan limit 10
     const skip = (page - 1) * limit; //
@@ -23,25 +22,36 @@ export async function GET(request: Request) {
         return verificationResult; // 401 döndürecek
       } else {
         if (!!id) {
-          const compaing = await Campaign.findById(id)
-            .populate("userList")
-            .populate("scenario");
+          const campaign = await Campaign.findById(id).populate({
+            path: "scenarioType",
+            select: "title", // Gerekli alanları seç
+          });
+
           return NextResponse.json(
             {
               ...message200,
-              data: compaing,
+              data: campaign,
               totalItems: 1,
             },
             { status: 200, statusText: message200.message }
           );
         } else {
-          const compaingTotal = await Campaign.countDocuments(
-            { isDelete: false }
-          );
-          const compaing = await Campaign.find({ isDelete: false })
-            .populate("userList")
-            .skip(skip)
-            .limit(limit);
+          const compaingTotal = await Campaign.countDocuments({
+            isDelete: false,
+          });
+          let compaing;
+          if (!!order && order !== "default") {
+            compaing = await Campaign.find({ isDelete: false })
+              .sort({ [order]: -1 }) // Önce isActive'e göre, sonra created_at'e göre sırala
+              .skip(skip)
+              .limit(limit);
+          } else {
+            compaing = await Campaign.find({ isDelete: false })
+              .sort({ isActive: -1, created_at: -1 }) // Önce isActive'e göre, sonra created_at'e göre sırala
+              .skip(skip)
+              .limit(limit);
+          }
+
           return NextResponse.json(
             {
               ...message200,

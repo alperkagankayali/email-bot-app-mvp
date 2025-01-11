@@ -25,9 +25,6 @@ const PhishingCampaignSteps: React.FC = () => {
   );
 
   const onFinish = (values: any) => {
-    if (values.isEducation === "1") {
-      values.educationAvailableDate = new Date(values.created_at);
-    }
     setInfo(values);
     next();
   };
@@ -132,18 +129,13 @@ const PhishingCampaignSteps: React.FC = () => {
 
   return (
     <>
-      <Steps
-        current={current}
-        items={items}
-        onChange={(value) => setCurrent(value)}
-      />
+      <Steps current={current} items={items} />
       <div style={contentStyle}>{steps[current].content}</div>
       <div style={{ marginTop: 24 }}>
         {current < steps.length - 1 && (
           <Button
             type="primary"
             onClick={() => {
-              debugger;
               if (current === 0) {
                 form.submit();
               } else if (current === 1) {

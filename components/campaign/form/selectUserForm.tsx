@@ -11,7 +11,10 @@ import { getUserById } from "@/services/service/generalService";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useTranslations } from "next-intl";
-
+import type { CSSProperties } from "react";
+import { CaretRightOutlined } from "@ant-design/icons";
+import type { CollapseProps } from "antd";
+import { Collapse, theme } from "antd";
 const CheckboxGroup = Checkbox.Group;
 type TransferItem = GetProp<TransferProps, "dataSource">[number];
 type TableRowSelection<T extends object> = TableProps<T>["rowSelection"];
@@ -141,7 +144,9 @@ const SelectUserForm: React.FC<IProps> = ({ targetKeys, setTargetKeys }) => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res: any = await getUserById(currentUser?.companyId ?? "");
+      const res: any = await getUserById(currentUser?.companyId ?? "", {
+        isSelectUser: true,
+      });
       if (res.success) {
         setDepartment(
           res.department?.map((e: any) => {
@@ -170,14 +175,45 @@ const SelectUserForm: React.FC<IProps> = ({ targetKeys, setTargetKeys }) => {
     setTargetKeys(nextTargetKeys);
   };
 
-  return (
-    <>
-      <div className="w-full !mb-4 border-2 !p-5 !text-3xl">
-        <p className="mb-4">{t("user-department-groups")}</p>
+  const { token } = theme.useToken();
+
+  const panelStyle: React.CSSProperties = {
+    marginBottom: 24,
+    background: token.colorFillAlter,
+    borderRadius: token.borderRadiusLG,
+    textAlign:"left",
+    justifyContent: "flex-start", 
+    border: "none",
+  };
+
+  const getItems: (panelStyle: CSSProperties) => CollapseProps["items"] = (
+    panelStyle
+  ) => [
+    {
+      key: "1",
+      label: t("user-department-groups"),
+      children: (
         <CheckboxGroup
           options={department}
           value={checkedList}
           onChange={onChange2}
+        />
+      ),
+      style: panelStyle,
+    },
+  ];
+  return (
+    <>
+      <div className="w-full !mb-4 border-2 !p-5 !text-3xl">
+        <p className="mb-4">{t("user-groups")}</p>
+        <Collapse
+          bordered={false}
+          defaultActiveKey={["1"]}
+          expandIcon={({ isActive }) => (
+            <CaretRightOutlined rotate={isActive ? 90 : 0} />
+          )}
+          style={{ background: token.colorBgContainer }}
+          items={getItems(panelStyle)}
         />
       </div>
 

@@ -12,22 +12,60 @@ export async function GET(request: Request) {
     await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
+    const isSelectUser = JSON.parse(
+      searchParams.get("isSelectUser") ?? "false"
+    );
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     const jwtKey: string = process.env.JWT_SCREET_KEY as string;
     if (!!token) {
-      const jwtSuperAdmin = jwt.verify(
-        token.split(" ")[1],
-        jwtKey
-      ) as (ISuperAdminJWT | IUserJWT);
-      if ((jwtSuperAdmin.role === "superadmin"|| jwtSuperAdmin.role === "admin") && !!id) {
-        const userTotal = await User.countDocuments({ company: id });
-        const files = await User.find({ company: id }).populate({
+      const jwtSuperAdmin = jwt.verify(token.split(" ")[1], jwtKey) as
+        | ISuperAdminJWT
+        | IUserJWT;
+      if (
+        (jwtSuperAdmin.role === "superadmin" ||
+          jwtSuperAdmin.role === "admin") &&
+        !!id && !isSelectUser
+      ) {
+        const userTotal = await User.countDocuments({
+          company: id,
+        });
+        const files = await User.find({
+          company: id,
+        }).populate({
+          path: "company",
+          model: Company,
+        });
+        return NextResponse.json(
+          {
+            ...message200,
+            data: files,
+            totalItems: userTotal,
+          },
+          { status: 200 }
+        );
+      } else if (
+        (jwtSuperAdmin.role === "superadmin" ||
+          jwtSuperAdmin.role === "admin") &&
+        !!id &&
+        isSelectUser
+      ) {
+        const userTotal = await User.countDocuments({
+          company: id,
+          role: { $ne: "admin" },
+        });
+        const files = await User.find({
+          company: id,
+          role: { $ne: "admin" },
+        }).populate({
           path: "company",
           model: Company,
         });
         const groupedUsers = await User.aggregate([
           {
-            $match: { company: new Types.ObjectId(id)}, // Silinmemiş kursları getiriyoruz.
+            $match: {
+              company: new Types.ObjectId(id),
+              role: { $ne: "admin" }, // admin rolünü hariç tut
+            },
           },
           {
             $group: {
@@ -54,7 +92,7 @@ export async function GET(request: Request) {
           {
             ...message200,
             data: files,
-            department:groupedUsers,
+            department: groupedUsers,
             totalItems: userTotal,
           },
           { status: 200 }

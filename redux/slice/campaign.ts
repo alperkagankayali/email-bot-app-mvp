@@ -38,8 +38,13 @@ const campaignSlice = createSlice({
 
 export const fetchCampaign = createAsyncThunk(
   "/campaign",
-  async (limit: number) => {
-    const response = await getCampaign(limit, 1);
+  async (pagination: any) => {
+    const response = await getCampaign(
+      pagination.limit ?? 10,
+      pagination.page ?? 1,
+      "",
+      pagination.filter
+    );
     return response;
   }
 );

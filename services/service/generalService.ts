@@ -116,8 +116,8 @@ export const updateCompany = async (updateData: any) => {
   return result;
 };
 
-export const getUserById = async (id: string) => {
-  const queryParams = jsonToQueryString({ id });
+export const getUserById = async (id: string, filter?: {}) => {
+  const queryParams = jsonToQueryString({ id, ...filter });
   const url = servicesBaseUrl + finalConfig.GET_USER_BY_ID + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
