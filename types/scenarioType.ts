@@ -1,4 +1,5 @@
 import { ICompany } from "./companyType";
+import { IEducationList } from "./educationListType";
 import { ILanguage } from "./languageType";
 import { ISuperAdmin } from "./superAdmingType";
 import { IUser } from "./userType";
@@ -22,6 +23,7 @@ export interface IScenario {
   // author: IUser;
   // created_at: Date;
   _id: string;
+  education: IEducationList;
   language: ILanguage;
 }
 export type ICreateScenarioType = {

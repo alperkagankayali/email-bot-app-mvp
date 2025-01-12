@@ -35,7 +35,7 @@ const EducationListRadio: React.FC<IPorps> = ({ selected, setSelected }) => {
   const [pageSize, setPageSize] = useState(8);
 
   const fetchEducationList = async (limit: number, page: number) => {
-    const res = await getNews(limit, page, "");
+    const res = await getEducationListContent(limit, page, "");
     setLoading(false);
     if (res.success) {
       setTotalItems(res?.totalItems ?? 0);

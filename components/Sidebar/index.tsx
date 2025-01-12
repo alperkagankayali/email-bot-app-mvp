@@ -12,6 +12,7 @@ import {
   FundViewOutlined,
   MailOutlined,
   ReadOutlined,
+  ReconciliationOutlined,
 } from "@ant-design/icons";
 
 interface SidebarProps {
@@ -67,7 +68,7 @@ const menuGroups = [
           {
             label: "menu-mail",
             route: "/dashboard/scenario/email-templates",
-            role: ["superadmin","admin"],
+            role: ["superadmin", "admin"],
           },
           {
             label: "menu-landing-pages",
@@ -78,6 +79,11 @@ const menuGroups = [
             label: "menu-data-entries",
             route: "/dashboard/scenario/data-entries",
             role: ["superadmin", "admin"],
+          },
+          {
+            label: "menu-scenario-education-relationship",
+            route: "/dashboard/scenario/education-relationship",
+            role: ["superadmin"],
           },
         ],
       },
@@ -243,17 +249,17 @@ const menuGroups = [
           {
             label: "menu-academy-quiz",
             route: "/dashboard/academy/quiz",
-            role: ["superadmin","admin"],
+            role: ["superadmin", "admin"],
           },
           {
             label: "menu-academy-article",
             route: "/dashboard/academy/article",
-            role: ["superadmin","admin"],
+            role: ["superadmin", "admin"],
           },
           {
             label: "menu-academy-video",
             route: "/dashboard/academy/video",
-            role: ["superadmin","admin"],
+            role: ["superadmin", "admin"],
           },
           { label: "menu-news", route: "/dashboard/news" },
         ],
