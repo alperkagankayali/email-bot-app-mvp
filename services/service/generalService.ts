@@ -5,7 +5,7 @@ import headers from "@/lib/header.json";
 import { IResourceDb } from "@/types/resourcesType";
 import { IResponseType } from "@/types/responseType";
 import { IUser } from "@/types/userType";
-import { ILandingPage, IScenario } from "@/types/scenarioType";
+import { ILandingPage } from "@/types/scenarioType";
 
 export const getLanguage = async (limit = 10, page = 1, isActive = true) => {
   const queryParams = jsonToQueryString({ isActive, limit, page });
@@ -184,19 +184,7 @@ export const getDataEntries = async (id: string, limit = 8, page = 1) => {
   const result: IResponseType = await getRequest(url, config);
   return result;
 };
-export const getScenarioType = async () => {
-  const url = servicesBaseUrl + finalConfig.GET_SCENARIO_TYPE;
-  const config = headers.content_type.application_json;
-  const result: IResponseType = await getRequest(url, config);
-  return result;
-};
-export const getScenario = async (filter: any) => {
-  const queryParams = jsonToQueryString(filter);
-  const url = servicesBaseUrl + finalConfig.GET_SCENARIO + queryParams;
-  const config = headers.content_type.application_json;
-  const result: IResponseType = await getRequest(url, config);
-  return result;
-};
+
 export const getEmailTemplate = async (id: string, limit = 8, page = 1) => {
   const queryParams = jsonToQueryString({ id, limit, page });
   const url = servicesBaseUrl + finalConfig.GET_EMAIL_TEMPLATE + queryParams;
@@ -223,12 +211,7 @@ export const createDataEntry = async (data: ILandingPage) => {
   const result: IResponseType = await postRequest(url, data, config);
   return result;
 };
-export const createScenario = async (data: IScenario | null) => {
-  const url = servicesBaseUrl + finalConfig.CREATE_SCENARIO;
-  const config = headers.content_type.application_json;
-  const result: IResponseType = await postRequest(url, data, config);
-  return result;
-};
+
 
 export const updateLandingPage = async (id: string, updateData: any) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_LANDING_PAGE;
@@ -241,16 +224,6 @@ export const updateLandingPage = async (id: string, updateData: any) => {
   return result;
 };
 
-export const updateScenario = async (id: string, updateData: any) => {
-  const url = servicesBaseUrl + finalConfig.UPDATE_SCENARIO;
-  const config = headers.content_type.application_json;
-  const result: IResponseType = await postRequest(
-    url,
-    { id, updateData },
-    config
-  );
-  return result;
-};
 
 export const updateDataEntry = async (id: string, updateData: any) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_DATA_ENTRY;
@@ -278,12 +251,7 @@ export const deleteEmailTemplate = async (id: string) => {
   const result: IResponseType = await postRequest(url, { id }, config);
   return result;
 };
-export const deleteScenario = async (id: string) => {
-  const url = servicesBaseUrl + finalConfig.DELETE_SCENARIO;
-  const config = headers.content_type.application_json;
-  const result: IResponseType = await postRequest(url, { id }, config);
-  return result;
-};
+
 export const updatePassword = async (id: string, password: string) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_PASSWORD;
   const config = headers.content_type.application_json;

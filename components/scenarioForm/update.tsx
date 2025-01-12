@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect } from "react";
 import ScenarioForm from ".";
-import { getScenario, updateScenario } from "@/services/service/generalService";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { handleChangeScenarioData } from "@/redux/slice/scenario";
 import Loader from "../common/Loader";
 import { useRouter } from "@/i18n/routing";
 import { notification } from "antd";
+import { getScenario, updateScenario } from "@/services/service/scenarioService";
 type IProps = {
   id: string;
 };

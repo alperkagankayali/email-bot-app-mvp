@@ -2,7 +2,7 @@
 import Loader from "@/components/common/Loader";
 import { noImage } from "@/constants";
 import { Link } from "@/i18n/routing";
-import { getScenario } from "@/services/service/generalService";
+import { getScenario } from "@/services/service/scenarioService";
 import { IScenario } from "@/types/scenarioType";
 import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import {

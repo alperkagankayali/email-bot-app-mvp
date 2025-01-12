@@ -17,13 +17,11 @@ import {
   DeleteOutlined,
   EditOutlined,
   EyeOutlined,
-  SettingOutlined,
 } from "@ant-design/icons";
 import { Input, Select } from "antd";
 import type { GetProps } from "antd";
 import { useSearchParams } from "next/navigation";
-import { deleteScenario } from "@/services/service/generalService";
-import type { PopconfirmProps } from "antd";
+import { deleteScenario } from "@/services/service/scenarioService";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;

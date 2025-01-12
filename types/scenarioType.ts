@@ -23,7 +23,7 @@ export interface IScenario {
   // author: IUser;
   // created_at: Date;
   _id: string;
-  education: IEducationList;
+  education: IEducationList[];
   language: ILanguage;
 }
 export type ICreateScenarioType = {

@@ -9,6 +9,8 @@ import DataEntry from "@/models/dataEntry";
 import EmailTemplate from "@/models/emailTemplate";
 import LandingPage from "@/models/landingPage";
 import Languages from "@/models/languages";
+import EducationList from "@/models/educationList";
+import Course from "@/models/course";
 
 export async function GET(request: Request) {
   try {
@@ -30,11 +32,43 @@ export async function GET(request: Request) {
       } else {
         if (!!id) {
           const scenario = await Scenario.findById(id).populate([
-            { path: "emailTemplate", model: EmailTemplate ,select: ["title", "img","content"]},
-            { path: "scenarioType", model: ScenarioType ,select: ["title", "description"]},
+            {
+              path: "emailTemplate",
+              model: EmailTemplate,
+              select: ["title", "img", "content"],
+            },
+            {
+              path: "scenarioType",
+              model: ScenarioType,
+              select: ["title", "description"],
+            },
             { path: "language", model: Languages, select: ["code", "name"] },
-            { path: "landingPage", model: LandingPage ,select: ["title", "img","content"]},
-            { path: "dataEntry", model: DataEntry ,select: ["title", "img","content"]},
+            {
+              path: "landingPage",
+              model: LandingPage,
+              select: ["title", "img", "content"],
+            },
+            {
+              path: "dataEntry",
+              model: DataEntry,
+              select: ["title", "img", "content"],
+            },
+            {
+              path: "education",
+              model: EducationList,
+              select: ["educations"],
+              populate: {
+                path: "educations",
+                model: Course,
+                select: [
+                  "title",
+                  "img",
+                  "description",
+                  "language",
+                  "levelOfDifficulty",
+                ],
+              },
+            },
           ]);
           return NextResponse.json(
             {
@@ -45,9 +79,9 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
-          const scenarioTotal = await Scenario.countDocuments(
-            { isDelete: false }
-          );
+          const scenarioTotal = await Scenario.countDocuments({
+            isDelete: false,
+          });
           const filter: any = {};
           filter.isDelete = false;
           !!scenarioType && (filter.scenarioType = scenarioType);

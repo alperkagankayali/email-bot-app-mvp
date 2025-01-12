@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
 import ScenarioForm from ".";
-import { createScenario } from "@/services/service/generalService";
 import { notification } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "@/i18n/routing";
+import { createScenario } from "@/services/service/scenarioService";
 
 const AddScenarioForm: React.FC = () => {
   const router = useRouter();

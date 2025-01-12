@@ -3,8 +3,6 @@ import {
   getDataEntries,
   getEmailTemplate,
   getLandingPage,
-  getScenario,
-  getScenarioType,
 } from "@/services/service/generalService";
 import {
   IDataEntry,
@@ -17,6 +15,7 @@ import {
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch } from "../store";
 import { State } from "aws-sdk/clients/cloudwatchlogs";
+import { getScenario, getScenarioType } from "@/services/service/scenarioService";
 interface IScenarioSlice {
   landingPageStatus: "loading" | "succeeded" | "failed" | "idle";
   emailTemplateStatus: "loading" | "succeeded" | "failed" | "idle";

@@ -1,23 +1,9 @@
 "use client";
 import Loader from "@/components/common/Loader";
 import { languageColor, languageEnum, noImage } from "@/constants";
-import { Link } from "@/i18n/routing";
 import { getEducationListContent } from "@/services/service/educationService";
-import { getNews } from "@/services/service/newsService";
 import { IEducationList } from "@/types/educationListType";
-import { EditOutlined } from "@ant-design/icons";
-import {
-  Badge,
-  Card,
-  Checkbox,
-  Pagination,
-  PaginationProps,
-  Popconfirm,
-  Radio,
-  Tag,
-} from "antd";
-import Meta from "antd/es/card/Meta";
-import clsx from "clsx";
+import { PaginationProps, Tag } from "antd";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -25,8 +11,9 @@ import { Button, Flex, Table } from "antd";
 import type { TableColumnsType, TableProps } from "antd";
 
 type IPorps = {
-  selected:  React.Key[];
-  setSelected: (x:  React.Key[]) => void;
+  selected: React.Key[];
+  setSelected: (x: React.Key[]) => void;
+  educationList: IEducationList[] | [];
 };
 
 type TableRowSelection<T extends object = object> =
@@ -42,7 +29,11 @@ interface DataType {
   img: string;
 }
 
-const EducationListCheckBox: React.FC<IPorps> = ({ selected, setSelected }) => {
+const EducationListCheckBox: React.FC<IPorps> = ({
+  selected,
+  setSelected,
+  educationList,
+}) => {
   const t = useTranslations("pages");
 
   const [data, setData] = useState<IEducationList[]>([]);
@@ -136,7 +127,6 @@ const EducationListCheckBox: React.FC<IPorps> = ({ selected, setSelected }) => {
     },
   ];
 
-
   const start = () => {
     setLoading(true);
     setTimeout(() => {
@@ -148,12 +138,11 @@ const EducationListCheckBox: React.FC<IPorps> = ({ selected, setSelected }) => {
   const onSelectChange: (newSelectedRowKeys: React.Key[]) => void = (
     newSelectedRowKeys: React.Key[]
   ) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelected(newSelectedRowKeys);
   };
 
   const rowSelection: TableRowSelection<DataType> = {
-    selectedRowKeys:selected,
+    selectedRowKeys: selected,
     onChange: onSelectChange,
   };
 
@@ -189,10 +178,10 @@ const EducationListCheckBox: React.FC<IPorps> = ({ selected, setSelected }) => {
           <Table<DataType>
             rowSelection={rowSelection}
             columns={columns}
-            // onChange={onChange}
             pagination={{
               defaultPageSize: 10,
               showSizeChanger: true,
+              pageSize: pageSize,
               pageSizeOptions: ["10", "20", "30"],
               total: totalItems,
               onChange: onChangePagitnation,
