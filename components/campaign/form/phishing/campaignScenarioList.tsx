@@ -25,12 +25,16 @@ type IPorps = {
   selected: string[];
   setSelected: (x: string[]) => void;
   scenarioType: string;
+  relationEducation: string[];
+  setRelationEducation: (x: string[]) => void;
 };
 
 const CampaignScenarioList: React.FC<IPorps> = ({
   selected,
   setSelected,
   scenarioType,
+  relationEducation,
+  setRelationEducation,
 }) => {
   const t = useTranslations("pages");
   const [open, setOpen] = useState({
@@ -80,7 +84,15 @@ const CampaignScenarioList: React.FC<IPorps> = ({
     <div>
       <div>
         <CheckboxGroup
-          onChange={(value) => setSelected(value)}
+          onChange={(value) => {
+            const relation: any[] = [];
+            const dataFilter = data.filter((e) => value.includes(e._id));
+            dataFilter.forEach((e) => {
+              relation.push(...e.education);
+            });
+            setRelationEducation(relation);
+            setSelected(value);
+          }}
           className={"card-checkbox !grid grid-cols-4 gap-10"}
           value={selected}
         >

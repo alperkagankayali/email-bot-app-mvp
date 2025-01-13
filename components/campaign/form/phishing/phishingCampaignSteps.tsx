@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, notification, Steps, theme } from "antd";
 import SelectUserForm from "../selectUserForm";
 import type { TransferProps } from "antd";
@@ -9,11 +9,19 @@ import { createCampaign } from "@/services/service/campaignService";
 import { useRouter } from "@/i18n/routing";
 import CampaignScenarioList from "./campaignScenarioList";
 import EducationListRadio from "../education/educationListRadio";
+import { getEducationListRelationship } from "@/services/service/educationService";
+import { IEducationList } from "@/types/educationListType";
+import ResponsiveSlider from "@/components/slider";
+import { ICourse } from "@/types/courseType";
 
 const PhishingCampaignSteps: React.FC = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
+  const [relationEducation, setRelationEducation] = useState<string[]>([]);
+  const [relationEducationList, setRelationEducationList] = useState<
+    IEducationList[]
+  >([]);
   const [selectEducation, setSelectEducation] = useState<string>("");
   const [targetKeys, setTargetKeys] = useState<TransferProps["targetKeys"]>([]);
   const [info, setInfo] = useState<any>({});
@@ -29,6 +37,18 @@ const PhishingCampaignSteps: React.FC = () => {
     next();
   };
 
+  useEffect(() => {
+    if (steps[current].title === "Select Education") {
+      const fetchRelationEducation = async () => {
+        const res = await getEducationListRelationship(relationEducation);
+        if (res.success) {
+          setRelationEducationList(res.data);
+        }
+      };
+      fetchRelationEducation();
+    }
+  }, [current]);
+console.log("relationEducationList",relationEducationList)
   const steps = [
     {
       title: "Campaign Info Form",
@@ -64,6 +84,8 @@ const PhishingCampaignSteps: React.FC = () => {
           selected={selected}
           scenarioType={info.scenarioType}
           setSelected={setSelected}
+          relationEducation={relationEducation}
+          setRelationEducation={setRelationEducation}
         />
       ),
     },
@@ -71,10 +93,18 @@ const PhishingCampaignSteps: React.FC = () => {
       ? {
           title: "Select Education",
           content: (
-            <EducationListRadio
-              selected={selectEducation}
-              setSelected={setSelectEducation}
-            />
+            <>
+              <EducationListRadio
+                relationEducation={relationEducation}
+                selected={selectEducation}
+                setSelected={setSelectEducation}
+              />
+              <ResponsiveSlider slidesToShow={4}>
+                {relationEducationList.map((item,index:number) => {
+                  return <div key={item._id}> <span>{index}</span>{(item.educations as any).title}</div>;
+                })}
+              </ResponsiveSlider>
+            </>
           ),
         }
       : {

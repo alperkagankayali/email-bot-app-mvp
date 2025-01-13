@@ -24,30 +24,37 @@ const nextConfig = {
     ],
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'test-bucket-emails-577638362157.s3.eu-north-1.amazonaws.com',
-        pathname: '**',
+        protocol: "https",
+        hostname: "test-bucket-emails-577638362157.s3.eu-north-1.amazonaws.com",
+        pathname: "**",
       },
     ],
-
   },
   async headers() {
     return [
       {
-        source: '/api/user/get-csv-format',
+        source: "/api/user/get-csv-format",
         headers: [
           {
             key: "Content-Type",
-            value: 'text/csv',
+            value: "text/csv",
           },
           {
             key: "Content-disposition",
-            value: 'attachment; filename=userlist.csv',
+            value: "attachment; filename=userlist.csv",
           },
         ],
       },
-      
-    ]
+    ];
+  },
+  webpack(config, { isServer }) {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        path: false,
+      };
+    }
+    return config;
   },
 };
 

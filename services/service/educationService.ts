@@ -169,3 +169,10 @@ export const createEducationList = async (data: any) => {
   const result: IResponseType = await postRequest(url, data, config);
   return result;
 };
+
+export const getEducationListRelationship = async (id: string[]) => {
+  const url = servicesBaseUrl + finalConfig.GET_EDUCATION_LIST_RELATION;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};

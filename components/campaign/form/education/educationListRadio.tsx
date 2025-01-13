@@ -2,7 +2,7 @@
 import Loader from "@/components/common/Loader";
 import { languageColor, languageEnum, noImage } from "@/constants";
 import { Link } from "@/i18n/routing";
-import { getEducationListContent } from "@/services/service/educationService";
+import { getEducationListContent, getEducationListRelationship } from "@/services/service/educationService";
 import { getNews } from "@/services/service/newsService";
 import { IEducationList } from "@/types/educationListType";
 import { EditOutlined } from "@ant-design/icons";
@@ -24,9 +24,10 @@ import { useEffect, useState } from "react";
 type IPorps = {
   selected: string;
   setSelected: (x: string) => void;
+  relationEducation: string[];
 };
 
-const EducationListRadio: React.FC<IPorps> = ({ selected, setSelected }) => {
+const EducationListRadio: React.FC<IPorps> = ({ selected, setSelected,relationEducation }) => {
   const t = useTranslations("pages");
 
   const [data, setData] = useState<IEducationList[]>([]);
