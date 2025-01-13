@@ -216,7 +216,6 @@ const CampaignList: React.FC = () => {
                 { value: "default", label: "Varsayılan" },
                 { value: "isActive", label: "Aktif Olanlar" },
                 { value: "created_at", label: "En son eklenenler" },
-                { value: "created_at", label: "En son eklenenler" },
                 { value: "endDate", label: "Bitiş tarihine göre" },
               ]}
             />

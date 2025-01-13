@@ -177,7 +177,7 @@ console.log("relationEducationList",relationEducationList)
               } else next();
             }}
           >
-            {t("next")}
+            {t("next-btn")}
           </Button>
         )}
         {current === steps.length - 1 && (

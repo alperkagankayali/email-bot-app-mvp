@@ -48,7 +48,13 @@ const EducationCampaignSteps: React.FC = () => {
     },
     {
       title: "Select Education",
-      content: <NewsList selected={selected} setSelected={setSelected} />,
+      content: (
+        <NewsList
+          relationEducation={[]}
+          selected={selected}
+          setSelected={setSelected}
+        />
+      ),
     },
   ];
   const next = () => {
@@ -117,7 +123,7 @@ const EducationCampaignSteps: React.FC = () => {
               }
             }}
           >
-            {t("next")}
+            {t("next-btn")}
           </Button>
         )}
         {current === steps.length - 1 && (

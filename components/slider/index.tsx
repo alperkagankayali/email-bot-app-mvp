@@ -17,7 +17,7 @@ const ResponsiveSlider: React.FC<Props> = ({ children, slidesToShow }) => {
     slidesToShow: slidesToShow || 4,
     slidesToScroll: slidesToShow || 4,
     initialSlide: 0,
-    nextArrow: <div className="bg-black"> <ArrowRightOutlined color="red" className="text-3xl !text-red" /></div>,
+    // nextArrow: <div className="bg-black"> <ArrowRightOutlined color="red" className="text-3xl !text-red" /></div>,
     responsive: [
       {
         breakpoint: 1024,
@@ -46,7 +46,7 @@ const ResponsiveSlider: React.FC<Props> = ({ children, slidesToShow }) => {
     ],
   };
   return (
-    <div className="slider-container">
+    <div className="slider-container w-full">
       <Slider {...settings}>{children}</Slider>
     </div>
   );
