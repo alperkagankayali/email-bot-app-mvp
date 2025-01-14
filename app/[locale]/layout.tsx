@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { ReactNode } from "react";
 import { getResource } from "@/services/service/generalService";
 import Loader from "@/components/common/Loader";
+import Favicon from "@/components/favicon";
 
 type Props = {
   children: ReactNode;
@@ -46,10 +47,29 @@ export default async function LocaleLayout({
   if (!!messages.success) {
     return (
       <html lang={locale}>
+        <head>
+          <link
+            rel="icon"
+            type="image/png"
+            href="/icon/favicon-96x96.png"
+            sizes="96x96"
+          />
+          <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
+          <link rel="shortcut icon" href="/icon/favicon.ico" />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
+          />
+          <link rel="manifest" href="/site.webmanifest" />
+        </head>
         <body>
           <StoreProvider>
             <NextIntlClientProvider locale={locale} messages={messages.data}>
-              <AntdRegistry>{children}</AntdRegistry>
+              <AntdRegistry>
+                <Favicon />
+                {children}
+              </AntdRegistry>
             </NextIntlClientProvider>
           </StoreProvider>
         </body>
@@ -58,8 +78,25 @@ export default async function LocaleLayout({
   } else {
     return (
       <html>
+        <head>
+          <link
+            rel="icon"
+            type="image/png"
+            href="/icon/favicon-96x96.png"
+            sizes="96x96"
+          />
+          <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
+          <link rel="shortcut icon" href="/icon/favicon.ico" />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
+          />
+          <link rel="manifest" href="/site.webmanifest" />
+        </head>
         <body>
           {" "}
+          <Favicon />
           <Loader />{" "}
         </body>{" "}
       </html>

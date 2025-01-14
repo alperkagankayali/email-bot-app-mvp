@@ -1,9 +1,9 @@
 {
   "pages": {
-    "title1": "Email Bot MVP",
+    "title1": "prePhish",
     "description": "Önder",
     "login-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit suspendisse.",
-    "login-title": "Sign In to Email Bot MVP",
+    "login-title": "Sign In to prePhish",
     "login-otherAccount": "Don’t have any account?",
     "login-emailInput": "E-mail",
     "login-passwordInput": "Password",
@@ -19,8 +19,8 @@
     "menu-others": "Others",
     "login-failed": "Login Failed",
     "login-failedDesc": "Please check your email or password.",
-    "name": "Email Bot MVP",
+    "name": "prePhish",
     "menu-mail": "Email Templates",
-    "title": "Email Bot MVP"
+    "title": "prePhish"
   }
 }

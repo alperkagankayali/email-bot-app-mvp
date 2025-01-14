@@ -65,7 +65,7 @@ const VideoList: React.FC = () => {
       <div>
         <div className="flex justify-end ">
           <Link href="/dashboard/academy/video/add">
-            <Button type="primary"> {t("menu-academy-video-add")}</Button>
+            <Button type="primary" className="!bg-[#181140] w-full"> {t("menu-academy-video-add")}</Button>
           </Link>
         </div>
         <div>

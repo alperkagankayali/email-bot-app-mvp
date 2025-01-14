@@ -61,7 +61,7 @@ const QuizList: React.FC = () => {
       <div>
         <div className="flex justify-end ">
           <Link href="/dashboard/academy/quiz/add">
-            <Button type="primary"> {t("menu-academy-quiz-add")}</Button>
+            <Button type="primary" className="!bg-[#181140] w-full"> {t("menu-academy-quiz-add")}</Button>
           </Link>
         </div>
         <div>

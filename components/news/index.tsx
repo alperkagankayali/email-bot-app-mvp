@@ -52,7 +52,7 @@ const NewsList: React.FC = () => {
     <div>
       <div className="flex justify-between w-full items-center mb-4">
         <Link href="/dashboard/news/add">
-          <Button type="primary"> {t("menu-news-add")}</Button>
+          <Button type="primary" className="!bg-[#181140] w-full"> {t("menu-news-add")}</Button>
         </Link>
         <span className="ml-2">Total items</span>
       </div>

@@ -115,7 +115,7 @@ const ScenarioList: React.FC = () => {
         <div>
           <Link
             href={"/dashboard/scenario/add"}
-            className="bg-[#1677ff] text-white px-4 py-2 rounded-md"
+            className="bg-[#181140] text-white px-4 py-2 rounded-md"
           >
             {t("menu-scenario-add")}
           </Link>

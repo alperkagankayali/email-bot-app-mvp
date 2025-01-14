@@ -10,18 +10,14 @@ import { useRouter } from "@/i18n/routing";
 import CampaignScenarioList from "./campaignScenarioList";
 import EducationListRadio from "../education/educationListRadio";
 import { getEducationListRelationship } from "@/services/service/educationService";
-import { IEducationList } from "@/types/educationListType";
 import ResponsiveSlider from "@/components/slider";
-import { ICourse } from "@/types/courseType";
 
 const PhishingCampaignSteps: React.FC = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [relationEducation, setRelationEducation] = useState<string[]>([]);
-  const [relationEducationList, setRelationEducationList] = useState<
-    IEducationList[]
-  >([]);
+  const [relationEducationList, setRelationEducationList] = useState<any[]>([]);
   const [selectEducation, setSelectEducation] = useState<string>("");
   const [targetKeys, setTargetKeys] = useState<TransferProps["targetKeys"]>([]);
   const [info, setInfo] = useState<any>({});
@@ -48,7 +44,7 @@ const PhishingCampaignSteps: React.FC = () => {
       fetchRelationEducation();
     }
   }, [current]);
-console.log("relationEducationList",relationEducationList)
+
   const steps = [
     {
       title: "Campaign Info Form",
@@ -99,9 +95,20 @@ console.log("relationEducationList",relationEducationList)
                 selected={selectEducation}
                 setSelected={setSelectEducation}
               />
-              <ResponsiveSlider slidesToShow={4}>
-                {relationEducationList.map((item,index:number) => {
-                  return <div key={item._id}> <span>{index}</span>{(item.educations as any).title}</div>;
+              <ResponsiveSlider
+                selected={selectEducation}
+                setSelected={setSelectEducation}
+                relationEducationList={relationEducationList}
+                slidesToShow={5}
+              >
+                {relationEducationList.map((item, index: number) => {
+                  return (
+                    <div key={item._id}>
+                      {" "}
+                      <span>{index}</span>
+                      {(item.educations as any).title}
+                    </div>
+                  );
                 })}
               </ResponsiveSlider>
             </>

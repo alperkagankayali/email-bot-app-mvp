@@ -273,8 +273,7 @@ const menuGroups = [
       {
         icon: <BoxPlotOutlined />,
         label: "menu-campaign",
-        route: "/dashboard/campaign",
-        children: [],
+        route: "/dashboard/campaign"
       },
     ],
   },

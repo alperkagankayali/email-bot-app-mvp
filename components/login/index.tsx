@@ -197,21 +197,21 @@ export default function Login({ locale }: IProps) {
                       <Form.Item>
                         <Button
                           htmlType="submit"
-                          className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
+                          className="w-full cursor-pointer rounded-lg border !border-[#181140] !bg-[#181140] !p-7 !text-white transition hover:bg-opacity-90"
                         >
                           {t("login-loginButton")}
                         </Button>
                       </Form.Item>
                     </div>
                   </div>
-                  <div className="mt-6 text-center">
+                  {/* <div className="mt-6 text-center">
                     <p>
                       {t("login-otherAccount") + " "}
                       <Link href="/auth/signup" className="text-primary">
                         {t("login-signUpButton")}
                       </Link>
                     </p>
-                  </div>
+                  </div> */}
                 </Form>
               </div>
             </div>

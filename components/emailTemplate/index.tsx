@@ -62,7 +62,7 @@ const EmailTemplateList: React.FC = () => {
     <div className="flex flex-col items-start">
       <Link
         href={"/dashboard/scenario/email-templates/add"}
-        className="bg-[#1677ff] text-white px-4 py-2 rounded-md"
+        className="bg-[#181140] text-white px-4 py-2 rounded-md"
       >
         {t("email-template-add")}
       </Link>

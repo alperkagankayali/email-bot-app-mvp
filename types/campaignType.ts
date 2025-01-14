@@ -23,4 +23,5 @@ export interface ICampaign {
   isEducation: boolean;
   scenarioType: IScenarioType;
   availableDate: number;
+  reminderDate: number;
 }

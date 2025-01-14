@@ -51,7 +51,7 @@ const LandingPageList: React.FC = () => {
     <div className="flex flex-col items-start">
       <Link
         href={"/dashboard/scenario/landing-page/add"}
-        className="bg-[#1677ff] text-white px-4 py-2 rounded-md"
+        className="bg-[#181140] text-white px-4 py-2 rounded-md"
       >
         {t("landing-page-add")}
       </Link>

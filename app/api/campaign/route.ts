@@ -22,10 +22,11 @@ export async function GET(request: Request) {
         return verificationResult; // 401 döndürecek
       } else {
         if (!!id) {
-          const campaign = await Campaign.findById(id).populate({
-            path: "scenarioType",
-            select: "title", // Gerekli alanları seç
-          });
+          const campaign = await Campaign.findById(id)
+          // .populate({
+          //   path: "scenarioType",
+          //   select: "title", // Gerekli alanları seç
+          // });
 
           return NextResponse.json(
             {

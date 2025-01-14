@@ -5,9 +5,9 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import ScenarioList from "@/components/scenario";
 
 export const metadata: Metadata = {
-  title: "Next.js Chart | TailAdmin - Next.js Dashboard Template",
+  title: "Next.js Chart | prePhish - Next.js Dashboard Template",
   description:
-    "This is Next.js Chart page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+    "This is Next.js Chart page for prePhish - Next.js Tailwind CSS Admin Dashboard Template",
 };
 
 const Scenario: React.FC = async () => {

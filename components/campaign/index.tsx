@@ -202,7 +202,7 @@ const CampaignList: React.FC = () => {
           <span></span>
           <div className="flex flex-col">
             <Link href="/dashboard/campaign/add">
-              <Button type="primary"> {t("menu-campaign-add")}</Button>
+              <Button type="primary" className="!bg-[#181140] w-full"> {t("menu-campaign-add")}</Button>
             </Link>
             <Select
               className="!mt-4 w-40"

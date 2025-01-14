@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="76.65" height="75.93"><svg id="SvgjsSvg1003" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76.65 75.93">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #171140;
+      }
+    </style>
+  </defs>
+  <g id="SvgjsG1002" data-name="Layer 1">
+    <g>
+      <path class="cls-1" d="M52.25,30.34h-8.37l.2-15h7.91c4.6,0,7.22,2.36,7.22,7.46,0,5.37-3.18,7.54-6.95,7.54Z"></path>
+      <path class="cls-1" d="M76.65,5.97l-.09,64.07c-.02,5.24-6.36,7.86-10.06,4.16l-22.36-22.41-.2-14.36h7.59c10.66,0,17.04-5.44,17.04-14.82s-6.19-14.36-16.97-14.36h-16.85c-.32,0-.59.25-.59.57l.32,21.77-.16,11.37L2.46,10.04C-1.25,6.33,1.38,0,6.62,0l64.14.09c3.25,0,5.88,2.63,5.88,5.88Z"></path>
+      <path class="cls-1" d="M33.26,38.63l-32.13-.71c-.99-.02-1.5,1.18-.8,1.88l32.8,32.84c.7.7,1.9.19,1.88-.8l-.67-32.13c-.01-.59-.49-1.06-1.08-1.08Z"></path>
+    </g>
+  </g>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>

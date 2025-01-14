@@ -243,7 +243,7 @@ const EducationList: React.FC = () => {
           <span></span>
         )}
         <Link href="/dashboard/education/add">
-          <Button type="primary"> {t("menu-education-add")}</Button>
+          <Button type="primary" className="!bg-[#181140] w-full"> {t("menu-education-add")}</Button>
         </Link>
       </div>
       <div className="flex justify-between">

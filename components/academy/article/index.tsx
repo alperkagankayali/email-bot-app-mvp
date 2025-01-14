@@ -63,7 +63,7 @@ const ArticleList: React.FC = () => {
       <div>
         <div className="flex justify-end ">
           <Link href="/dashboard/academy/article/add">
-            <Button type="primary"> {t("menu-academy-article-add")}</Button>
+            <Button type="primary" className="!bg-[#181140] w-full"> {t("menu-academy-article-add")}</Button>
           </Link>
         </div>
         <div>

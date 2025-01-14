@@ -1,44 +1,17 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0 8.42105C0 3.77023 3.77023 0 8.42105 0H23.5789C28.2298 0 32 3.77023 32 8.42105V23.5789C32 28.2298 28.2298 32 23.5789 32H8.42105C3.77023 32 0 28.2298 0 23.5789V8.42105Z" fill="#3C50E0"/>
-<g filter="url(#filter0_d_521_14078)">
-<path d="M8.42139 8.42127C8.42139 7.49111 9.17543 6.73706 10.1056 6.73706V6.73706C11.0358 6.73706 11.7898 7.49111 11.7898 8.42127V23.5792C11.7898 24.5093 11.0358 25.2634 10.1056 25.2634V25.2634C9.17543 25.2634 8.42139 24.5093 8.42139 23.5792V8.42127Z" fill="white"/>
-</g>
-<g opacity="0.9" filter="url(#filter1_d_521_14078)">
-<path d="M14.7368 15.1576C14.7368 14.2274 15.4909 13.4734 16.421 13.4734V13.4734C17.3512 13.4734 18.1052 14.2274 18.1052 15.1576V23.5786C18.1052 24.5088 17.3512 25.2629 16.421 25.2629V25.2629C15.4909 25.2629 14.7368 24.5088 14.7368 23.5786V15.1576Z" fill="white"/>
-</g>
-<g opacity="0.7" filter="url(#filter2_d_521_14078)">
-<path d="M21.0522 10.9469C21.0522 10.0167 21.8063 9.2627 22.7365 9.2627V9.2627C23.6666 9.2627 24.4207 10.0167 24.4207 10.9469V23.5785C24.4207 24.5086 23.6666 25.2627 22.7365 25.2627V25.2627C21.8063 25.2627 21.0522 24.5086 21.0522 23.5785V10.9469Z" fill="white"/>
-</g>
-<defs>
-<filter id="filter0_d_521_14078" x="7.42139" y="6.23706" width="5.36865" height="20.5264" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="0.5"/>
-<feGaussianBlur stdDeviation="0.5"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_521_14078"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_521_14078" result="shape"/>
-</filter>
-<filter id="filter1_d_521_14078" x="13.7368" y="12.9734" width="5.36865" height="13.7896" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="0.5"/>
-<feGaussianBlur stdDeviation="0.5"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_521_14078"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_521_14078" result="shape"/>
-</filter>
-<filter id="filter2_d_521_14078" x="20.0522" y="8.7627" width="5.36865" height="18" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="0.5"/>
-<feGaussianBlur stdDeviation="0.5"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_521_14078"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_521_14078" result="shape"/>
-</filter>
-</defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76.65 75.93">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #171140;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <path class="cls-1" d="M52.25,30.34h-8.37l.2-15h7.91c4.6,0,7.22,2.36,7.22,7.46,0,5.37-3.18,7.54-6.95,7.54Z"/>
+      <path class="cls-1" d="M76.65,5.97l-.09,64.07c-.02,5.24-6.36,7.86-10.06,4.16l-22.36-22.41-.2-14.36h7.59c10.66,0,17.04-5.44,17.04-14.82s-6.19-14.36-16.97-14.36h-16.85c-.32,0-.59.25-.59.57l.32,21.77-.16,11.37L2.46,10.04C-1.25,6.33,1.38,0,6.62,0l64.14.09c3.25,0,5.88,2.63,5.88,5.88Z"/>
+      <path class="cls-1" d="M33.26,38.63l-32.13-.71c-.99-.02-1.5,1.18-.8,1.88l32.8,32.84c.7.7,1.9.19,1.88-.8l-.67-32.13c-.01-.59-.49-1.06-1.08-1.08Z"/>
+    </g>
+  </g>
 </svg>
