@@ -2,9 +2,13 @@
 import { useEffect, useState } from "react";
 
 const Favicon: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
+  const [isDarkMode, setIsDarkMode] = useState<any>();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsDarkMode(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");

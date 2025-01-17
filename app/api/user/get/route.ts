@@ -12,6 +12,7 @@ export async function GET(request: Request) {
     await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
+    const authorType = searchParams.get("authorType");
     const isSelectUser = JSON.parse(
       searchParams.get("isSelectUser") ?? "false"
     );
@@ -51,11 +52,11 @@ export async function GET(request: Request) {
       ) {
         const userTotal = await User.countDocuments({
           company: id,
-          role: { $ne: "admin" },
+          role: { $ne: authorType },
         });
         const files = await User.find({
           company: id,
-          role: { $ne: "admin" },
+          role: { $ne: authorType },
         }).populate({
           path: "company",
           model: Company,
@@ -64,7 +65,7 @@ export async function GET(request: Request) {
           {
             $match: {
               company: new Types.ObjectId(id),
-              role: { $ne: "admin" }, // admin rolünü hariç tut
+              role: { $ne: authorType }, // admin rolünü hariç tut
             },
           },
           {

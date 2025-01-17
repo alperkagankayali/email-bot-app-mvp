@@ -146,6 +146,7 @@ const SelectUserForm: React.FC<IProps> = ({ targetKeys, setTargetKeys }) => {
     const fetchUsers = async () => {
       const res: any = await getUserById(currentUser?.companyId ?? "", {
         isSelectUser: true,
+        authorType: "admin",
       });
       if (res.success) {
         setDepartment(
@@ -181,8 +182,8 @@ const SelectUserForm: React.FC<IProps> = ({ targetKeys, setTargetKeys }) => {
     marginBottom: 24,
     background: token.colorFillAlter,
     borderRadius: token.borderRadiusLG,
-    textAlign:"left",
-    justifyContent: "flex-start", 
+    textAlign: "left",
+    justifyContent: "flex-start",
     border: "none",
   };
 

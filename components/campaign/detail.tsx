@@ -32,12 +32,14 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../common/Loader";
+import TestCampaign from "./campaignDetail/testCampaign";
 type IProps = {
   id?: string;
 };
 const CampaignDetailCom: React.FC<IProps> = ({ id }) => {
   const t = useTranslations("pages");
   const [data, setData] = useState<ICampaign>();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!!id) {
@@ -51,7 +53,6 @@ const CampaignDetailCom: React.FC<IProps> = ({ id }) => {
     }
   }, [id]);
 
-  console.log("data", data, data?.type, data?.scenarioType.title);
   if (!!data) {
     return (
       <div>
@@ -84,65 +85,14 @@ const CampaignDetailCom: React.FC<IProps> = ({ id }) => {
               className="mr-2 cursor-pointer"
               title="Campaign"
             >
-              <CompassFilled className="!text-3xl" />
+              <CompassFilled
+                onClick={() => setOpen(true)}
+                className="!text-3xl"
+              />
             </Popover>
           </div>
         </div>
-        {/* <List bordered>
-          <List.Item>
-            <List.Item.Meta
-              avatar={
-                data.type === "phishing" ? (
-                  <MailOutlined
-                    className="text-[40px] !text-[#3d50e0]"
-                    color="#3d50e0"
-                  />
-                ) : data.type === "education" ? (
-                  <BankOutlined
-                    className="text-[40px] !text-[#b328df]"
-                    color="#b328df"
-                  />
-                ) : (
-                  <BookOutlined
-                    className="text-[40px] !text-[#ce192a]"
-                    color="#ce192a"
-                  />
-                )
-              }
-              title={
-                <Link href={"/dashboard/campaign/" + data._id}>
-                  {data.title}
-                </Link>
-              }
-              description={data.description}
-            />
-            <div className="flex datas-center">
-              <div className="mr-6">
-                <p
-                  className={clsx("capitalize font-bold text-base", {
-                    "text-[#3d50e0]": data.type === "phishing",
-                    "text-[#b328df]": data.type === "education",
-                    "!text-[#ce192a]": data.type === "news",
-                  })}
-                >
-                  {data.type}
-                </p>
-              </div>
-              <div className="flex flex-col">
-                <p>
-                  {data.isActive ? (
-                    <span className="text-red-700">Active</span>
-                  ) : (
-                    "Passive"
-                  )}
-                </p>
-                <p>StartDate: </p>
-                <p>EndDate: </p>
-              </div>
-            </div>
-          </List.Item>
-        </List> */}
-        <div className="grid grid-cols-3 gap-10">
+        <div className="grid grid-cols-3 gap-10 bg-white p-4 rounded-lg">
           <div className="flex flex-col justify-center items-center border p-4 rounded-lg">
             <div className="flex flex-row-reverse mb-4">
               <Tooltip title="prompt text">
@@ -232,6 +182,7 @@ const CampaignDetailCom: React.FC<IProps> = ({ id }) => {
             />
           </div>
         </div>
+        {open && <TestCampaign open={open} setOpen={setOpen} />}
       </div>
     );
   } else return <Loader />;
