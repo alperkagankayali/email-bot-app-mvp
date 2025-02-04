@@ -14,6 +14,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     const jwtKey: string = process.env.JWT_SCREET_KEY as string;
+
     if (!!token) {
       const user = jwt.verify(token.split(" ")[1], jwtKey) as IUserJWT;
       if (user.role === "admin") {
@@ -58,11 +59,8 @@ export async function POST(request: Request) {
             !!body.password ? body.password : uuidv4().slice(0, 10),
             10
           );
-          const findUser = await User.find({
-            company: body.company,
-            role: "admin",
-          });
-          if (findUser.length > 0 || body.role === "admin") {
+
+          if (body.role === "admin") {
             const findCompany = await Company.findOne({ _id: body.company });
             const some = findCompany?.emailDomainAddress?.includes(
               body?.email?.split("@")[1]
@@ -89,13 +87,21 @@ export async function POST(request: Request) {
               },
               { status: 201 }
             );
+          } else {
+            const userCreate = new User({
+              ...body,
+              company: body.company,
+              password: passwordHash,
+            });
+            const userCreated = await userCreate.save();
+            return NextResponse.json(
+              {
+                ...message201,
+                data: userCreated,
+              },
+              { status: 201 }
+            );
           }
-          return NextResponse.json(
-            {
-              ...message403,
-            },
-            { status: 403 }
-          );
         }
         return NextResponse.json(
           {
@@ -113,6 +119,15 @@ export async function POST(request: Request) {
       );
     }
   } catch (error: any) {
+    if (error.code === 11000) {
+      return NextResponse.json(
+        {
+          ...message500,
+          message: "Bu email adresiyle zaten bir kullanıcı var",
+        },
+        { status: 500 }
+      );
+    }
     return NextResponse.json({ ...message500 }, { status: 500 });
   }
 }

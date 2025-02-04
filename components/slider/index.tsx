@@ -74,7 +74,7 @@ const ResponsiveSlider: React.FC<Props> = ({
   
   return (
     <div className="slider-container w-full h-115">
-      <h2 className="text-3xl text-black-2 font-bold">Related similar educations</h2>
+      <h2 className="text-3xl text-black-2 font-bold">Recommended Educations</h2>
       <Slider {...settings} className="!h-115">
         {relationEducationList.map((item, index: number) => {
           return (

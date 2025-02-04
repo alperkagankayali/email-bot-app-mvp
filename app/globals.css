@@ -82,7 +82,9 @@ input:-webkit-autofill:active {
 .ant-card-body {
   height: 100%;
 }
-
+.ant-ribbon-wrapper{
+  width: 240px;
+}
 .campaign-table .active td {
   /* border-color: green !important; */
   border-bottom: 1px solid green !important;

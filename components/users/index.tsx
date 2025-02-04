@@ -146,8 +146,7 @@ const UserTable = ({ id }: IProps) => {
     const findUser = arrUser?.some((e) => e.user.id === id);
     if (arrUser.length > 3) {
       notification.error({
-        message:
-         t("switch-account-max-count-error"),
+        message: t("switch-account-max-count-error"),
       });
     } else if (findUser) {
       notification.error({
@@ -327,7 +326,7 @@ const UserTable = ({ id }: IProps) => {
     <div>
       <div className="flex mb-2 items-center justify-between">
         <Link
-          href={"/dashboard/users/add"}
+          href={"/dashboard/users/add?companyId=" + id}
           className="bg-[#181140] text-white px-4 py-2 rounded-md"
         >
           {t("menu-add-user")}

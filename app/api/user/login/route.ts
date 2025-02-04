@@ -48,96 +48,110 @@ export async function POST(request: Request, res: Response) {
     const cookieKey: string = process.env.COOKIE_SCREET_KEY as string;
 
     //lissans süresine bakacağız ona göre login edeceğiz
-
     if (
-      superAdmin !== null &&
-      bcrypt.compareSync(body.password, superAdmin.password)
+      user?.company?.lisanceEndDate &&
+      newDate > user.company.lisanceEndDate
     ) {
-      const codec = createCodec(cookieKey);
-      const token = jwt.sign(
-        {
-          email: superAdmin?.email,
-          id: superAdmin?._id,
-          role: "superadmin",
-          language: superAdmin.language,
-          nameSurname: superAdmin.nameSurname,
-        },
-        jwtKey,
-        { expiresIn: "10d" }
-      );
-      const userSesion = { isLoggedIn: true, token, ...user };
-      const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
-      cookies().set("currentUser", encryptedSessionData, cookiesOpt);
-      cookies().set("token", token, cookiesOpt);
-      return NextResponse.json(
-        {
-          ...message200,
-          data: {
-            token: token,
-            type: "Bearer",
-            user: { ...(superAdmin as any)?.toObject(), password: "" },
-          },
-        },
-        { status: 200 }
-      );
-    } else if (
-      user !== null &&
-      !user.isDelete &&
-      bcrypt.compareSync(body.password, user.password)
-    ) {
-      const codec = createCodec(cookieKey);
-      const token = jwt.sign(
-        {
-          email: user?.email,
-          password: user?.password,
-          id: user?._id,
-          department: user.department,
-          language: user.language,
-          nameSurname: user.nameSurname,
-          role: user.role,
-          companyName: user?.company?.companyName,
-          companyId: user?.company?._id,
-          lisanceStartDate: user?.company?.lisanceStartDate,
-          lisanceEndDate: user?.company?.lisanceEndDate,
-          companyLogo: user?.company?.logo,
-        },
-        jwtKey,
-        { expiresIn: "10d" }
-      );
-      const userSesion = { isLoggedIn: true, token, ...user };
-      const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
-      cookies().set("currentUser", encryptedSessionData, cookiesOpt);
-      cookies().set("token", token, cookiesOpt);
-      return NextResponse.json(
-        {
-          ...message200,
-          data: {
-            token: token,
-            type: "Bearer",
-            user: {
-              email: user?.email,
-              id: user?._id,
-              department: user.department,
-              language: user.language,
-              nameSurname: user.nameSurname,
-              role: user.role,
-              companyName: user?.company?.companyName,
-              companyId: user?.company?._id,
-              lisanceStartDate: user?.company?.lisanceStartDate,
-              lisanceEndDate: user?.company?.lisanceEndDate,
-              companyLogo: user?.company?.logo,
-            },
-          },
-        },
-        { status: 200 }
-      );
-    } else {
       return NextResponse.json(
         {
           ...message403,
+          code: 10,
+          message:
+            "Lisans süreniz dolmuştur lütfen firma yetkilisi ile iletişime geçiniz",
         },
         { status: 403 }
       );
+    } else {
+      if (
+        superAdmin !== null &&
+        bcrypt.compareSync(body.password, superAdmin.password)
+      ) {
+        const codec = createCodec(cookieKey);
+        const token = jwt.sign(
+          {
+            email: superAdmin?.email,
+            id: superAdmin?._id,
+            role: "superadmin",
+            language: superAdmin.language,
+            nameSurname: superAdmin.nameSurname,
+          },
+          jwtKey,
+          { expiresIn: "10d" }
+        );
+        const userSesion = { isLoggedIn: true, token, ...user };
+        const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
+        cookies().set("currentUser", encryptedSessionData, cookiesOpt);
+        cookies().set("token", token, cookiesOpt);
+        return NextResponse.json(
+          {
+            ...message200,
+            data: {
+              token: token,
+              type: "Bearer",
+              user: { ...(superAdmin as any)?.toObject(), password: "" },
+            },
+          },
+          { status: 200 }
+        );
+      } else if (
+        user !== null &&
+        !user.isDelete &&
+        bcrypt.compareSync(body.password, user.password)
+      ) {
+        const codec = createCodec(cookieKey);
+        const token = jwt.sign(
+          {
+            email: user?.email,
+            password: user?.password,
+            id: user?._id,
+            department: user.department,
+            language: user.language,
+            nameSurname: user.nameSurname,
+            role: user.role,
+            companyName: user?.company?.companyName,
+            companyId: user?.company?._id,
+            lisanceStartDate: user?.company?.lisanceStartDate,
+            lisanceEndDate: user?.company?.lisanceEndDate,
+            companyLogo: user?.company?.logo,
+          },
+          jwtKey,
+          { expiresIn: "10d" }
+        );
+        const userSesion = { isLoggedIn: true, token, ...user };
+        const encryptedSessionData = codec.encrypt(userSesion); // Encrypt your session data
+        cookies().set("currentUser", encryptedSessionData, cookiesOpt);
+        cookies().set("token", token, cookiesOpt);
+        return NextResponse.json(
+          {
+            ...message200,
+            data: {
+              token: token,
+              type: "Bearer",
+              user: {
+                email: user?.email,
+                id: user?._id,
+                department: user.department,
+                language: user.language,
+                nameSurname: user.nameSurname,
+                role: user.role,
+                companyName: user?.company?.companyName,
+                companyId: user?.company?._id,
+                lisanceStartDate: user?.company?.lisanceStartDate,
+                lisanceEndDate: user?.company?.lisanceEndDate,
+                companyLogo: user?.company?.logo,
+              },
+            },
+          },
+          { status: 200 }
+        );
+      } else {
+        return NextResponse.json(
+          {
+            ...message403,
+          },
+          { status: 403 }
+        );
+      }
     }
   } catch (error: any) {
     return NextResponse.json(

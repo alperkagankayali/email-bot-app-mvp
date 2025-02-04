@@ -3,6 +3,7 @@ export type IResponseType = {
   color: "danger" | "success";
   status: number;
   data: any;
-  success:boolean;
-  totalItems?:number
+  success: boolean;
+  totalItems?: number;
+  code?: number;
 };

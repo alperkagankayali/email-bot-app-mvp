@@ -1,6 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Badge, Card, Modal, notification, Popconfirm, Popover } from "antd";
+import {
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  Modal,
+  notification,
+  Pagination,
+  Popconfirm,
+  Popover,
+  Tag,
+} from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -19,7 +30,7 @@ import {
   EyeOutlined,
 } from "@ant-design/icons";
 import { Input, Select } from "antd";
-import type { GetProps } from "antd";
+import type { GetProps, PaginationProps } from "antd";
 import { useSearchParams } from "next/navigation";
 import { deleteScenario } from "@/services/service/scenarioService";
 
@@ -27,6 +38,11 @@ type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
 const { Option } = Select;
 const { Meta } = Card;
+
+const options = [
+  { label: "Global", value: "superadmin" },
+  { label: "Local", value: "User" },
+];
 
 const ScenarioList: React.FC = () => {
   const status = useSelector((state: RootState) => state.scenario.status);
@@ -52,6 +68,13 @@ const ScenarioList: React.FC = () => {
   });
   const [selectLanguage, setSelectLanguage] = useState("");
   const [selectScenarioType, setSelectSecenariType] = useState("");
+  const [filter, setFilter] = useState({
+    name: searchParams.get("name") ?? "",
+    scenarioType: searchParams.get("scenarioType") ?? "",
+    authorType: searchParams.get("authorType")?.split("&") ?? [],
+    language: searchParams.get("language") ?? "",
+  });
+  const [pageSize, setPageSize] = useState(8);
 
   useEffect(() => {
     if (status === "idle") {
@@ -65,20 +88,24 @@ const ScenarioList: React.FC = () => {
     }
   }, [scenarioTypeStatus, dispatch]);
 
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) => {
+  const onSearch = (value: any, event: any, info: any, name: string) => {
     const params = new URLSearchParams(searchParams);
     if (value.length > 3) {
-      params.set("name", value);
+      params.set(name, value);
     } else {
-      params.delete("name");
+      params.delete(name);
     }
     replace(`${pathname}?${params.toString()}`);
   };
 
-  const handleSelect = (value: string, type: string) => {
+  const handleSelect = (value: string | string[], type: string) => {
+    debugger;
     const params = new URLSearchParams(searchParams);
     if (value) {
-      params.set(type, value);
+      params.set(
+        type,
+        Array.isArray(value) ? value.join("&").replaceAll(" ", "") : value
+      );
     } else {
       params.delete(type);
     }
@@ -90,8 +117,9 @@ const ScenarioList: React.FC = () => {
       fetchScenario({
         name: searchParams.get("name") ?? "",
         language: searchParams.get("language") ?? "",
+        authorType: searchParams.get("authorType") ?? "",
         scenarioType: searchParams.get("scenarioType") ?? "",
-        limit: 10,
+        limit: pageSize,
         page: 1,
       })
     );
@@ -109,75 +137,98 @@ const ScenarioList: React.FC = () => {
     }
   };
 
+  const onChangePagitnation: PaginationProps["onChange"] = async (
+    page,
+    pageNumber
+  ) => {
+    dispatch(
+      fetchScenario({
+        limit: pageNumber,
+        page,
+        name: searchParams.get("name") ?? "",
+        language: searchParams.get("language") ?? "",
+        authorType: searchParams.get("authorType") ?? "",
+        scenarioType: searchParams.get("scenarioType") ?? "",
+      })
+    );
+    setPageSize(pageNumber);
+  };
+
   return (
     <div className="flex flex-col items-start">
-      <div className="flex justify-between w-full items-center">
-        <div>
-          <Link
-            href={"/dashboard/scenario/add"}
-            className="bg-[#181140] text-white px-4 py-2 rounded-md"
-          >
-            {t("menu-scenario-add")}
-          </Link>
-          <span className="ml-2">Total {totalItems} items</span>
-        </div>
-
-        {!!data && (
-          <div className="flex items-center">
-            <Search
-              placeholder={t("input-scenario-name")}
-              size="large"
-              className="!w-72 mr-4 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              allowClear
-              onSearch={onSearch}
-              enterButton
-            />
-            {!!scenarioType && (
-              <Select
-                size="large"
-                className="w-50 "
-                value={selectScenarioType}
-                placeholder={t("scenario-type")}
-                onChange={(value: string) => {
-                  setSelectSecenariType(value);
-                  handleSelect(value, "scenarioType");
-                }}
+      <div className="flex justify-between w-full items-center mb-4">
+        {!!filter.name || filter.language || filter.authorType ? (
+          <div className="flex">
+            {filter.authorType.length > 0 &&
+              filter.authorType.map((e) => (
+                <Tag
+                  bordered={false}
+                  key={e}
+                  onClose={(event) =>
+                    setFilter({
+                      ...filter,
+                      authorType: filter.authorType.filter(
+                        (element) => element !== e
+                      ),
+                    })
+                  }
+                  closable
+                >
+                  {e === "superadmin" ? "Global" : "Local"}
+                </Tag>
+              ))}
+            {!!filter.language && (
+              <Tag
+                bordered={false}
+                onClose={(event) =>
+                  setFilter({
+                    ...filter,
+                    language: filter.language,
+                  })
+                }
+                closable
               >
-                {scenarioType?.map((type) => {
-                  return (
-                    <Option
-                      key={type._id + type.title}
-                      value={type._id}
-                      required
-                    >
-                      {type.title}
-                    </Option>
-                  );
-                })}
-              </Select>
+                {filter.language}
+              </Tag>
             )}
-            <Select
-              size="large"
-              className="w-36 !ml-4"
-              placeholder="language"
-              value={selectLanguage}
-              onChange={(value: string) => {
-                setSelectLanguage(value);
-                handleSelect(value, "language");
-              }}
-            >
-              {languages.map((e) => {
-                return (
-                  <Option key={e.code} value={e._id}>
-                    {e.name}
-                  </Option>
-                );
-              })}
-            </Select>
+            {!!filter.name && (
+              <Tag
+                bordered={false}
+                onClose={(event) =>
+                  setFilter({
+                    ...filter,
+                    name: "",
+                  })
+                }
+                closable
+              >
+                {filter.name}
+              </Tag>
+            )}
+            {!!filter.scenarioType && (
+              <Tag
+                bordered={false}
+                onClose={(event) =>
+                  setFilter({
+                    ...filter,
+                    scenarioType: "",
+                  })
+                }
+                closable
+              >
+                {filter.scenarioType}
+              </Tag>
+            )}
             <Popover content={t("clear-filter")} title="">
               <DeleteFilled
                 className="ml-2 cursor-pointer"
                 onClick={() => {
+                  setFilter({
+                    authorType: [],
+                    name: "",
+                    scenarioType: "",
+                    language: "",
+                  });
                   setSelectSecenariType("");
                   setSelectLanguage("");
                   replace(`${pathname}`);
@@ -185,73 +236,170 @@ const ScenarioList: React.FC = () => {
               />
             </Popover>
           </div>
+        ) : (
+          <span></span>
         )}
+        <Link href="/dashboard/education/add">
+          <Button type="primary" className="!bg-[#181140] w-full">
+            {" "}
+            {t("menu-scenario-add")}
+          </Button>
+        </Link>
       </div>
-
-      <div className="grid grid-cols-4 gap-8 mt-4">
-        {data?.map((scenario) => {
-          const actions: React.ReactNode[] = [
-            <Link href={"/dashboard/scenario/update/" + scenario._id}>
-              <EditOutlined key="edit" />
-            </Link>,
-            <EyeOutlined
-              key="ellipsis"
-              onClick={() =>
-                setOpen({
-                  show: true,
-                  data: scenario.emailTemplate?.content ?? "",
-                })
-              }
-            />,
-            <Popconfirm
-              title={t("delete-document")}
-              description={t("delete-document-2")}
-              onConfirm={() => handleDeleteEmailTemplate(scenario._id)}
-              okText={t("yes-btn")}
-              cancelText={t("no-btn")}
-            >
-              <DeleteOutlined />
-            </Popconfirm>,
-          ];
-          return (
-            <Badge.Ribbon
-              className="card-title-ribbon"
-              color={scenario?.authorType === "superadmin" ? "green" : "red"}
-              text={scenario?.authorType === "superadmin" ? "Global" : "Local"}
-              key={scenario._id}
-            >
-              <Card
-                actions={actions}
-                key={scenario._id}
-                hoverable
-                loading={status === "loading"}
-                style={{ width: 240 }}
-                rootClassName="flex h-full"
-                className="flex flex-col "
-                cover={
-                  <Image
-                    width={240}
-                    height={120}
-                    className="h-30 object-contain bg-[#03162b]"
-                    alt={scenario.title}
-                    src={status === "loading" ? noImage : scenario.img}
-                  />
-                }
+      <div className="flex w-full">
+        <div className="">
+          {!!data && (
+            <div className="flex flex-col items-start gap-5">
+              <Search
+                placeholder={t("input-scenario-name")}
+                size="large"
+                className="!w-72 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                allowClear
+                onSearch={(value: any, event: any, info: any) => {
+                  setFilter({ ...filter, name: value });
+                  onSearch(value, event, info, "name");
+                }}
+                enterButton
+              />
+              {!!scenarioType && (
+                <Select
+                  size="large"
+                  className="w-full "
+                  value={selectScenarioType}
+                  placeholder={t("scenario-type")}
+                  onChange={(value: string) => {
+                    debugger;
+                    setFilter({ ...filter, scenarioType: value });
+                    setSelectSecenariType(value);
+                    handleSelect(value, "scenarioType");
+                  }}
+                >
+                  {scenarioType?.map((type) => {
+                    return (
+                      <Option
+                        key={type._id + type.title}
+                        value={type._id}
+                        required
+                      >
+                        {type.title}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              )}
+              <Select
+                size="large"
+                className="w-full"
+                placeholder="language"
+                value={selectLanguage}
+                onChange={(value: string) => {
+                  setSelectLanguage(value);
+                  setFilter({ ...filter, language: value });
+                  handleSelect(value, "language");
+                }}
               >
-                <Meta
-                  className="card-meta"
-                  title={scenario.title}
-                  description={
-                    <div className="">
-                      <p>{scenario.scenarioType.title}</p>
-                      <p>{scenario?.language.name}</p>
-                    </div>
+                {languages.map((e) => {
+                  return (
+                    <Option key={e.code} value={e._id}>
+                      {e.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+              <Checkbox.Group
+                className="!my-4"
+                options={options}
+                value={filter.authorType}
+                onChange={(value: string[]) => {
+                  setFilter({ ...filter, authorType: value });
+                  handleSelect(value, "authorType");
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-4 gap-4 w-full pl-4">
+          {data?.map((scenario) => {
+            const actions: React.ReactNode[] = [
+              <Link href={"/dashboard/scenario/update/" + scenario._id}>
+                <EditOutlined key="edit" />
+              </Link>,
+              <EyeOutlined
+                key="ellipsis"
+                onClick={() =>
+                  setOpen({
+                    show: true,
+                    data: scenario.emailTemplate?.content ?? "",
+                  })
+                }
+              />,
+              <Popconfirm
+                title={t("delete-document")}
+                description={t("delete-document-2")}
+                onConfirm={() => handleDeleteEmailTemplate(scenario._id)}
+                okText={t("yes-btn")}
+                cancelText={t("no-btn")}
+              >
+                <DeleteOutlined />
+              </Popconfirm>,
+            ];
+            return (
+              <Badge.Ribbon
+                className="card-title-ribbon"
+                color={scenario?.authorType === "superadmin" ? "green" : "red"}
+                text={
+                  scenario?.authorType === "superadmin" ? "Global" : "Local"
+                }
+                key={scenario._id}
+              >
+                <Card
+                  actions={actions}
+                  key={scenario._id}
+                  hoverable
+                  loading={status === "loading"}
+                  style={{ width: 240 }}
+                  rootClassName="flex h-full"
+                  className="flex flex-col "
+                  cover={
+                    <Image
+                      width={240}
+                      height={120}
+                      className="h-30 object-contain bg-[#03162b]"
+                      alt={scenario.title}
+                      src={status === "loading" ? noImage : scenario.img}
+                    />
                   }
-                />
-              </Card>
-            </Badge.Ribbon>
-          );
-        })}
+                >
+                  <Meta
+                    className="card-meta"
+                    title={scenario.title}
+                    description={
+                      <div className="">
+                        <p>{scenario.scenarioType.title}</p>
+                        <p>{scenario?.language.name}</p>
+                      </div>
+                    }
+                  />
+                </Card>
+              </Badge.Ribbon>
+            );
+          })}
+        </div>
+      </div>
+      <div className="mt-10 mb-20 w-full">
+        {!!totalItems && (
+          <Pagination
+            onChange={onChangePagitnation}
+            total={totalItems}
+            pageSize={pageSize}
+            showTotal={(total) => `Total ${total} items`}
+            showSizeChanger
+            defaultPageSize={8}
+            align="center"
+            pageSizeOptions={[8, 16, 24]}
+          />
+        )}
       </div>
       <Modal
         title=""

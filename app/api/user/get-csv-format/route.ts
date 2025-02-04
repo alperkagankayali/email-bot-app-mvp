@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic"; // <- add this to force dynamic render
 import jwt from "jsonwebtoken";
 import { ISuperAdminJWT, IUserJWT } from "../login/route";
 import { message200, message401, message500 } from "@/constants";
-import { json2csv } from 'json-2-csv';
+import { json2csv } from "json-2-csv";
 
 export async function GET(request: Request) {
   try {
@@ -23,7 +23,6 @@ export async function GET(request: Request) {
               email: "",
               language: "",
               department: "",
-              company: user.companyId,
               role: "",
             },
           ],
@@ -50,7 +49,6 @@ export async function GET(request: Request) {
                 email: "",
                 language: "",
                 department: "",
-                company: id,
                 role: "",
               },
             ],

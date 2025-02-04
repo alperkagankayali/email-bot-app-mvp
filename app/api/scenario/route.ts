@@ -24,9 +24,10 @@ export async function GET(request: Request) {
     const scenarioType = searchParams.get("scenarioType") ?? "";
     const skip = (page - 1) * limit; //
     const id = searchParams.get("id");
+    const authorType = searchParams.get("authorType");
 
     if (!!token) {
-      const verificationResult = await verifyToken(token.split(" ")[1]);
+      const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
       } else {
@@ -83,15 +84,28 @@ export async function GET(request: Request) {
             isDelete: false,
           });
           const filter: any = {};
+          if (!!authorType) {
+            if (authorType.split("&").length > 1) {
+              filter["$or"] = [
+                { company: verificationResult?.companyId },
+                { authorType: "superadmin" },
+              ];
+            } else {
+              filter.authorType = authorType;
+            }
+          }
           filter.isDelete = false;
           !!scenarioType && (filter.scenarioType = scenarioType);
           !!language && (filter.language = language);
           !!name && (filter.title = { $regex: name, $options: "i" });
-          const scenario = await Scenario.find(filter).populate([
-            { path: "emailTemplate", model: EmailTemplate },
-            { path: "scenarioType", model: ScenarioType },
-            { path: "language", model: Languages, select: ["code", "name"] },
-          ]);
+          const scenario = await Scenario.find(filter)
+            .populate([
+              { path: "emailTemplate", model: EmailTemplate },
+              { path: "scenarioType", model: ScenarioType },
+              { path: "language", model: Languages, select: ["code", "name"] },
+            ])
+            .skip(skip)
+            .limit(limit);
           return NextResponse.json(
             {
               ...message200,

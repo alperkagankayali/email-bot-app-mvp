@@ -1,6 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Drawer, Modal, notification, Space, Table, Tooltip } from "antd";
+import {
+  Button,
+  Drawer,
+  Modal,
+  notification,
+  Space,
+  Table,
+  Tooltip,
+} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchScenario, fetchScenarioType } from "@/redux/slice/scenario";
@@ -149,7 +157,16 @@ const EducationRelationshipTable: React.FC = () => {
       render: (education, record) => {
         // Eğer education list boş değilse lengthini üzerine tıklanınca liste olarak göster modal ile
         if (education.length === 0) {
-          return <span>0</span>;
+          return (
+            <Tooltip title="Click to see education list and delete education in scenario list">
+              <Button
+                type="default"
+                loading={record.key === scenarioId && loadingButton}
+              >
+                {education.length}
+              </Button>
+            </Tooltip>
+          );
         }
         return (
           <Tooltip title="Click to see education list and delete education in scenario list">
@@ -174,11 +191,9 @@ const EducationRelationshipTable: React.FC = () => {
       key: "action",
       render: (_, record) => (
         <div className="flex space-x-4 items-center">
-          <Link href={"/dashboard/scenario/update/" + record.key}>
-            <EditOutlined key="edit" />
-          </Link>
           <EyeOutlined
             key="ellipsis"
+            className="mr-5"
             onClick={() =>
               setOpen({
                 show: true,
@@ -193,7 +208,7 @@ const EducationRelationshipTable: React.FC = () => {
               showDrawer(record.education);
             }}
           >
-            Education Relationship{" "}
+            Add Education Relationship{" "}
           </Button>
         </div>
       ),
@@ -274,7 +289,6 @@ const EducationRelationshipTable: React.FC = () => {
           }}
           extra={
             <Space>
-              <Button onClick={onClose}>Cancel</Button>
               <Button
                 loading={loadingButton}
                 onClick={() => onSubmit(false)}

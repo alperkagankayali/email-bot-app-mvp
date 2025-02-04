@@ -21,16 +21,13 @@ const AddUser = () => {
   const t = useTranslations("pages");
   const languages = useSelector((state: RootState) => state.language.language);
   const status = useSelector((state: RootState) => state.language.status);
-  const companies = useSelector(
-    (state: RootState) => state.companies.companies
-  );
   const companyStatus = useSelector(
     (state: RootState) => state.companies.status
   );
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
   const searchParams = useSearchParams();
-  const company = searchParams.get("company");
+  const company = searchParams.get("companyId");
   const role = searchParams.get("role");
 
   useEffect(() => {
@@ -39,16 +36,13 @@ const AddUser = () => {
     }
   }, [status, dispatch]);
 
-  useEffect(() => {
-    if (!!user && user.role === "superadmin" && companyStatus === "idle") {
-      dispatch(fetchCompanies());
-    }
-  }, [companyStatus, dispatch, user]);
-
   const onFinish: FormProps<IUser>["onFinish"] = async (values) => {
+    (values.company as any) =
+      user?.role === "superadmin" ? (company as string) : user?.companyId;
     const res = await createUser(values);
     if (res.success) {
       // Mail at
+      debugger;
       const result = await sendVerificationEmail(
         res.data?._id ?? "",
         {
@@ -120,29 +114,7 @@ const AddUser = () => {
           </Form.Item>
         </div>
       </div>
-      {!!user && companies?.length > 0 && (
-        <div className="mb-4">
-          <label className="mb-2.5 block font-medium text-black dark:text-white">
-            {t("user-table-company")}
-          </label>
-          <div className="relative">
-            <Form.Item<IUser> name="company">
-              <Select size="large" defaultValue={company}>
-                {companies?.map((company) => {
-                  return (
-                    <Option
-                      key={company._id + company.companyName}
-                      value={company._id}
-                    >
-                      {company.companyName}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </div>
-        </div>
-      )}
+
       <div className="mb-4">
         <label className="mb-2.5 block font-medium text-black dark:text-white">
           {t("user-table-role")}
@@ -177,7 +149,7 @@ const AddUser = () => {
               htmlType="submit"
               className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
             >
-               {t("save-btn")}
+              {t("save-btn")}
             </Button>
           </Form.Item>
         </div>

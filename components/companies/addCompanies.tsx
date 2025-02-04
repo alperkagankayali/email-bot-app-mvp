@@ -8,6 +8,7 @@ import {
   Select,
   DatePicker,
   message,
+  notification,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -86,42 +87,45 @@ const AddCompanies = ({
   }, [isEditig]);
 
   const onFinish: FormProps<DataType>["onFinish"] = async (values) => {
-    const body = {
-      companyName: values.companyName,
-      logo: logo,
-      emailDomainAddress: values.emailDomainAddress,
-      lisanceStartDate: licanceDate[0],
-      lisanceEndDate: licanceDate[1],
-    };
-    if (isEditig.edit) {
-      const res = await updateCompany({ ...body, id: isEditig.data.key });
-      if (res.success) {
-        message.info(res.message);
-        setIsModalOpen(false);
-        form.resetFields();
-        handleAdd({
-          ...res.data,
-          key: res.data._id,
-        });
+    if (!!logo) {
+      const body = {
+        companyName: values.companyName,
+        logo: logo,
+        emailDomainAddress: values.emailDomainAddress,
+        lisanceStartDate: licanceDate[0],
+        lisanceEndDate: licanceDate[1],
+      };
+      if (isEditig.edit) {
+        const res = await updateCompany({ ...body, id: isEditig.data.key });
+        if (res.success) {
+          notification.info({ message: res.message });
+          setIsModalOpen(false);
+          form.resetFields();
+          setLicanceDate([])
+          handleAdd({
+            ...res.data,
+            key: res.data._id,
+          });
+        } else {
+          notification.info({ message: res.message, type: "info" });
+        }
       } else {
-        message.info(res.message);
+        const res = await createCompany(body);
+        if (res.success) {
+          notification.info({ message: res.message });
+          form.resetFields();
+          setIsModalOpen(false);
+          setLicanceDate([])
+          handleAdd({
+            ...res.data,
+            langKey: res.data._id,
+          });
+        } else {
+          notification.error({ message: res.message });
+        }
       }
     } else {
-      const res = await createCompany(body);
-      if (res.success) {
-        message.info(res.message);
-        form.resetFields();
-        router.push(
-          "/dashboard/uses/add?company=" + res?.data?._id + "&role=admin"
-        );
-        setIsModalOpen(false);
-        handleAdd({
-          ...res.data,
-          langKey: res.data._id,
-        });
-      } else {
-        message.info(res.message);
-      }
+      notification.error({ message: "Logo required" });
     }
   };
   const handleUploadFile = (x: string) => {
@@ -139,6 +143,7 @@ const AddCompanies = ({
           setLogo("");
           setisEditing({ edit: false, data: {} });
           form.resetFields();
+          setLicanceDate([])
           setIsModalOpen(false);
         }}
         footer={""}
@@ -155,7 +160,10 @@ const AddCompanies = ({
               {t("companies-name")}
             </label>
             <div className="relative">
-              <Form.Item<DataType> name="companyName">
+              <Form.Item<DataType>
+                name="companyName"
+                rules={[{ required: true, message: t("companies-name") }]}
+              >
                 <Input
                   size="large"
                   type="text"
@@ -182,10 +190,15 @@ const AddCompanies = ({
               {t("companies-licance-date")}
             </label>
             <div className="relative">
-              <Form.Item<DataType> name="lisanceStartDate">
+              <Form.Item<DataType>
+                name="lisanceStartDate"
+                rules={[
+                  { required: true, message: t("companies-licance-date") },
+                ]}
+              >
                 <RangePicker
                   defaultValue={
-                    licanceDate.length > 0
+                    licanceDate?.length > 0
                       ? ([dayjs(licanceDate[0]), dayjs(licanceDate[1])] as any)
                       : undefined
                   }
@@ -210,7 +223,12 @@ const AddCompanies = ({
               {t("companies-email-domains")}
             </label>
             <div className="relative">
-              <Form.Item<DataType> name="emailDomainAddress">
+              <Form.Item<DataType>
+                name="emailDomainAddress"
+                rules={[
+                  { required: true, message: t("companies-email-domains") },
+                ]}
+              >
                 <Select
                   mode="tags"
                   style={{ width: "100%" }}

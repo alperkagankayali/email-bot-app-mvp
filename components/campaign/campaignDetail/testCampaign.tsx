@@ -14,7 +14,6 @@ import { getUserById } from "@/services/service/generalService";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
-const { RangePicker } = DatePicker;
 interface IProps {
   open: boolean;
   setOpen: (x: boolean) => void;
@@ -104,12 +103,11 @@ const TestCampaign: React.FC<IProps> = ({ open, setOpen }) => {
           <Space>
             <Button onClick={onClose}>Cancel</Button>
             <Button type="primary" onClick={onClose}>
-              Gönder
+              Test
             </Button>
           </Space>
         }
       >
-        <RangePicker className="w-full !mb-4" />
         <Table<DataType>
           rowSelection={{ type: "checkbox", ...rowSelection }}
           columns={columns}

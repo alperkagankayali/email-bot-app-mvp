@@ -5,14 +5,11 @@ import { Form, Input, Select, message, notification } from "antd";
 import { Link } from "@/i18n/routing";
 import { Button } from "antd";
 import { useRouter } from "@/i18n/routing";
-import {
-  getLanguage,
-  updatePassword,
-} from "@/services/service/generalService";
+import { getLanguage, updatePassword } from "@/services/service/generalService";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import Loader from "../common/Loader";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 type FieldType = {
   passwordTwo?: string;
@@ -31,12 +28,15 @@ export type ISelect = {
 export default function ResetPasswordCom({ locale }: IProps) {
   const [language, setLanguage] = useState<any[]>([]);
   const router = useRouter();
+  const pathname = usePathname();
   const t = useTranslations("pages");
   const searchParams = useSearchParams();
   const id = searchParams.get("token");
 
   const handleMenuClick = (e: ISelect) => {
-    router.push("/", { locale: e.label });
+    router.push(pathname.split(locale)[1] + "?token=" + id, {
+      locale: e.label,
+    });
   };
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
@@ -59,10 +59,9 @@ export default function ResetPasswordCom({ locale }: IProps) {
       } else {
         message.error("Invalid form data");
       }
+    } else {
+      message.error("Invalid password url");
     }
-    else {
-        message.error("Invalid password url");
-      }
   };
 
   useEffect(() => {

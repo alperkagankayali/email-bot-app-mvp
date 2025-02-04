@@ -174,7 +174,7 @@ const CampaignInfoForm: React.FC<IPorps> = ({
       {isEducation && (
         <div className="mb-4 flex flex-col justify-start items-start w-full">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Reminder ?
+            Reminder 
           </label>
           <div className="relative w-full">
             <Form.Item<ICampaign>

@@ -5,7 +5,7 @@ import { Button, message, Modal, Tag, Upload } from "antd";
 import { useTranslations } from "next-intl";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState } from "react";
-import { createUserExel } from "@/services/service/generalService";
+import { createUserExel, getUserCsv } from "@/services/service/generalService";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type IProps = {
@@ -49,6 +49,32 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
     fileList,
   };
 
+  const downloadCSV = (csvData: string) => {
+    // Blob oluştur
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+
+    // Blob URL'si oluştur
+    const url = URL.createObjectURL(blob);
+
+    // Gizli bir <a> elementi oluştur
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "data.csv"); // İndirilecek dosya adı
+
+    // Elementi dokümana ekle ve tıkla
+    document.body.appendChild(link);
+    link.click();
+
+    // Temizlik yap
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDowloandCsv = async () => {
+    const res = await getUserCsv(id);
+    downloadCSV(res.data);
+  };
+
   return (
     <>
       <Modal
@@ -63,16 +89,16 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
           <p>{t("user-exel-modal-rules")}</p>
         </div>
         <ul className="list-disc mt-4">
-          <li className="ml-6">
-          {t("csv-rule-1")}
-          </li>
-          <li className="ml-6">
-          {t("csv-rule-2")}
-          </li>
-          <li className="ml-6">
-          {t("csv-rule-3")}
-          </li>
+          <li className="ml-6">{t("csv-rule-1")}</li>
+          <li className="ml-6">{t("csv-rule-2")}</li>
+          <li className="ml-6">{t("csv-rule-3")}</li>
         </ul>
+        <Button
+          className="float-right my-4 !bg-[#181140] !text-white"
+          onClick={handleDowloandCsv}
+        >
+          Dowloand Example CSV
+        </Button>
         <p></p>
         <p></p>
         <table className="w-full mt-4">
@@ -85,18 +111,14 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
             <th className="border border-gray-200 text-center p-2">
               department
             </th>
-            <th className="border border-gray-200 text-center p-2">company</th>
             <th className="border border-gray-200 text-center p-2">role</th>
           </tr>
           <tr>
-            <td className="border border-gray-200 bg-slate-500 text-white p-2"></td>
-            <td className="border border-gray-200 bg-slate-500 text-white p-2"></td>
-            <td className="border border-gray-200 bg-slate-500 text-white p-2"></td>
-            <td className="border border-gray-200 bg-slate-500 text-white p-2"></td>
-            <td className="border border-gray-200 bg-slate-500 text-white p-2">
-              {id}
-            </td>
-            <td className="border border-gray-200 bg-slate-500 text-white p-2">
+            <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center"></td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center"></td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center">(ex: tr | en)</td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center"></td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center">
               admin | user
             </td>
           </tr>
