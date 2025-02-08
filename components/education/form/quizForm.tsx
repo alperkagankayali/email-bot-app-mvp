@@ -14,7 +14,6 @@ import {
   Radio,
   Space,
   theme,
-  Typography,
 } from "antd";
 import { IQuizType } from "@/types/quizType";
 import {
@@ -190,7 +189,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
                     ))}
 
                     <Button type="dashed" onClick={() => subOpt.add()} block>
-                      + {t("add-a-option")} 
+                      + {t("add-a-option")}
                     </Button>
                   </div>
                 )}
@@ -234,7 +233,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
           label={t("label")}
           name="title"
           rules={[{ required: true }]}
-          className="!mb-10"
+          className="!mb-10 h-12"
         >
           <Input />
         </Form.Item>

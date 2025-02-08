@@ -1,11 +1,23 @@
-import { Metadata } from "next";
 import ResetPasswordCom from "@/components/resetPassword";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Next.js E-commerce Dashboard | prePhish - Next.js Dashboard Template",
-  description: "This is Next.js Home for prePhish Dashboard Template",
-};
-
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  try {
+    const t = await getTranslations();
+    return {
+      title: t("title"),
+    };
+  } catch (error) {
+    console.error("Çeviri alınırken hata oluştu:", error);
+    return {
+      title: "Varsayılan Başlık", // Hata durumunda varsayılan bir başlık dönebiliriz
+    };
+  }
+}
 export default function ResetPassword({
   params: { locale },
 }: {
