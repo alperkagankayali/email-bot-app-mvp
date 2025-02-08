@@ -5,8 +5,8 @@ import { postRequest } from "../client/client";
 
 export const sendVerificationEmail = async (
   userId: string,
-  variables: Record<string, string>,
-  emailId: string
+  variables: Record<string, string>, 
+  emailId:  string
 ) => {
   const url = servicesBaseUrl + finalConfig.SEND_EMAIL;
   const config = headers.content_type.application_json;
@@ -16,7 +16,7 @@ export const sendVerificationEmail = async (
     emailId,
     senderAddress: process.env.DEFAULT_SENDER_ADDRESS ?? "info@klinikermed.com",
     isEmailTracked: false,
-    varibles: variables,
+    variables: variables,
   };
   const result = await postRequest(url, data, config);
   return result;

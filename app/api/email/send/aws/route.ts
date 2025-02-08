@@ -3,12 +3,12 @@ import { NextResponse } from "next/server";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import User from "../../../../../models/user";
 import EmailTemplate from "../../../../../models/emailTemplate";
-import { embedTrackingPixel } from "@/lib/email/prepareEmail";
 import { handleEmailVariableChange } from "@/constants";
+import { embedTrackingPixel } from "@/lib/campaign/prepareCampaign";
 const sesClient = new SESClient({ region: "eu-north-1" });
 
 export async function POST(request: Request) {
-  const { userId, emailId, senderAddress, isEmailTracked, varibles } =
+  const { userId, emailId, senderAddress, isEmailTracked, variables, campaignId = null } =
     await request.json(); // Parse JSON body
 
   try {
@@ -29,15 +29,15 @@ export async function POST(request: Request) {
       );
     const date = new Date();
     const content = handleEmailVariableChange(emailContent.content, {
-      ...varibles,
+      ...variables,
       currentYear: date.getFullYear(),
       userName: user.nameSurname,
     });
     const subject = emailContent.title;
     let htmlBody = content;
     // add open get request code here
-    if (isEmailTracked) {
-      htmlBody = embedTrackingPixel(htmlBody, emailId, userId);
+    if (isEmailTracked && campaignId !== null) {
+      htmlBody = embedTrackingPixel(htmlBody, userId, campaignId);
     }
     // SES SendEmailCommand setup
     const emailParams = {
