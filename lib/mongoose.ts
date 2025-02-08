@@ -10,7 +10,7 @@ const cached: {
 async function connectToDatabase() {
   if (!MONGODB_URI) {
     throw new Error(
-      "Please define the MONGO_URI environment variable inside .env.local"
+      "Please define the MONGODB_URI environment variable inside your local .env file!"
     );
   }
   if (cached.connection) {
