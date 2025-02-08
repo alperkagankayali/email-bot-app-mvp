@@ -48,7 +48,6 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
     },
     fileList,
   };
-
   const downloadCSV = (csvData: string) => {
     // Blob oluştur
     const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
@@ -116,7 +115,9 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
           <tr>
             <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center"></td>
             <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center"></td>
-            <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center">(ex: tr | en)</td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center">
+              (ex: tr | en)
+            </td>
             <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center"></td>
             <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center">
               admin | user
