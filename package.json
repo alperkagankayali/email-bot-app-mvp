@@ -37,7 +37,7 @@
     "json-as-xlsx": "^2.5.6",
     "json-crypto": "^1.0.5",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.8.3",
+    "mongoose": "^8.10.0",
     "next": "14.2.21",
     "next-intl": "^3.25.1",
     "prettier": "^3.3.3",
