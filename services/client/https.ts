@@ -17,9 +17,9 @@ instance.interceptors.request.use(
     //     }
     //   }
     // }
-    const fetchToken = await fetch(servicesBaseUrl + "/cookie?name=token");
-    const res = await (await fetchToken).json();
-    config.headers.Authorization = `Bearer ${res}`;
+    // const fetchToken = await fetch(servicesBaseUrl + "/cookie?name=token");
+    // const res = await (await fetchToken).json();
+    // config.headers.Authorization = `Bearer ${res}`;
     return config;
   },
   (error) => {
