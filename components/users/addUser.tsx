@@ -42,7 +42,6 @@ const AddUser = () => {
     const res = await createUser(values);
     if (res.success) {
       // Mail at
-      debugger;
       const result = await sendVerificationEmail(
         res.data?._id ?? "",
         {

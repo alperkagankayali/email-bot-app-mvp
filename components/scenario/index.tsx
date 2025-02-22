@@ -99,7 +99,6 @@ const ScenarioList: React.FC = () => {
   };
 
   const handleSelect = (value: string | string[], type: string) => {
-    debugger;
     const params = new URLSearchParams(searchParams);
     if (value) {
       params.set(
@@ -268,7 +267,6 @@ const ScenarioList: React.FC = () => {
                   value={selectScenarioType}
                   placeholder={t("scenario-type")}
                   onChange={(value: string) => {
-                    debugger;
                     setFilter({ ...filter, scenarioType: value });
                     setSelectSecenariType(value);
                     handleSelect(value, "scenarioType");
