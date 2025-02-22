@@ -1,7 +1,8 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import PhishingCampaignSteps from "@/components/campaign/form/phishing/phishingCampaignSteps";
+import Loader from "@/components/common/Loader";
 
 const PhishingCampaign: React.FC = async () => {
   return (
@@ -9,7 +10,9 @@ const PhishingCampaign: React.FC = async () => {
       <div className="mx-auto">
         <Breadcrumb pageName="menu-campaign-phishing-add" />
         <div>
-          <PhishingCampaignSteps />
+          <Suspense fallback={<Loader />}>
+            <PhishingCampaignSteps />
+          </Suspense>
         </div>
       </div>
     </DefaultLayout>

@@ -1,7 +1,8 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import NewsCampaignSteps from "@/components/campaign/form/news/newsCampaignSteps";
+import Loader from "@/components/common/Loader";
 
 const AddCampaignNews: React.FC = async () => {
   return (
@@ -9,7 +10,9 @@ const AddCampaignNews: React.FC = async () => {
       <div className="mx-auto">
         <Breadcrumb pageName="create-news-campaign" />
         <div>
-          <NewsCampaignSteps />
+          <Suspense fallback={<Loader />}>
+            <NewsCampaignSteps />
+          </Suspense>
         </div>
       </div>
     </DefaultLayout>

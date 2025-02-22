@@ -1,8 +1,8 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import EducationCampaignSteps from "@/components/campaign/form/education/educationCampaignSteps";
-
+import Loader from "@/components/common/Loader";
 
 const AddCampaignEducation: React.FC = async () => {
   return (
@@ -10,7 +10,9 @@ const AddCampaignEducation: React.FC = async () => {
       <div className="mx-auto">
         <Breadcrumb pageName="menu-campaign-education-add" />
         <div>
-          <EducationCampaignSteps />
+          <Suspense fallback={<Loader />}>
+            <EducationCampaignSteps />
+          </Suspense>
         </div>
       </div>
     </DefaultLayout>

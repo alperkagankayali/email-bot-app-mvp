@@ -681,3 +681,10 @@ export const cookiesOpt = {
   maxAge: 60 * 60 * 24 * 7, // One week
   path: "/",
 };
+
+
+// Cookie'den token'ı almak için yardımcı fonksiyon
+export const getTokenFromCookie = () => {
+ const token = localStorage.getItem("token");
+ return JSON.parse(token ?? "");
+};

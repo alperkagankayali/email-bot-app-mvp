@@ -1,6 +1,7 @@
-import { servicesBaseUrl } from "@/constants";
+import { getTokenFromCookie, servicesBaseUrl } from "@/constants";
 import axios from "axios";
 
+// Token'ı global olarak tutmak yerine her request için yeniden alacağız
 const instance = axios.create({
   baseURL: servicesBaseUrl,
   withCredentials: true, // Cookie gönderimini aktif eder
@@ -8,18 +9,18 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   async (config) => {
-    // if (typeof window !== "undefined") {
-    //   const cookies = useCookies();
-    //   const token = cookies.get('token');
-    //   if (token) {
-    //     if (config.headers) {
-    //       config.headers.Authorization = `Bearer ${token}`;
-    //     }
-    //   }
-    // }
-    // const fetchToken = await fetch(servicesBaseUrl + "/cookie?name=token");
-    // const res = await (await fetchToken).json();
-    // config.headers.Authorization = `Bearer ${res}`;
+    if (typeof window === "undefined") {
+      const { cookies } = await import("next/headers");
+      let token = cookies().get("token")?.value;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } else {
+      let token = getTokenFromCookie();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
     return config;
   },
   (error) => {
@@ -32,8 +33,12 @@ instance.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (error.response.status === 401) {
+    if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
+        document.cookie =
+          "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "currentUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         window.location.replace("/");
       }
     }

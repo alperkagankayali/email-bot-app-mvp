@@ -1,14 +1,9 @@
-import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import UpdateDataEntryForm from "@/components/dataEntries/update";
+import Loader from "@/components/common/Loader";
 
-export const metadata: Metadata = {
-  title: "Next.js Chart | prePhish - Next.js Dashboard Template",
-  description:
-    "This is Next.js Chart page for prePhish - Next.js Tailwind CSS Admin Dashboard Template",
-};
 
 type Props = {
   params: { id: string };
@@ -19,7 +14,9 @@ const UpdateLandingPage: React.FC<Props> = async ({ params: { id } }) => {
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="data-entry-update" />
         <div>
+        <Suspense fallback={<Loader />}>
           <UpdateDataEntryForm id={id}/>
+        </Suspense>
         </div>
       </div>
     </DefaultLayout>
