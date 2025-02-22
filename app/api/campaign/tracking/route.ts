@@ -1,8 +1,6 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic"; // <- add this to force dynamic render
-import Scenario from "@/models/scenario";
-import EmailTemplate from "@/models/emailTemplate";
 import UserAction from "@/models/userAction";
 
 export async function GET(request: Request) {

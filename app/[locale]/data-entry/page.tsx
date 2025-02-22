@@ -54,7 +54,7 @@ export default async function DataEntry({
     );
     return (
       <div>
-        <div dangerouslySetInnerHTML={{ __html: res.data.content }} />
+        <div dangerouslySetInnerHTML={{ __html: res.data }} />
       </div>
     );
   } else {

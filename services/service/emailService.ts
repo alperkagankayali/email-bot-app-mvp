@@ -21,3 +21,23 @@ export const sendVerificationEmail = async (
   const result = await postRequest(url, data, config);
   return result;
 };
+
+export const sendCampaignEmail = async (
+  userId: string,
+  variables: Record<string, string>, 
+  emailId:  string,
+  campaignId: string
+) => { 
+  const url = servicesBaseUrl + finalConfig.SEND_EMAIL;
+  const config = headers.content_type.application_json;
+  const data = {
+    userId: userId,
+    emailId: emailId,
+    senderAddress: process.env.DEFAULT_SENDER_ADDRESS ?? "info@klinikermed.com",
+    isEmailTracked: true,
+    variables: variables,
+    campaignId: campaignId,
+  };
+  const result = await postRequest(url, data, config);
+  return result;
+};

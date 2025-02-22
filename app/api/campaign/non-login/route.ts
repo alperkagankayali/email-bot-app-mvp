@@ -7,6 +7,7 @@ import Campaign from "@/models/campaign";
 import UserToScenarioAssignment from "@/models/userToScenarioAssignment";
 import Scenario from "@/models/scenario";
 import DataEntry from "@/models/dataEntry";
+import { embedClickTracking } from "@/lib/campaign/prepareCampaign";
 
 export async function GET(request: Request) {
   try {
@@ -29,14 +30,31 @@ export async function GET(request: Request) {
           model: DataEntry, // Modeli belirtiyoruz
         },
       });
-
-      return NextResponse.json(
-        {
-          ...message200,
-          data: campaign.map((item: any) => item.scenarioId?.dataEntry)[0],
-        },
-        { status: 200, statusText: message200.message }
-      );
+      //console.log("campaign", campaign);
+      let modifiedDataEntry = null
+      if (!!campaign) {
+        console.log("modifiedDataEntry", modifiedDataEntry, campaignId, userId);
+        if (userId && campaignId) {
+          
+          modifiedDataEntry = embedClickTracking(campaign[0].scenarioId.dataEntry.content, userId, campaignId, "data_entered");
+          console.log("modifiedDataEntry inside", modifiedDataEntry);
+        }
+      }
+      if (!!modifiedDataEntry) {
+        return NextResponse.json(
+          {
+            ...message200,
+            data: modifiedDataEntry,
+          },
+          { status: 200, statusText: message200.message }
+        );
+      }
+      else {
+        return NextResponse.json(
+          { ...message401 },
+          { status: 401, statusText: message401.message }
+        );
+      }
     }
   } catch (error: any) {
     return NextResponse.json(
