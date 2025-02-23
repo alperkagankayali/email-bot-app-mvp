@@ -683,8 +683,14 @@ export const cookiesOpt = {
 };
 
 
-// Cookie'den token'ı almak için yardımcı fonksiyon
 export const getTokenFromCookie = () => {
- const token = localStorage.getItem("token");
- return JSON.parse(token ?? "");
+  if (typeof window === "undefined") return null;
+  
+  const cookies = document.cookie.split(';');
+  const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('token='));
+  
+  if (!tokenCookie) return null;
+  
+  const token = tokenCookie.split('=')[1];
+  return token || null;
 };

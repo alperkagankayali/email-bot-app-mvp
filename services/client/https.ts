@@ -9,14 +9,8 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   async (config) => {
-    if (typeof window === "undefined") {
-      const { cookies } = await import("next/headers");
-      let token = cookies().get("token")?.value;
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    } else {
-      let token = getTokenFromCookie();
+    if (typeof window !== "undefined") {
+      let token = JSON.parse(localStorage.getItem("token") ?? "");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

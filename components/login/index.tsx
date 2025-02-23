@@ -47,7 +47,7 @@ export default function Login({ locale }: IProps) {
         localStorage.setItem("token", JSON.stringify(res?.data?.token));
         localStorage.setItem("user", JSON.stringify(res?.data));
         dispatch(userInfo(res.data.user));
-        router.push(`/${locale}/dashboard`);
+        router.push(`/dashboard`);
       } else {
         if (res?.code === 10) {
           notification.open({
