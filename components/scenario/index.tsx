@@ -28,6 +28,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   EyeOutlined,
+  InfoCircleOutlined,
 } from "@ant-design/icons";
 import { Input, Select } from "antd";
 import type { GetProps, PaginationProps } from "antd";
@@ -154,7 +155,7 @@ const ScenarioList: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-start">
+    <div className="">
       <div className="flex justify-between w-full items-center mb-4">
         {!!filter.name || filter.language || filter.authorType ? (
           <div className="flex">
@@ -238,17 +239,17 @@ const ScenarioList: React.FC = () => {
         ) : (
           <span></span>
         )}
-        <Link href="/dashboard/education/add">
+        <Link href="/dashboard/scenario/add">
           <Button type="primary" className="!bg-[#181140] w-full">
             {" "}
             {t("menu-scenario-add")}
           </Button>
         </Link>
       </div>
-      <div className="flex w-full">
+      <div className="w-full">
         <div className="">
           {!!data && (
-            <div className="flex flex-col items-start gap-5">
+            <div className="flex items-center gap-1">
               <Search
                 placeholder={t("input-scenario-name")}
                 size="large"
@@ -263,33 +264,24 @@ const ScenarioList: React.FC = () => {
               {!!scenarioType && (
                 <Select
                   size="large"
-                  className="w-full "
-                  value={selectScenarioType}
+                  className="w-auto min-w-54"
+                  value={selectScenarioType || undefined}
                   placeholder={t("scenario-type")}
                   onChange={(value: string) => {
                     setFilter({ ...filter, scenarioType: value });
                     setSelectSecenariType(value);
                     handleSelect(value, "scenarioType");
                   }}
-                >
-                  {scenarioType?.map((type) => {
-                    return (
-                      <Option
-                        key={type._id + type.title}
-                        value={type._id}
-                        required
-                      >
-                        {type.title}
-                      </Option>
-                    );
+                  options={scenarioType?.map((type) => {
+                    return { value: type._id, label: type.title };
                   })}
-                </Select>
+                />
               )}
               <Select
                 size="large"
-                className="w-full"
+                className="w-auto min-w-54"
                 placeholder="language"
-                value={selectLanguage}
+                value={selectLanguage || undefined}
                 onChange={(value: string) => {
                   setSelectLanguage(value);
                   setFilter({ ...filter, language: value });
@@ -313,11 +305,22 @@ const ScenarioList: React.FC = () => {
                   handleSelect(value, "authorType");
                 }}
               />
+              <Popover
+                content={
+                  <p>
+                    Global = admin tarafından eklenen
+                    <br /> Local = şirket içi eklenen
+                  </p>
+                }
+                title="Title"
+              >
+                <InfoCircleOutlined />
+              </Popover>
             </div>
           )}
         </div>
 
-        <div className="grid grid-cols-4 gap-4 w-full pl-4">
+        <div className="grid grid-cols-4 gap-4">
           {data?.map((scenario) => {
             const actions: React.ReactNode[] = [
               <Link href={"/dashboard/scenario/update/" + scenario._id}>
