@@ -1,8 +1,8 @@
-import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import EducationRelationshipTable from "@/components/educationRelationshipTable";
+import Loader from "@/components/common/Loader";
 
 const EducationRelationship: React.FC = async () => {
   return (
@@ -10,7 +10,9 @@ const EducationRelationship: React.FC = async () => {
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="menu-scenario-education-relationship" />
         <div>
-          <EducationRelationshipTable />
+          <Suspense fallback={<Loader />}>
+            <EducationRelationshipTable />
+          </Suspense>
         </div>
       </div>
     </DefaultLayout>

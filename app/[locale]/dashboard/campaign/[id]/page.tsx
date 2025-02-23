@@ -1,7 +1,8 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import CampaignDetailCom from "@/components/campaign/detail";
+import Loader from "@/components/common/Loader";
 type Props = {
   params: { id: string };
 };
@@ -11,7 +12,9 @@ const CampaignDetail: React.FC<Props> = async ({ params: { id } }) => {
       <div className="mx-auto">
         <Breadcrumb pageName="menu-campaign" />
         <div>
-          <CampaignDetailCom id={id} />
+          <Suspense fallback={<Loader />}>
+            <CampaignDetailCom id={id} />
+          </Suspense>
         </div>
       </div>
     </DefaultLayout>

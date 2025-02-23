@@ -34,3 +34,14 @@ export const createCampaign = async (data: ICampaign) => {
   const result: IResponseType = await postRequest(url, data, config);
   return result;
 };
+
+export const getUserAssignmentScenario = async (
+  userId: string,
+  campaignId: string
+) => {
+  const queryParams = jsonToQueryString({ campaignId, userId });
+  const url = servicesBaseUrl + finalConfig.GET_USER_ASSIGNMENT + queryParams;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await getRequest(url, config);
+  return result;
+};

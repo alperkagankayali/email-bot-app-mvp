@@ -1,11 +1,12 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
-import {  message201, message401, message500 } from "@/constants";
+import { message201, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import { ISuperAdminJWT, IUserJWT } from "../../user/login/route";
 import Campaign from "@/models/campaign";
-
+import UserToScenarioAssignment from "@/models/userToScenarioAssignment";
+import { Types } from "mongoose";
 export async function POST(request: Request) {
   try {
     await connectToDatabase();
@@ -24,6 +25,20 @@ export async function POST(request: Request) {
           author: verificationResult?.id,
         });
         const campaign = await campaignCreate.save();
+        if (body?.type === "phishing") {
+          const userAssignmentArr = body.userList.map(async (user: string) => {
+            let item =
+              body.scenario[Math.floor(Math.random() * body.scenario.length)];
+            const userAssignment = new UserToScenarioAssignment({
+              userId: user,
+              campaignId: campaign._id,
+              scenarioId: item,
+            });
+            return await userAssignment.save();
+          });
+          console.log("userAssignmentArr", userAssignmentArr);
+        }
+
         return NextResponse.json(
           {
             ...message201,

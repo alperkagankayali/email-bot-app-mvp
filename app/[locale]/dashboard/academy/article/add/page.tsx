@@ -1,8 +1,8 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import ArticleList from "@/components/academy/article";
 import ArticleForm from "@/components/education/form/articleForm";
+import Loader from "@/components/common/Loader";
 
 const ArticleAdd: React.FC = async () => {
   return (
@@ -10,7 +10,9 @@ const ArticleAdd: React.FC = async () => {
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="menu-academy-article" />
         <div>
-          <ArticleForm />
+          <Suspense fallback={<Loader />}>
+            <ArticleForm />
+          </Suspense>
         </div>
       </div>
     </DefaultLayout>

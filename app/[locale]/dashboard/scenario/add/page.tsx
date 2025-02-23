@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import AddScenarioForm from "@/components/scenarioForm/add";
+import Loader from "@/components/common/Loader";
 
 export const metadata: Metadata = {
   title: "Next.js Chart | prePhish - Next.js Dashboard Template",
@@ -16,7 +17,9 @@ const AddScenario: React.FC = async () => {
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="menu-scenario-add" />
         <div>
-          <AddScenarioForm />
+          <Suspense fallback={<Loader />}>
+            <AddScenarioForm />
+          </Suspense>
         </div>
       </div>
     </DefaultLayout>

@@ -1,14 +1,9 @@
-import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import AddEmailTemplateForm from "@/components/emailTemplate/add";
+import Loader from "@/components/common/Loader";
 
-export const metadata: Metadata = {
-  title: "Next.js Chart | prePhish - Next.js Dashboard Template",
-  description:
-    "This is Next.js Chart page for prePhish - Next.js Tailwind CSS Admin Dashboard Template",
-};
 
 const AddLandingPage: React.FC = async () => {
   return (
@@ -16,7 +11,9 @@ const AddLandingPage: React.FC = async () => {
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="landing-page-add" />
         <div>
-          <AddEmailTemplateForm />
+          <Suspense fallback={<Loader />}>
+            <AddEmailTemplateForm />
+          </Suspense>
         </div>
       </div>
     </DefaultLayout>

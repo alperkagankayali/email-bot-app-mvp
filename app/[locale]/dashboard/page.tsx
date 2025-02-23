@@ -1,7 +1,9 @@
+import Loader from "@/components/common/Loader";
 import Dashboard from "@/components/Dashboard";
 
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
 export async function generateMetadata({
   params: { locale },
@@ -25,7 +27,9 @@ export default function Home() {
   return (
     <>
       <DefaultLayout>
-        <Dashboard />
+        <Suspense fallback={<Loader />}>
+          <Dashboard />
+        </Suspense>
       </DefaultLayout>
     </>
   );

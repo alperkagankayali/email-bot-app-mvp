@@ -2,19 +2,19 @@
 import "flatpickr/dist/flatpickr.min.css";
 import "@/css/satoshi.css";
 import "@/css/style.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchLanguage } from "@/redux/slice/language";
 import { useLocale } from "next-intl";
-import { Suspense } from "react";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [loading, setLoading] = useState<boolean>(true);
   const status = useSelector((state: RootState) => state.language.status);
   const dispatch = useDispatch<AppDispatch>();
   const locale = useLocale();
@@ -26,13 +26,15 @@ export default function RootLayout({
   }, [status, dispatch]);
 
 
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 1000);
+  }, []);
+
   return (
     <html lang={locale}>
       <body>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
-          <Suspense fallback={<Loader />}>
-            {children}
-          </Suspense>
+          {loading ? <Loader /> : children}
         </div>
       </body>
     </html>

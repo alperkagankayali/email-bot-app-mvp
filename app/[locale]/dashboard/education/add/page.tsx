@@ -1,7 +1,8 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import EducationListAdd from "@/components/education/educationListAdd";
+import Loader from "@/components/common/Loader";
 
 const EducationAdd: React.FC = async () => {
   return (
@@ -9,7 +10,9 @@ const EducationAdd: React.FC = async () => {
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="menu-education-add" />
         <div>
-          <EducationListAdd />
+          <Suspense fallback={<Loader />}>
+            <EducationListAdd />
+          </Suspense>
         </div>
       </div>
     </DefaultLayout>

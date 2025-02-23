@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from "react";
+import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import AddUser from "@/components/users/addUser";
+import Loader from "@/components/common/Loader";
 
 export const metadata: Metadata = {
   title: "Next.js Chart | prePhish - Next.js Dashboard Template",
@@ -15,7 +16,9 @@ const Resource = async () => {
       <div className="mx-auto max-w-242.5">
         <Breadcrumb pageName="menu-users" />
         <div>
-          <AddUser />
+          <Suspense fallback={<Loader />}>
+            <AddUser />
+          </Suspense>
         </div>
       </div>
     </DefaultLayout>

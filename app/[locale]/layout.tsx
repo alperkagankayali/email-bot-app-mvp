@@ -13,6 +13,7 @@ type Props = {
   children: ReactNode;
   params: { locale: string };
 };
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -37,10 +38,7 @@ export async function generateMetadata({
 export default async function LocaleLayout({
   children,
   params: { locale },
-}: {
-  children: React.ReactNode;
-  params: { locale: string };
-}) {
+}: Props) {
   setRequestLocale(locale);
   const messages = await getResource(locale);
 
@@ -48,19 +46,10 @@ export default async function LocaleLayout({
     return (
       <html lang={locale}>
         <head>
-          <link
-            rel="icon"
-            type="image/png"
-            href="/icon/favicon-96x96.png"
-            sizes="96x96"
-          />
+          <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
           <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
           <link rel="shortcut icon" href="/icon/favicon.ico" />
-          <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="/apple-touch-icon.png"
-          />
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
           <link rel="manifest" href="/site.webmanifest" />
         </head>
         <body>
@@ -75,31 +64,21 @@ export default async function LocaleLayout({
         </body>
       </html>
     );
-  } else {
-    return (
-      <html>
-        <head>
-          <link
-            rel="icon"
-            type="image/png"
-            href="/icon/favicon-96x96.png"
-            sizes="96x96"
-          />
-          <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
-          <link rel="shortcut icon" href="/icon/favicon.ico" />
-          <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="/apple-touch-icon.png"
-          />
-          <link rel="manifest" href="/site.webmanifest" />
-        </head>
-        <body>
-          {" "}
-          <Favicon />
-          <Loader />{" "}
-        </body>{" "}
-      </html>
-    );
   }
+
+  return (
+    <html lang={locale}>
+      <head>
+        <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
+        <link rel="shortcut icon" href="/icon/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
+      <body>
+        <Favicon />
+        <Loader />
+      </body>
+    </html>
+  );
 }

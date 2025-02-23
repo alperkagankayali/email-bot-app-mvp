@@ -64,6 +64,7 @@
   "UPDATE_NEWS": "/news/update",
   "DELETE_NEWS": "/news/delete",
   "GET_NEWS": "/news",
+  "GET_USER_ASSIGNMENT": "/campaign/non-login",
   "ADD_CAMPAIGN": "/campaign/add",
   "UPDATE_CAMPAIGN": "/campaign/update",
   "DELETE_CAMPAIGN": "/campaign/delete",

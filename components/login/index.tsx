@@ -41,18 +41,13 @@ export default function Login({ locale }: IProps) {
     if (!!values.password && values.password?.length > 3 && !!values.username) {
       const res = await handleLogin(values.username, values.password);
       if (res.success) {
-        if (res.data.user.role === "superadmin") {
-          localStorage.setItem("users", JSON.stringify([res?.data]));
-          localStorage.setItem("token", JSON.stringify(res?.data?.token));
-          localStorage.setItem("user", JSON.stringify(res?.data));
-          dispatch(userInfo(res?.data?.user));
-          router.push("/dashboard");
-        } else {
-          localStorage.setItem("token", JSON.stringify(res?.data?.token));
-          localStorage.setItem("user", JSON.stringify(res?.data));
-          dispatch(userInfo(res?.data?.user));
-          router.push("/dashboard");
-        }
+        document.cookie = `token=${res.data.token}; path=/`;
+        document.cookie = `currentUser=${JSON.stringify(res.data.user)}; path=/`;
+        localStorage.setItem("users", JSON.stringify([res?.data]));
+        localStorage.setItem("token", JSON.stringify(res?.data?.token));
+        localStorage.setItem("user", JSON.stringify(res?.data));
+        dispatch(userInfo(res.data.user));
+        router.push(`/${locale}/dashboard`);
       } else {
         if (res?.code === 10) {
           notification.open({
