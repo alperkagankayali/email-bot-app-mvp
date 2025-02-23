@@ -19,7 +19,8 @@ export async function GET(request: Request) {
         const csv = await json2csv(
           [
             {
-              nameSurname: "",
+              name: "",
+              surname: "",
               email: "",
               language: "",
               department: "",
@@ -45,7 +46,8 @@ export async function GET(request: Request) {
           const csv = await json2csv(
             [
               {
-                nameSurname: "",
+                name: "",
+                surname: "",
                 email: "",
                 language: "",
                 department: "",

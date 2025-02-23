@@ -22,7 +22,7 @@ export async function POST(request: Request) {
           ...body,
           author: verificationResult?.id,
           company: verificationResult?.companyId,
-          authorType: verificationResult?.role,
+          authorType: verificationResult?.role === "admin" ? "User": "superadmin",
           isDelete: true,
         });
         const course = await newCourse.save();

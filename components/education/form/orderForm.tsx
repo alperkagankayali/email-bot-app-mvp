@@ -76,17 +76,18 @@ const OrderForm: React.FC<IProps> = ({ lang }) => {
   const forms = useSelector((state: RootState) => state.education.forms);
 
   useEffect(() => {
+    debugger
     if (
       !!forms[lang] &&
-      forms[lang].contents === undefined &&
-      Array.isArray(forms[lang].selectVideo) &&
-      Array.isArray(forms[lang].selectArticle) &&
-      Array.isArray(forms[lang].selectQuiz)
+      forms[lang].contents === undefined &&(
+      Array.isArray(forms[lang].selectVideo) ||
+      Array.isArray(forms[lang].selectArticle) ||
+      Array.isArray(forms[lang].selectQuiz))
     ) {
       const orderData = [
-        ...(forms[lang].selectVideo as DataType[]),
-        ...(forms[lang].selectArticle as DataType[]),
-        ...(forms[lang].selectQuiz as DataType[]),
+        ...(forms[lang]?.selectVideo as DataType[]),
+        ...(forms[lang]?.selectArticle as DataType[]),
+        ...(forms[lang]?.selectQuiz as DataType[]),
       ];
       dispatch(
         handleAddEducationFormValue({

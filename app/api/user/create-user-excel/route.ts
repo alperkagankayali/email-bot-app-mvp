@@ -73,7 +73,7 @@ export async function POST(request: Request) {
       {
         columns: true,
         trim: true,
-        delimiter: ";",
+        delimiter: ",",
       },
       async (err, rows) => {
         if (err) {

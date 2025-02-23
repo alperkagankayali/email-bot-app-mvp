@@ -21,25 +21,21 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const onFinish: FormProps<ICourse>["onFinish"] = async (values) => {
-    if (img === "") {
-      notification.error({ message: "Please upload your logo" });
-    } else {
-      values.img = img;
-      dispatch(
-        handleAddEducationForm({
+    values.img = img;
+    dispatch(
+      handleAddEducationForm({
+        language: lang,
+        values: {
+          ...(!!educationDetail[lang] ? educationDetail[lang] : {}),
+          img,
+          title: values.title,
+          description: values.description,
           language: lang,
-          values: {
-            ...(!!educationDetail[lang] ? educationDetail[lang] : {}),
-            img,
-            title: values.title,
-            description: values.description,
-            language: lang,
-            levelOfDifficulty: values.levelOfDifficulty,
-          },
-        })
-      );
-      next();
-    }
+          levelOfDifficulty: values.levelOfDifficulty,
+        },
+      })
+    );
+    next();
   };
 
   useEffect(() => {

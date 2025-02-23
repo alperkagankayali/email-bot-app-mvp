@@ -14,11 +14,12 @@ export async function POST(request: Request) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
-      }else if (verificationResult?.role === "admin" || verificationResult?.role === "superadmin")  {
+      }else if (verificationResult?.role === "admin" || verificationResult?.role === "superadmin")  {
         const newArticle = new Article({
           ...body,
           author: verificationResult?.id,
           company: verificationResult?.companyId,
+          authorType: verificationResult?.role === "admin" ? "User": "superadmin"
         });
         const article = await newArticle.save();
         return NextResponse.json(

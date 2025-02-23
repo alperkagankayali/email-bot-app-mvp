@@ -19,6 +19,7 @@ export async function POST(request: Request) {
           ...body,
           author: verificationResult?.id,
           company: verificationResult?.companyId,
+          authorType: verificationResult?.role === "admin" ? "User": "superadmin"
         });
         const video = await newVideo.save();
         return NextResponse.json(

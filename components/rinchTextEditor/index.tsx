@@ -1,20 +1,23 @@
 "use client";
 import React, { useMemo, useRef } from "react";
-import JoditEditor from "jodit-react";
 import { fileUploadAws } from "@/services/service/generalService";
 import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
 type ImageHandlerProps = {
   onUpload?: (file: File) => Promise<string>;
   content: string;
   setContent: (x: string) => void;
 };
 
+const JoditEditor = dynamic(() => import("jodit-react"), {
+  ssr: false,
+});
 const RinchTextEditor: React.FC<ImageHandlerProps> = ({
   content,
   setContent,
 }) => {
   const editor = useRef<any>(null);
-  const t = useTranslations("pages");  
+  const t = useTranslations("pages");
   const config = useMemo(
     () => ({
       readonly: false,

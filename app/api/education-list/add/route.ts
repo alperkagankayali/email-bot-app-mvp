@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         const newEducationList = new EducationList({
           ...body,
           author: verificationResult?.id,
-          authorType:verificationResult?.role,
+          authorType: verificationResult?.role === "admin" ? "User": "superadmin",
           company: verificationResult?.companyId,
         });
         const educationList = await newEducationList.save();

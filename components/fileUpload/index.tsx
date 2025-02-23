@@ -23,9 +23,9 @@ const FileUpload = ({ handleUploadFile, defaultValue, type }: IProps) => {
       file.type === "image/png" ||
       file.type === "image/webp";
     if (type === "video") {
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 1024 / 1024 < 50;
       if (!isLt2M) {
-        message.error("Image must smaller than 2MB!");
+        message.error("Image must smaller than 50MB!");
       }
       return isLt2M;
     } else {
