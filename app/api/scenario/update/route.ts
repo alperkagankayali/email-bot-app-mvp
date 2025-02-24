@@ -1,7 +1,7 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
-export const dynamic = "force-dynamic"; 
-import {  message201, message401, message500 } from "@/constants";
+export const dynamic = "force-dynamic";
+import { message201, message401, message404, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import Scenario from "@/models/scenario";
 
@@ -11,22 +11,57 @@ export async function POST(request: Request) {
     const token = request.headers.get("authorization");
     const { id, updateData } = await request.json();
     if (!!token) {
-      const verificationResult = await verifyToken(token.split(" ")[1]);
+      const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
-      } else {
-       const scenario = await Scenario.findOneAndUpdate(
-          { _id: id },
-          { $set: updateData },
-          { new: true }
-        );
-        return NextResponse.json(
-          {
-            ...message201,
-            data: scenario,
-          },
-          { status: 201, statusText: message201.message }
-        );
+      } else if (
+        verificationResult?.role === "admin" ||
+        verificationResult?.role === "superadmin"
+      ) {
+        const findScenario = await Scenario.findById(id);
+        if (!findScenario) {
+          return NextResponse.json(
+            {
+              ...message404,
+              message: "Scenario not found",
+            },
+            { status: 404 }
+          );
+        } else if (
+          verificationResult?.role === "admin" &&
+          findScenario.authorType === "superadmin"
+        ) {
+          const newScenario = new Scenario({
+            ...findScenario.toObject(),
+            ...updateData,
+            _id: undefined,
+            authorType: "User",
+            author: verificationResult.id,
+          });
+
+          await newScenario.save();
+
+            return NextResponse.json(
+            {
+              ...message201,
+              data: newScenario,
+            },
+            { status: 201 }
+          );
+        } else {
+          const scenario = await Scenario.findOneAndUpdate(
+            { _id: id },
+            { $set: updateData },
+            { new: true }
+          );
+          return NextResponse.json(
+            {
+              ...message201,
+              data: scenario,
+            },
+            { status: 201, statusText: message201.message }
+          );
+        }
       }
     } else {
       return NextResponse.json(

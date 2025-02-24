@@ -25,16 +25,11 @@ export default function RootLayout({
     }
   }, [status, dispatch]);
 
-
   return (
-    <html lang={locale}>
-      <body>
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
-          <Suspense fallback={<Loader />}>
-            {children}
-          </Suspense>
-        </div>
-      </body>
-    </html>
+    <div className="dark:bg-boxdark-2 dark:text-bodydark">
+      <Suspense fallback={<Loader />}>
+        {children}
+      </Suspense>
+    </div>
   );
 }

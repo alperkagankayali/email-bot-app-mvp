@@ -31,14 +31,16 @@ import {
 } from "@/services/service/generalService";
 import clsx from "clsx";
 import { Link } from "@/i18n/routing";
+import Loader from "../common/Loader";
 const { Meta } = Card;
 type IProps = {
   type: "emailTemplate" | "landingPage" | "dataEntry";
   next: () => void;
+  prev: () => void;
   current: number;
 };
 
-const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
+const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
   const itemName = type + "TotalItem";
 
   const [pageSize, setPageSize] = useState(6);
@@ -71,7 +73,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
     show: false,
     data: "",
   });
-  const [selected, setSelected] = useState(scenarioData[type]);
+  const [selected, setSelected] = useState(scenarioData[type] ?? "");
 
   const onChange: PaginationProps["onChange"] = async (page, pageNumber) => {
     if (type === "emailTemplate") {
@@ -118,6 +120,20 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
       setSelected(scenarioData[type]);
     }
   }, [type]);
+
+  if (
+    type === "dataEntry"
+      ? dataEntryStatus == "loading"
+      : type === "emailTemplate"
+        ? emailTemplateStatus === "loading"
+        : landingPageStatus === "loading"
+  ) {
+    return (
+      <div className="h-[700px] bg-white flex items-center justify-center">
+        <Loader className="!h-auto" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-start">
@@ -220,16 +236,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, current }) => {
           />
         )}
       </div>
-      <Button
-        onClick={() => {
-          if (!!selected) {
-            next();
-          }
-        }}
-        className="w-full mt-10 cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
-      >
-        {t("save-and-continue")}
-      </Button>
+
       <Modal
         title=""
         centered

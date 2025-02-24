@@ -33,6 +33,7 @@ const config: Config = {
           ...colors.red,
           DEFAULT: "#FB5454",
         },
+        "logo":"#181141",
         body: "#64748B",
         bodydark: "#AEB7C0",
         bodydark1: "#DEE4EE",

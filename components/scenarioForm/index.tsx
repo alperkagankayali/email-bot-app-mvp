@@ -1,21 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Steps, Tabs, theme } from "antd";
+import { Button, Form, notification, Steps, theme } from "antd";
 import FirstTabForm from "./firstTab";
 import { fetchScenarioType } from "@/redux/slice/scenario";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import TemplateAddForm from "./templateAddForm";
 import TemplateList from "./templateList";
 import { useTranslations } from "next-intl";
+import Summary from "./summury";
+import DataEntryTab from "./dataEntryTab";
 
-type IProps = {
-  handleCreateScenario: () => void;
-};
+type IProps = { handleCreateScenario: () => void };
 const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
-  const [tabKey, setTabKey] = useState("1");
   const status = useSelector(
     (state: RootState) => state.scenario.scenarioTypeStatus
   );
@@ -26,6 +24,24 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
     (state: RootState) => state.scenario.scenarioType
   );
   const dispatch = useDispatch<AppDispatch>();
+  const [form] = Form.useForm();
+
+  const handleSubmit = () => {
+    form.submit();
+  };
+
+  const handleNextClick = () => {
+    if (!isDataEntry && steps[current]?.type === "dataEntry") {
+      next();
+    } else if (
+      newScenario &&
+      newScenario[steps[current]?.type as keyof typeof newScenario]
+    ) {
+      next();
+    } else {
+      notification.error({ message: t("error-choose") });
+    }
+  };
 
   useEffect(() => {
     if (status === "idle") {
@@ -41,120 +57,61 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
     setCurrent(current - 1);
   };
 
-  const changeTab = (key: string) => {
-    setTabKey(key);
-  };
   const t = useTranslations("pages");
+  const isDataEntry =
+    scenarioType?.find((e) => e._id === (newScenario?.scenarioType ?? ""))
+      ?.title === "data_entry";
 
   const steps = [
     {
       title: t("menu-scenario-template"),
-      content: <FirstTabForm next={next} />,
+      type: "form",
+      content: <FirstTabForm next={next} form={form} />,
     },
     {
       title: t("menu-mail"),
+      type: "emailTemplate",
       content: (
         <div>
-          <Tabs
-            defaultActiveKey="1"
-            activeKey={tabKey}
-            onChange={(key) => setTabKey(key)}
-            items={[
-              {
-                key: "1",
-                label: t("create-new-one"),
-                children: (
-                  <TemplateAddForm changeTab={changeTab} type="emailTemplate" />
-                ),
-              },
-              {
-                key: "2",
-                label: t("choose-existing-one"),
-                children: (
-                  <TemplateList
-                    current={current}
-                    next={next}
-                    type="emailTemplate"
-                  />
-                ),
-              },
-            ]}
+          <TemplateList
+            current={current}
+            prev={prev}
+            next={next}
+            type="emailTemplate"
           />
         </div>
       ),
     },
     {
       title: t("menu-landing-pages"),
+      type: "landingPage",
       content: (
         <div>
-          <Tabs
-            defaultActiveKey="1"
-            activeKey={tabKey}
-            onChange={(key) => setTabKey(key)}
-            items={[
-              {
-                key: "1",
-                label: t("create-new-one"),
-                children: (
-                  <TemplateAddForm changeTab={changeTab} type="landingPage" />
-                ),
-              },
-              {
-                key: "2",
-                label: "Choose existing one",
-                children: (
-                  <TemplateList
-                    current={current}
-                    next={next}
-                    type="landingPage"
-                  />
-                ),
-              },
-            ]}
+          <TemplateList
+            current={current}
+            prev={prev}
+            next={next}
+            type="landingPage"
           />
         </div>
       ),
     },
     {
       title: t("menu-data-entries"),
-      content:
-        scenarioType?.find((e) => e._id === (newScenario?.scenarioType ?? ""))
-          ?.title === "data_entry" ? (
-          <div>
-            <Tabs
-              defaultActiveKey="1"
-              activeKey={tabKey}
-              onChange={(key) => setTabKey(key)}
-              items={[
-                {
-                  key: "1",
-                  label: "Create new one",
-                  children: (
-                    <TemplateAddForm changeTab={changeTab} type="dataEntry" />
-                  ),
-                },
-                {
-                  key: "2",
-                  label: "Choose existing one",
-                  children: (
-                    <TemplateList
-                      current={current}
-                      next={next}
-                      type="dataEntry"
-                    />
-                  ),
-                },
-              ]}
-            />
-          </div>
-        ) : (
-          <>
-            <p>
-            {t("data-entry-check-message")}
-
-            </p>
-          </>
-        ),
+      type: "dataEntry",
+      content: (
+        <DataEntryTab
+          isDataEntry={isDataEntry}
+          current={current}
+          prev={prev}
+          next={next}
+        />
+      ),
+    },
+    {
+      title: t("summury-page"),
+      type: "summury",
+      content: <Summary />,
     },
   ];
 
@@ -168,20 +125,54 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
 
   return (
     <>
-      <Steps current={current} items={items} />
-      <div style={contentStyle}>{steps[current]?.content}</div>
-      <div className="mt-6 flex">
-        {current === steps.length - 1 && (
-          <Button type="primary" onClick={handleCreateScenario}>
-            {t("done-btn")}
-          </Button>
+      <div className="mb-4">
+        {current !== steps.length - 1 && (
+          <div className="flex w-full justify-between">
+            <Button
+              disabled={current === 0}
+              className="cursor-pointer rounded-lg border !border-black-2 !bg-transparent !p-7 !text-black transition hover:bg-opacity-90 mr-4"
+              onClick={() => prev()}
+            >
+              {t("previous-btn")}
+            </Button>
+
+            {current > 0 ? (
+              <Button
+                onClick={handleNextClick}
+                className="cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
+              >
+                {t("save-and-continue")}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleSubmit}
+                className="cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
+              >
+                {t("save-and-continue")}
+              </Button>
+            )}
+          </div>
         )}
-        {current > 0 && (
-          <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
-            {t("previous-btn")}
-          </Button>
+        {current === steps.length - 1 && (
+          <div className="flex w-full justify-between">
+            <Button
+              className="cursor-pointer rounded-lg border !border-black-2 !bg-transparent !p-7 !text-black transition hover:bg-opacity-90 mr-4"
+              onClick={() => prev()}
+            >
+              {t("previous-btn")}
+            </Button>
+            <Button
+              type="primary"
+              className="cursor-pointer rounded-lg border !border-logo !bg-logo !p-7 !text-white transition hover:bg-opacity-90 mr-4"
+              onClick={handleCreateScenario}
+            >
+              {t("done-btn")}
+            </Button>
+          </div>
         )}
       </div>
+      <Steps current={current} items={items} />
+      <div style={contentStyle}>{steps[current]?.content}</div>
     </>
   );
 };

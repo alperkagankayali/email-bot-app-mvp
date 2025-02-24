@@ -80,9 +80,7 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
-          const scenarioTotal = await Scenario.countDocuments({
-            isDelete: false,
-          });
+          
           const filter: any = {};
           if (!!authorType) {
             if (authorType.split("&").length > 1) {
@@ -98,6 +96,7 @@ export async function GET(request: Request) {
           !!scenarioType && (filter.scenarioType = scenarioType);
           !!language && (filter.language = language);
           !!name && (filter.title = { $regex: name, $options: "i" });
+          const scenarioTotal = await Scenario.countDocuments(filter);
           const scenario = await Scenario.find(filter)
             .populate([
               { path: "emailTemplate", model: EmailTemplate },

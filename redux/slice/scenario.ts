@@ -15,7 +15,10 @@ import {
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch } from "../store";
 import { State } from "aws-sdk/clients/cloudwatchlogs";
-import { getScenario, getScenarioType } from "@/services/service/scenarioService";
+import {
+  getScenario,
+  getScenarioType,
+} from "@/services/service/scenarioService";
 interface IScenarioSlice {
   landingPageStatus: "loading" | "succeeded" | "failed" | "idle";
   emailTemplateStatus: "loading" | "succeeded" | "failed" | "idle";
@@ -70,6 +73,9 @@ const resourceSlice = createSlice({
     },
     changeNewScenarioData: (state, action) => {
       state.scenario = action.payload;
+    },
+    changeScenarioStatus: (state, action) => {
+      state.status = action.payload;
     },
   },
   extraReducers(builder) {
@@ -143,21 +149,29 @@ export const fetchScenario = createAsyncThunk(
   }
 );
 
-export const fetchLandingPage = createAsyncThunk("/landing-page", async (limit:number) => {
-  const response = await getLandingPage("", limit, 1);
-  return response;
-});
+export const fetchLandingPage = createAsyncThunk(
+  "/landing-page",
+  async (limit: number) => {
+    const response = await getLandingPage("", limit, 1);
+    return response;
+  }
+);
 
-export const fetchEmailTemplate = createAsyncThunk("/email-template", async (limit:number) => {
+export const fetchEmailTemplate = createAsyncThunk(
+  "/email-template",
+  async (limit: number) => {
     const response = await getEmailTemplate("", limit, 1);
     return response;
   }
 );
 
-export const fetchDataEntry = createAsyncThunk("/data-entry", async (limit:number) => {
-  const response = await getDataEntries("", limit, 1);
-  return response;
-});
+export const fetchDataEntry = createAsyncThunk(
+  "/data-entry",
+  async (limit: number) => {
+    const response = await getDataEntries("", limit, 1);
+    return response;
+  }
+);
 export const fetchScenarioType = createAsyncThunk(
   "/scenario-type",
   async () => {
@@ -171,6 +185,7 @@ export const {
   handleChangeEmailData,
   handleChangeDataEntry,
   handleChangeLandingPage,
+  changeScenarioStatus,
 } = resourceSlice.actions;
 
 export default resourceSlice.reducer;

@@ -1,0 +1,21 @@
+{
+  "name": "prePhish",
+  "short_name": "prePhish",
+  "description": "Email MVP Application",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#181140",
+  "icons": [
+    {
+      "src": "/icon/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+} 

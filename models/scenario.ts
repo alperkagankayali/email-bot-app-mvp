@@ -3,7 +3,7 @@ import { Schema, Types, model, models } from "mongoose";
 
 const scenarioSchema = new Schema<IScenario>({
   title: { type: String, required: true },
-  img: { type: String, required: true },
+  img: { type: String, },
   scenarioType: {
     type: Types.ObjectId,
     ref: "ScenarioType",

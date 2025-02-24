@@ -1,6 +1,14 @@
 "use client";
 import { IScenario } from "@/types/scenarioType";
-import { Button, Form, FormProps, Input, notification, Select } from "antd";
+import {
+  Button,
+  Form,
+  FormInstance,
+  FormProps,
+  Input,
+  notification,
+  Select,
+} from "antd";
 import FileUpload from "../fileUpload";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,15 +24,9 @@ type IProps = {
   defaultContent?: string;
   istType?: boolean;
   defaultScenarioType?: string;
+  form: FormInstance<any>;
 };
-const FirstTabForm = ({
-  next,
-  title = "",
-  img = "",
-  istType = false,
-  defaultScenarioType = "",
-}: IProps) => {
-  const [form] = Form.useForm();
+const FirstTabForm = ({ next, img = "", form }: IProps) => {
   const data = useSelector((state: RootState) => state.scenario.scenarioType);
   const scenarioData = useSelector(
     (state: RootState) => state.scenario.creteScenario
@@ -38,18 +40,14 @@ const FirstTabForm = ({
   };
 
   const onFinish: FormProps<IScenario>["onFinish"] = async (values) => {
-    if (!!fileUrl || !!scenarioData?.img) {
-      dispatch(
-        handleChangeScenarioData({
-          ...scenarioData,
-          ...values,
-          img: scenarioData?.img,
-        })
-      );
-      next();
-    } else {
-      notification.error({ message: "Please upload your logo" });
-    }
+    dispatch(
+      handleChangeScenarioData({
+        ...scenarioData,
+        ...values,
+        img: scenarioData?.img,
+      })
+    );
+    next();
   };
 
   useEffect(() => {
@@ -135,10 +133,7 @@ const FirstTabForm = ({
               <Form.Item<IScenario>
                 name="language"
                 rules={[
-                  {
-                    required: true,
-                    message: "Please input your language!",
-                  },
+                  { required: true, message: "Please input your language!" },
                 ]}
               >
                 <Select
@@ -172,16 +167,6 @@ const FirstTabForm = ({
               />
             </Form.Item>
           </div>
-        </div>
-        <div className="mb-4">
-          <Form.Item>
-            <Button
-              htmlType="submit"
-              className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
-            >
-              {t("save-and-continue")}
-            </Button>
-          </Form.Item>
         </div>
       </Form>
     </>

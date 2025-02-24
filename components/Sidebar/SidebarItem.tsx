@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "@/i18n/routing";
 import SidebarDropdown from "@/components/Sidebar/SidebarDropdown";
 import { usePathname } from "next/navigation";
@@ -9,13 +9,17 @@ import { RootState } from "@/redux/store";
 
 const SidebarItem = ({ item, pageName, setPageName }: any) => {
   const user = useSelector((state: RootState) => state.user.user);
-  const handleClick = () => {
-    const updatedPageName =
-      pageName !== item.label.toLowerCase() ? item.label.toLowerCase() : "";
-    return setPageName(updatedPageName);
-  };
-
+  const [isOpen, setIsOpen] = React.useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    setIsOpen(pageName === item.label.toLowerCase());
+  }, [pageName, item.label]);
+
+  const handleClick = () => {
+    const updatedPageName = pageName !== item.label.toLowerCase() ? item.label.toLowerCase() : "";
+    setPageName(updatedPageName);
+  };
 
   const isActive = (item: any) => {
     if (item.route === pathname.slice(3, pathname.length)) return true;
@@ -27,9 +31,11 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
 
   const isItemActive = isActive(item);
   const t = useTranslations("pages");
+
   if (!!item.role && !item.role.includes(user?.role)) {
-    return <></>
+    return <></>;
   }
+
   return (
     <>
       <li key={item.label}>
@@ -45,7 +51,7 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
           {item.children && (
             <svg
               className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-                pageName === item.label.toLowerCase() && "rotate-180"
+                isOpen ? "rotate-180" : ""
               }`}
               width="20"
               height="20"
@@ -66,7 +72,7 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
         {item.children && (
           <div
             className={`translate transform overflow-hidden ${
-              pageName !== item.label.toLowerCase() && "hidden"
+              !isOpen && "hidden"
             }`}
           >
             <SidebarDropdown item={item.children} />

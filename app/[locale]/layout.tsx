@@ -42,30 +42,6 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getResource(locale);
 
-  if (!!messages.success) {
-    return (
-      <html lang={locale}>
-        <head>
-          <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
-          <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
-          <link rel="shortcut icon" href="/icon/favicon.ico" />
-          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-          <link rel="manifest" href="/site.webmanifest" />
-        </head>
-        <body>
-          <StoreProvider>
-            <NextIntlClientProvider locale={locale} messages={messages.data}>
-              <AntdRegistry>
-                <Favicon />
-                {children}
-              </AntdRegistry>
-            </NextIntlClientProvider>
-          </StoreProvider>
-        </body>
-      </html>
-    );
-  }
-
   return (
     <html lang={locale}>
       <head>
@@ -76,8 +52,14 @@ export default async function LocaleLayout({
         <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body>
-        <Favicon />
-        <Loader />
+        <StoreProvider>
+          <NextIntlClientProvider locale={locale} messages={messages?.data || {}}>
+            <AntdRegistry>
+              <Favicon />
+              {children}
+            </AntdRegistry>
+          </NextIntlClientProvider>
+        </StoreProvider>
       </body>
     </html>
   );
