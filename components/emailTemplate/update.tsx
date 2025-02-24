@@ -5,7 +5,7 @@ import {
   getEmailTemplate,
   updateEmailTemplate,
 } from "@/services/service/generalService";
-import { message } from "antd";
+import { Form, message } from "antd";
 import { useRouter } from "@/i18n/routing";
 import TemplateForm from "../templateForm";
 import { useEffect, useState } from "react";
@@ -21,13 +21,15 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
   const router = useRouter();
   const [data, setData] = useState<IEmailTemplate | null>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const [form] = Form.useForm();
   const status = useSelector(
     (state: RootState) => state.scenario.scenarioTypeStatus
   );
   useEffect(() => {
     async function fetchEmailTemplate() {
-      const res = await getEmailTemplate(id);
+      const res = await getEmailTemplate({id});
       if (res.success) {
+        form.setFieldsValue(res.data)
         setData(res.data);
       } else {
         message.error(res.message);
@@ -58,8 +60,10 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
     <div>
       <TemplateForm
         handleSave={handleSave}
+        form={form}
         title={data?.title}
         img={data?.img}
+        language={typeof data?.language === 'string' ? data.language : undefined}
         defaultContent={data?.content}
         istType={true}
       />

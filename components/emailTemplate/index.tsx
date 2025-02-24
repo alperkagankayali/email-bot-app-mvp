@@ -17,6 +17,8 @@ import {
   deleteEmailTemplate,
   getEmailTemplate,
 } from "@/services/service/generalService";
+import EmailTemplateFilter from "./filter";
+import { useSearchParams } from "next/navigation";
 
 const { Meta } = Card;
 
@@ -28,9 +30,13 @@ const EmailTemplateList: React.FC = () => {
   const totalItems = useSelector(
     (state: RootState) => state.scenario.emailTemplateTotalItem
   );
-
+  const searchParams = useSearchParams();
+  const [filter, setFilter] = useState({
+    name: searchParams.get("name") ?? "",
+    authorType: searchParams.get("authorType")?.split("&") ?? [],
+    language: searchParams.get("language") ?? "",
+  });
   const dispatch = useDispatch<AppDispatch>();
-  const t = useTranslations("pages");
   const [open, setOpen] = useState({
     show: false,
     data: "",
@@ -38,7 +44,7 @@ const EmailTemplateList: React.FC = () => {
   const [pageSize, setPageSize] = useState(8);
 
   const onChange: PaginationProps["onChange"] = async (page, pageNumber) => {
-    const res = await getEmailTemplate("", pageNumber, page);
+    const res = await getEmailTemplate({ limit: pageNumber, page: page });
     if (res.success && !!data) {
       dispatch(handleChangeEmailData(res.data));
     }
@@ -60,13 +66,11 @@ const EmailTemplateList: React.FC = () => {
 
   return (
     <div className="flex flex-col items-start">
-      <Link
-        href={"/dashboard/scenario/email-templates/add"}
-        className="bg-[#181140] text-white px-4 py-2 rounded-md"
-      >
-        {t("email-template-add")}
-      </Link>
-
+      <EmailTemplateFilter
+        filter={filter}
+        pageSize={pageSize}
+        setFilter={setFilter}
+      />
       <div className="grid grid-cols-4 gap-8 mt-4">
         {data?.map((emailTemplate) => {
           const actions: React.ReactNode[] = [
@@ -112,7 +116,7 @@ const EmailTemplateList: React.FC = () => {
                     height={100}
                     className="h-30 object-contain bg-[#03162b]"
                     alt={emailTemplate.title}
-                    src={status === "loading" ? noImage : emailTemplate.img}
+                    src={status === "loading" || !(!!emailTemplate.img)  ? noImage : emailTemplate.img}
                   />
                 }
               >

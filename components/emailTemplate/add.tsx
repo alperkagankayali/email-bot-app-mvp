@@ -1,6 +1,6 @@
 "use client";
 
-import { ILandingPage } from "@/types/scenarioType";
+import { IEmailTemplate, ILandingPage } from "@/types/scenarioType";
 import TemplateForm from "../templateForm";
 import { createEmailTemplate } from "@/services/service/generalService";
 import { message } from "antd";
@@ -17,7 +17,7 @@ const AddEmailTemplateForm: React.FC = () => {
   const status = useSelector(
     (state: RootState) => state.scenario.scenarioTypeStatus
   );
-  const handleSave = async (data: ILandingPage) => {
+  const handleSave = async (data: IEmailTemplate) => {
     const res = await createEmailTemplate(data);
     if (res.success) {
       dispatch(fetchEmailTemplate(8));

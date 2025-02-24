@@ -159,8 +159,8 @@ export const fetchLandingPage = createAsyncThunk(
 
 export const fetchEmailTemplate = createAsyncThunk(
   "/email-template",
-  async (limit: number) => {
-    const response = await getEmailTemplate("", limit, 1);
+  async (filter: any) => {
+    const response = await getEmailTemplate(filter);
     return response;
   }
 );

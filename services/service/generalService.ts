@@ -185,8 +185,8 @@ export const getDataEntries = async (id: string, limit = 8, page = 1) => {
   return result;
 };
 
-export const getEmailTemplate = async (id: string, limit = 8, page = 1) => {
-  const queryParams = jsonToQueryString({ id, limit, page });
+export const getEmailTemplate = async (filter: any) => {
+  const queryParams = jsonToQueryString({ ...filter });
   const url = servicesBaseUrl + finalConfig.GET_EMAIL_TEMPLATE + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
@@ -212,7 +212,6 @@ export const createDataEntry = async (data: ILandingPage) => {
   return result;
 };
 
-
 export const updateLandingPage = async (id: string, updateData: any) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_LANDING_PAGE;
   const config = headers.content_type.application_json;
@@ -223,7 +222,6 @@ export const updateLandingPage = async (id: string, updateData: any) => {
   );
   return result;
 };
-
 
 export const updateDataEntry = async (id: string, updateData: any) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_DATA_ENTRY;

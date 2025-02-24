@@ -57,6 +57,7 @@ export interface IEmailTemplate {
   scenarioType: IScenarioType;
   authorType: string;
   company: ICompany;
+  language: string | ILanguage;
   _id: string;
 }
 export interface ILandingPage {

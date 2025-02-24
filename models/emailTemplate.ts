@@ -18,6 +18,7 @@ const emailTemplateSchema = new Schema<IEmailTemplate>({
     refPath: "authorType", 
   },
   company: { type: Types.ObjectId, ref: "Company" },
+  language: { type: Types.ObjectId, ref: "Languages" },
 });
 
 const EmailTemplate = models.EmailTemplate || model<IEmailTemplate>("EmailTemplate", emailTemplateSchema);

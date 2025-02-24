@@ -4,7 +4,6 @@ export const dynamic = "force-dynamic";
 import { message200, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import EmailTemplate from "@/models/emailTemplate";
-import ScenarioType from "@/models/scenarioType";
 
 export async function GET(request: Request) {
   try {
@@ -13,6 +12,9 @@ export async function GET(request: Request) {
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     const page = parseInt(searchParams.get("page") || "1"); // Varsayılan 1. sayfa
     const limit = parseInt(searchParams.get("limit") || "50"); // Varsayılan limit 10
+    const authorType = searchParams.get("authorType");
+    const language = searchParams.get("language");
+    const name = searchParams.get("name");
     const skip = (page - 1) * limit; //
     const id = searchParams.get("id");
 
@@ -32,20 +34,23 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
-          const emailTemplateTotal = await EmailTemplate.countDocuments({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
-          });
-          const emailTemplate = await EmailTemplate.find({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
-          })
+          const filter: any = {};
+          if (!!authorType) {
+            if (authorType.split("&").length > 1) {
+              filter["$or"] = [
+                { company: verificationResult?.companyId },
+                { authorType: "superadmin" },
+              ];
+            } else {
+              filter.authorType = authorType;
+            }
+          }
+          filter.isDelete = false;
+          !!language && (filter.language = language);
+          !!name && (filter.title = { $regex: name, $options: "i" });
+
+          const emailTemplateTotal = await EmailTemplate.countDocuments(filter);
+          const emailTemplate = await EmailTemplate.find(filter)
             .skip(skip)
             .limit(limit);
           return NextResponse.json(

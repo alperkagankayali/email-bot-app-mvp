@@ -1,7 +1,7 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
-import { message201, message401, message500 } from "@/constants";
+import { message201, message401, message404, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import EmailTemplate from "@/models/emailTemplate";
 
@@ -11,22 +11,57 @@ export async function POST(request: Request) {
     const { id, updateData } = await request.json();
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     if (!!token) {
-      const verificationResult = await verifyToken(token.split(" ")[1]);
+      const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
-      } else {
-        const emailTemplate = await EmailTemplate.findOneAndUpdate(
-          { _id: id },
-          { $set: updateData },
-          { new: true }
-        );
-        return NextResponse.json(
-          {
-            ...message201,
-            data: emailTemplate,
-          },
-          { status: 201, statusText: message201.message }
-        );
+      } else if (
+        verificationResult?.role === "admin" ||
+        verificationResult?.role === "superadmin"
+      ) {
+        const findEmailTemplate = await EmailTemplate.findById(id);
+        if (!findEmailTemplate) {
+          return NextResponse.json(
+            {
+              ...message404,
+              message: "EmailTemplate not found",
+            },
+            { status: 404 }
+          );
+        } else if (
+          verificationResult?.role === "admin" &&
+          findEmailTemplate.authorType === "superadmin"
+        ) {
+          const newEmailTemplate = new EmailTemplate({
+            ...findEmailTemplate.toObject(),
+            ...updateData,
+            _id: undefined,
+            authorType: "User",
+            author: verificationResult.id,
+          });
+
+          await newEmailTemplate.save();
+
+          return NextResponse.json(
+            {
+              ...message201,
+              data: newEmailTemplate,
+            },
+            { status: 201 }
+          );
+        } else {
+          const emailTemplate = await EmailTemplate.findOneAndUpdate(
+            { _id: id },
+            { $set: updateData },
+            { new: true }
+          );
+          return NextResponse.json(
+            {
+              ...message201,
+              data: emailTemplate,
+            },
+            { status: 201, statusText: message201.message }
+          );
+        }
       }
     } else {
       return NextResponse.json(

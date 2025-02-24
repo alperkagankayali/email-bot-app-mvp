@@ -77,7 +77,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
 
   const onChange: PaginationProps["onChange"] = async (page, pageNumber) => {
     if (type === "emailTemplate") {
-      const res = await getEmailTemplate("", pageNumber, page);
+    const res = await getEmailTemplate({ limit: pageNumber, page: page });
       if (res.success && !!emailTemplate) {
         dispatch(handleChangeEmailData(res.data));
       }

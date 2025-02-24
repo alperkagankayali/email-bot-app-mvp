@@ -1,14 +1,16 @@
 "use client";
-import { ILandingPage } from "@/types/scenarioType";
+import { IEmailTemplate } from "@/types/scenarioType";
 import { Button, Form, Input, Select } from "antd";
 import type { FormInstance, FormProps } from "antd";
 import RinchTextEditor from "../rinchTextEditor";
 import FileUpload from "../fileUpload";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 const { Option } = Select;
 type IProps = {
-  handleSave: (x: ILandingPage) => void;
+  handleSave: (x: IEmailTemplate) => void;
   title?: string;
   img?: string;
   defaultContent?: string;
@@ -16,6 +18,7 @@ type IProps = {
   defaultScenarioType?: string;
   handleResetForm?: () => void;
   form?: FormInstance<any>;
+  language?: string;
 };
 const TemplateForm = ({
   handleSave,
@@ -24,17 +27,19 @@ const TemplateForm = ({
   defaultContent = "",
   handleResetForm,
   form,
+  language,
 }: IProps) => {
   const [fileUrl, setFileUrl] = useState(img);
   const [content, setContent] = useState(defaultContent);
+  const languages = useSelector((state: RootState) => state.language.language);
+  const t = useTranslations("pages");
   const handleUploadFile = (img: string) => {
     setFileUrl(img);
   };
 
-  const onFinish: FormProps<ILandingPage>["onFinish"] = async (values) => {
+  const onFinish: FormProps<IEmailTemplate>["onFinish"] = async (values) => {
     await handleSave({ ...values, img: fileUrl, content });
   };
-  const t = useTranslations("pages");
 
   return (
     <div className="mb-6 flex">
@@ -51,24 +56,62 @@ const TemplateForm = ({
             {t("label")}
           </label>
           <div className="relative">
-            <Form.Item<ILandingPage> name="title">
+            <Form.Item<IEmailTemplate>
+              name="title"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your scenario type!",
+                },
+              ]}
+            >
               <Input
                 defaultValue={title}
                 size="large"
                 type="text"
-                placeholder="Title"
+                placeholder={t("title")}
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </Form.Item>
           </div>
         </div>
+        {!!languages && languages?.length > 0 && (
+          <div className="mb-4">
+            <label className="mb-2.5 block font-medium text-black dark:text-white">
+              {t("menu-language")}
+            </label>
+            <div className="relative">
+              <Form.Item<IEmailTemplate>
+                name="language"
+                rules={[
+                  { required: true, message: "Please input your language!" },
+                ]}
+              >
+                <Select
+                  size="large"
+                  className=""
+                  defaultValue={language}
+                  placeholder={t("menu-language")}
+                >
+                  {languages.map((e) => {
+                    return (
+                      <Option key={e.code} value={e._id}>
+                        {e.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </div>
+          </div>
+        )}
         <div className="mb-6">
           <label className="mb-2.5 block font-medium text-black dark:text-white">
             {t("image")}
           </label>
 
           <div className="relative">
-            <Form.Item<ILandingPage> name="img">
+            <Form.Item<IEmailTemplate> name="img">
               <FileUpload
                 handleUploadFile={handleUploadFile}
                 defaultValue={img}
@@ -81,7 +124,7 @@ const TemplateForm = ({
             {t("content")}
           </label>
           <div className="relative">
-            <Form.Item<ILandingPage> name="content">
+            <Form.Item<IEmailTemplate> name="content">
               <RinchTextEditor content={content} setContent={setContent} />
             </Form.Item>
             <Form.Item>
