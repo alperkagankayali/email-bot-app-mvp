@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const { id } = await request.json();
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     if (!!token) {
-      const verificationResult = await verifyToken(token.split(" ")[1]);
+      const verificationResult :any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
       } else {

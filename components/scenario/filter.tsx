@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button, Checkbox, Popover, Tag } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchScenario } from "@/redux/slice/scenario";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { DeleteFilled, InfoCircleOutlined } from "@ant-design/icons";
@@ -28,19 +27,19 @@ type IScenarioListFilter = {
   pageSize: number;
   setFilter: (x: IFilter) => void;
   filter: IFilter;
+  setPage: (x: number) => void;
 };
 
 const ScenarioListFilter: React.FC<IScenarioListFilter> = ({
-  pageSize,
   filter,
   setFilter,
+  setPage,
 }) => {
   const scenarioType = useSelector(
     (state: RootState) => state.scenario.scenarioType
   );
   const languages = useSelector((state: RootState) => state.language.language);
   const data = useSelector((state: RootState) => state.scenario.scenario);
-  const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -59,6 +58,19 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({
     replace(`${pathname}?${params.toString()}`);
   };
 
+  useEffect(() => {
+    if (
+      !(
+        !!filter.name ||
+        filter.language ||
+        filter.authorType.length > 0 ||
+        filter.scenarioType
+      )
+    ) {
+      setPage(1);
+    }
+  }, [filter]);
+
   const handleSelect = (value: string | string[], type: string) => {
     const params = new URLSearchParams(searchParams);
     if (value) {
@@ -71,24 +83,6 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({
     }
     replace(`${pathname}?${params.toString()}`);
   };
-
-  useEffect(() => {
-    dispatch(
-      fetchScenario({
-        name: searchParams.get("name") ?? "",
-        language:
-          languages.find((e) => e.code === searchParams.get("language"))?._id ??
-          "",
-        authorType: searchParams.get("authorType") ?? "",
-        scenarioType:
-          scenarioType?.find(
-            (e) => e.title === searchParams.get("scenarioType")
-          )?._id ?? "",
-        limit: pageSize,
-        page: 1,
-      })
-    );
-  }, [searchParams]);
 
   return (
     <div className="">

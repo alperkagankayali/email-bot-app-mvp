@@ -1,6 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Badge, Card, Modal, notification, Pagination, Popconfirm } from "antd";
+import {
+  Badge,
+  Card,
+  Modal,
+  notification,
+  Pagination,
+  Popconfirm,
+  Popover,
+} from "antd";
 import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -8,7 +16,12 @@ import { fetchScenario, fetchScenarioType } from "@/redux/slice/scenario";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  CloseCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import type { PaginationProps } from "antd";
 import { useSearchParams } from "next/navigation";
 import { deleteScenario } from "@/services/service/scenarioService";
@@ -24,6 +37,7 @@ const ScenarioList: React.FC = () => {
   const scenarioType = useSelector(
     (state: RootState) => state.scenario.scenarioType
   );
+  const user = useSelector((state: RootState) => state.user.user);
   const languages = useSelector((state: RootState) => state.language.language);
   const data = useSelector((state: RootState) => state.scenario.scenario);
   const totalItems = useSelector(
@@ -36,7 +50,7 @@ const ScenarioList: React.FC = () => {
     show: false,
     data: "",
   });
-  const [localOpen, setLocalOpen] = useState(false)
+  const [localOpen, setLocalOpen] = useState(false);
   const [filter, setFilter] = useState({
     name: searchParams.get("name") ?? "",
     scenarioType: searchParams.get("scenarioType") ?? "",
@@ -44,10 +58,11 @@ const ScenarioList: React.FC = () => {
     language: searchParams.get("language") ?? "",
   });
   const [pageSize, setPageSize] = useState(8);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchScenario({ limit: pageSize, page: 1 }));
+      dispatch(fetchScenario({ limit: pageSize, page: page }));
     }
   }, [status, dispatch]);
 
@@ -91,7 +106,7 @@ const ScenarioList: React.FC = () => {
               (e) => e.title === searchParams.get("scenarioType")
             )?._id ?? "",
           limit: pageSize,
-          page: 1,
+          page: page,
         })
       );
     } else {
@@ -116,18 +131,43 @@ const ScenarioList: React.FC = () => {
       })
     );
     setPageSize(pageNumber);
+    setPage(page);
   };
 
   return (
     <div className="">
       <ScenarioListFilter
         filter={filter}
+        setPage={setPage}
         setFilter={setFilter}
         pageSize={pageSize}
       />
       <div className="w-full">
         <div className="grid grid-cols-3 xl:grid-cols-4 gap-4 2xl:grid-cols-5">
           {data?.map((scenario) => {
+            const deleteIcon =
+              user?.role === "admin" && scenario.authorType === "superadmin" ? (
+                <Popover
+                  content={t("not-deleted", { name: t("menu-scenario") })}
+                  title={""}
+                >
+                  <CloseCircleOutlined />
+                </Popover>
+              ) : (
+                <Popconfirm
+                  title={t("delete-document", {
+                    document: t("menu-scenario"),
+                  })}
+                  description={t("delete-document-2", {
+                    document: t("menu-scenario"),
+                  })}
+                  onConfirm={() => handleDeleteEmailTemplate(scenario._id)}
+                  okText={t("yes-btn")}
+                  cancelText={t("no-btn")}
+                >
+                  <DeleteOutlined />
+                </Popconfirm>
+              );
             const actions: React.ReactNode[] = [
               <Link href={"/dashboard/scenario/update/" + scenario._id}>
                 <EditOutlined key="edit" />
@@ -141,17 +181,7 @@ const ScenarioList: React.FC = () => {
                   })
                 }
               />,
-              <Popconfirm
-                title={t("delete-document", { document: t("menu-scenario") })}
-                description={t("delete-document-2", {
-                  document: t("menu-scenario"),
-                })}
-                onConfirm={() => handleDeleteEmailTemplate(scenario._id)}
-                okText={t("yes-btn")}
-                cancelText={t("no-btn")}
-              >
-                <DeleteOutlined />
-              </Popconfirm>,
+              deleteIcon,
             ];
             return (
               <Badge.Ribbon
@@ -203,6 +233,7 @@ const ScenarioList: React.FC = () => {
       <div className="mt-10 mb-20 w-full">
         {!!totalItems && (
           <Pagination
+            current={page}
             onChange={onChangePagitnation}
             total={totalItems}
             pageSize={pageSize}
@@ -240,7 +271,6 @@ const ScenarioList: React.FC = () => {
         <div>
           <p>{t("global-edit")}</p>
         </div>
-
       </Modal>
     </div>
   );

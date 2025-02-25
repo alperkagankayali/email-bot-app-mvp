@@ -99,7 +99,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
 
   useEffect(() => {
     if (type === "emailTemplate" && emailTemplateStatus === "idle") {
-      dispatch(fetchEmailTemplate(6));
+      dispatch(fetchEmailTemplate({ limit: 6, page: 1 }));
     }
     if (type === "dataEntry" && dataEntryStatus === "idle") {
       dispatch(fetchDataEntry(6));

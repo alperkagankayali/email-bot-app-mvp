@@ -66,7 +66,7 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
     {
       title: t("menu-scenario-template"),
       type: "form",
-      content: <FirstTabForm next={next} form={form} />,
+      content: <FirstTabForm next={next} form={form}  />,
     },
     {
       title: t("menu-mail"),

@@ -66,17 +66,20 @@ const Summary: React.FC = () => {
   if (!!data)
     return (
       <div className=" mx-auto  bg-white shadow-md rounded-lg p-10">
-        <h1 className="text-2xl font-bold mb-4">{data.title}</h1>
+        <h1 className="text-2xl font-bold mb-4">
+          {t("label") + " : " + data.title}
+        </h1>
         <img
-          src={data.img ?? noImage}
+          src={!!data.img ? data.img : noImage}
           alt={data.title}
           className="max-w-64 h-auto mb-4"
         />
 
         <div className="mb-4">
-          <h2 className="text-xl font-semibold"> {t("scenario-type")}</h2>
-          <p>{scenarioTypeFind?.title}</p>
-          <p>{scenarioTypeFind?.description}</p>
+          <h2 className="text-xl font-semibold">
+            {" "}
+            {t("scenario-type") + " : " + scenarioTypeFind?.title}
+          </h2>
         </div>
 
         <div className="mb-4">
@@ -84,31 +87,46 @@ const Summary: React.FC = () => {
           <div className="grid grid-cols-3 gap-2">
             {emailTemplate?.some(
               (e) => e._id === (data?.emailTemplate as unknown as string)
-            )
-              ? CardTemplate(
+            ) ? (
+              <div className="flex flex-col">
+                <p>{t("menu-mail") + " : "}</p>{" "}
+                {CardTemplate(
                   emailTemplate?.find(
                     (e) => e._id === (data?.emailTemplate as unknown as string)
                   )
-                )
-              : ""}
+                )}
+              </div>
+            ) : (
+              ""
+            )}
             {landingPage?.some(
               (e) => e._id === (data?.landingPage as unknown as string)
-            )
-              ? CardTemplate(
+            ) ? (
+              <div className="flex flex-col">
+                <p>{t("menu-landing-pages") + " : "}</p>{" "}
+                {CardTemplate(
                   landingPage?.find(
                     (e) => e._id === (data?.landingPage as unknown as string)
                   )
-                )
-              : ""}
+                )}
+              </div>
+            ) : (
+              ""
+            )}
             {dataEntries?.some(
               (e) => e._id === (data?.dataEntry as unknown as string)
-            )
-              ? CardTemplate(
+            ) ? (
+              <div className="flex flex-col">
+                <p>{t("menu-data-entries") + " : "}</p>{" "}
+                {CardTemplate(
                   dataEntries?.find(
                     (e) => e._id === (data?.dataEntry as unknown as string)
                   )
-                )
-              : ""}
+                )}
+              </div>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 

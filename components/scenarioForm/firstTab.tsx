@@ -1,14 +1,6 @@
 "use client";
 import { IScenario } from "@/types/scenarioType";
-import {
-  Button,
-  Form,
-  FormInstance,
-  FormProps,
-  Input,
-  notification,
-  Select,
-} from "antd";
+import { Form, FormInstance, FormProps, Input, Select } from "antd";
 import FileUpload from "../fileUpload";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,10 +24,12 @@ const FirstTabForm = ({ next, img = "", form }: IProps) => {
     (state: RootState) => state.scenario.creteScenario
   );
   const dispatch = useDispatch<AppDispatch>();
-  const [fileUrl, setFileUrl] = useState(img);
+  const [fileUrl, setFileUrl] = useState(
+    !!scenarioData ? scenarioData.img : ""
+  );
   const languages = useSelector((state: RootState) => state.language.language);
   const handleUploadFile = (img: string) => {
-    dispatch(handleChangeScenarioData({ ...scenarioData, img }));
+    form.setFieldsValue({ ...form.getFieldsValue(), img });
     setFileUrl(img);
   };
 
@@ -44,7 +38,7 @@ const FirstTabForm = ({ next, img = "", form }: IProps) => {
       handleChangeScenarioData({
         ...scenarioData,
         ...values,
-        img: scenarioData?.img,
+        img: fileUrl,
       })
     );
     next();
