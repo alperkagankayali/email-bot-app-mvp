@@ -14,10 +14,10 @@ const config: Config = {
       satoshi: ["Satoshi", "sans-serif"],
     },
     screens: {
+      ...defaultTheme.screens,
       "2xsm": "375px",
       xsm: "425px",
       "3xl": "2000px",
-      ...defaultTheme.screens,
     },
     extend: {
       colors: {
@@ -33,7 +33,7 @@ const config: Config = {
           ...colors.red,
           DEFAULT: "#FB5454",
         },
-        "logo":"#181141",
+        logo: "#181141",
         body: "#64748B",
         bodydark: "#AEB7C0",
         bodydark1: "#DEE4EE",

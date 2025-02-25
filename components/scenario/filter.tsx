@@ -30,13 +30,16 @@ type IScenarioListFilter = {
   filter: IFilter;
 };
 
-const ScenarioListFilter: React.FC<IScenarioListFilter> = ({ pageSize,filter,setFilter }) => {
+const ScenarioListFilter: React.FC<IScenarioListFilter> = ({
+  pageSize,
+  filter,
+  setFilter,
+}) => {
   const scenarioType = useSelector(
     (state: RootState) => state.scenario.scenarioType
   );
   const languages = useSelector((state: RootState) => state.language.language);
   const data = useSelector((state: RootState) => state.scenario.scenario);
-
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -44,10 +47,11 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({ pageSize,filter,set
   const t = useTranslations("pages");
   const [selectLanguage, setSelectLanguage] = useState("");
   const [selectScenarioType, setSelectSecenariType] = useState("");
+  const [name, setName] = useState("");
 
   const onSearch = (value: any, event: any, info: any, name: string) => {
     const params = new URLSearchParams(searchParams);
-    if (value.length > 3) {
+    if (value.length > 0) {
       params.set(name, value);
     } else {
       params.delete(name);
@@ -89,21 +93,28 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({ pageSize,filter,set
   return (
     <div className="">
       <div className="flex justify-between w-full items-center mb-4">
-        {!!filter.name || filter.language || filter.authorType ? (
+        {!!filter.name ||
+        filter.language ||
+        filter.authorType.length > 0 ||
+        filter.scenarioType ? (
           <div className="flex">
             {filter.authorType.length > 0 &&
               filter.authorType.map((e) => (
                 <Tag
                   bordered={false}
                   key={e}
-                  onClose={(event) =>
+                  onClose={(event) => {
                     setFilter({
                       ...filter,
                       authorType: filter.authorType.filter(
                         (element) => element !== e
                       ),
-                    })
-                  }
+                    });
+                    handleSelect(
+                      filter.authorType.filter((element) => element !== e),
+                      "authorType"
+                    );
+                  }}
                   closable
                 >
                   {e === "superadmin" ? "Global" : "Local"}
@@ -161,6 +172,7 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({ pageSize,filter,set
                     scenarioType: "",
                     language: "",
                   });
+                  setName("");
                   setSelectSecenariType("");
                   setSelectLanguage("");
                   replace(`${pathname}`);
@@ -186,6 +198,13 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({ pageSize,filter,set
               size="large"
               className="!w-72 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               allowClear
+              value={name}
+              onClear={() => {
+                setFilter({ ...filter, name: "" });
+                setName("");
+                onSearch("", "", "", "name");
+              }}
+              onChange={(event) => setName(event.target.value)}
               onSearch={(value: any, event: any, info: any) => {
                 setFilter({ ...filter, name: value });
                 onSearch(value, event, info, "name");

@@ -86,7 +86,7 @@ export async function GET(request: Request) {
             if (authorType.split("&").length > 1) {
               filter["$or"] = [
                 { company: verificationResult?.companyId },
-                { authorType: "superadmin" },
+                { authorType: authorType.split("&")},
               ];
             } else {
               filter.authorType = authorType;

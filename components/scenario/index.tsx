@@ -36,6 +36,7 @@ const ScenarioList: React.FC = () => {
     show: false,
     data: "",
   });
+  const [localOpen, setLocalOpen] = useState(false)
   const [filter, setFilter] = useState({
     name: searchParams.get("name") ?? "",
     scenarioType: searchParams.get("scenarioType") ?? "",
@@ -125,7 +126,7 @@ const ScenarioList: React.FC = () => {
         pageSize={pageSize}
       />
       <div className="w-full">
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-3 xl:grid-cols-4 gap-4 2xl:grid-cols-5">
           {data?.map((scenario) => {
             const actions: React.ReactNode[] = [
               <Link href={"/dashboard/scenario/update/" + scenario._id}>
@@ -141,8 +142,10 @@ const ScenarioList: React.FC = () => {
                 }
               />,
               <Popconfirm
-                title={t("delete-document")}
-                description={t("delete-document-2")}
+                title={t("delete-document", { document: t("menu-scenario") })}
+                description={t("delete-document-2", {
+                  document: t("menu-scenario"),
+                })}
                 onConfirm={() => handleDeleteEmailTemplate(scenario._id)}
                 okText={t("yes-btn")}
                 cancelText={t("no-btn")}
@@ -217,9 +220,27 @@ const ScenarioList: React.FC = () => {
         open={open.show}
         onOk={() => setOpen({ show: false, data: "" })}
         onCancel={() => setOpen({ show: false, data: "" })}
+        onClose={() => setOpen({ show: false, data: "" })}
+        footer={[]}
         width={1000}
       >
         <div dangerouslySetInnerHTML={{ __html: open.data }}></div>
+      </Modal>
+      <Modal
+        title=""
+        key={"local-modal"}
+        centered
+        open={localOpen}
+        onOk={() => setLocalOpen(false)}
+        onCancel={() => setLocalOpen(false)}
+        onClose={() => setLocalOpen(false)}
+        footer={[]}
+        width={1000}
+      >
+        <div>
+          <p>{t("global-edit")}</p>
+        </div>
+
       </Modal>
     </div>
   );
