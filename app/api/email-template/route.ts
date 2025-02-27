@@ -52,7 +52,8 @@ export async function GET(request: Request) {
           const emailTemplateTotal = await EmailTemplate.countDocuments(filter);
           const emailTemplate = await EmailTemplate.find(filter)
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ created_at: -1 });
           return NextResponse.json(
             {
               ...message200,

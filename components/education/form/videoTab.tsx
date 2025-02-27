@@ -202,7 +202,7 @@ const VideoTab = ({ lang }: IProps) => {
             onChange={onChangePagitnation}
             total={totalItems}
             pageSize={pageSize}
-            showTotal={(total) => `Total ${total} items`}
+            showTotal={(total) => t("total-count", { count: total })}
             showSizeChanger
             defaultPageSize={8}
             align="center"

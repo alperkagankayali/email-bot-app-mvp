@@ -108,7 +108,7 @@ const LandingPageList: React.FC = () => {
             onChange={onChange}
             total={totalItems}
             pageSize={pageSize}
-            showTotal={(total) => `Total ${total} items`}
+            showTotal={(total) => t("total-count", { count: total })}
             showSizeChanger
             defaultPageSize={6}
             align="center"

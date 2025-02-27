@@ -165,7 +165,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
       )}
       {selectData !== null && !!selectData && selectData?.length > 0 ? (
         <div className="grid grid-cols-3 gap-4 p-8 mt-4 h-[600px] bg-white">
-          {selectData?.map((list) => {
+          {selectData?.slice(0, 6).map((list) => {
             const actions: React.ReactNode[] = [
               <EyeOutlined
                 key="ellipsis"
@@ -262,11 +262,10 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
             onChange={onChange}
             total={allstate[itemName]}
             pageSize={pageSize}
-            showTotal={(total) => `Total ${total} items`}
-            showSizeChanger
+            showTotal={(total) => t("total-count", { count: total })}
+            showSizeChanger={false}
             defaultPageSize={6}
             align="center"
-            pageSizeOptions={[6, 12, 18]}
           />
         )}
       </div>

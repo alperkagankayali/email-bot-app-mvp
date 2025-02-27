@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Badge,
+  Button,
   Card,
   Modal,
   notification,
@@ -13,7 +14,7 @@ import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchScenario, fetchScenarioType } from "@/redux/slice/scenario";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import {
@@ -50,7 +51,6 @@ const ScenarioList: React.FC = () => {
     show: false,
     data: "",
   });
-  const [localOpen, setLocalOpen] = useState(false);
   const [filter, setFilter] = useState({
     name: searchParams.get("name") ?? "",
     scenarioType: searchParams.get("scenarioType") ?? "",
@@ -59,6 +59,11 @@ const ScenarioList: React.FC = () => {
   });
   const [pageSize, setPageSize] = useState(8);
   const [page, setPage] = useState(1);
+  const [isEdit, setIsEdit] = useState({
+    show: false,
+    id: "",
+  });
+  const router = useRouter();
 
   useEffect(() => {
     if (status === "idle") {
@@ -90,7 +95,7 @@ const ScenarioList: React.FC = () => {
     );
   }, [searchParams]);
 
-  const handleDeleteEmailTemplate = async (id: string) => {
+  const handleDeleteScenario = async (id: string) => {
     const res = await deleteScenario(id);
     if (res.success) {
       notification.success({ message: res.data?.title + " deleted" });
@@ -143,17 +148,32 @@ const ScenarioList: React.FC = () => {
         pageSize={pageSize}
       />
       <div className="w-full">
-        <div className="grid grid-cols-3 xl:grid-cols-4 gap-4 2xl:grid-cols-5">
+        <div className="grid grid-cols-3 xl:grid-cols-4 gap-4 2xl:grid-cols-4">
           {data?.map((scenario) => {
-            const deleteIcon =
-              user?.role === "admin" && scenario.authorType === "superadmin" ? (
+            let deleteIcon;
+            let editIcon;
+            if (
+              user?.role === "admin" &&
+              scenario.authorType === "superadmin"
+            ) {
+              deleteIcon = (
                 <Popover
                   content={t("not-deleted", { name: t("menu-scenario") })}
                   title={""}
                 >
                   <CloseCircleOutlined />
                 </Popover>
-              ) : (
+              );
+              editIcon = (
+                <Button
+                  type="text"
+                  onClick={() => setIsEdit({ show: true, id: scenario._id })}
+                >
+                  <EditOutlined key="edit" />
+                </Button>
+              );
+            } else {
+              deleteIcon = (
                 <Popconfirm
                   title={t("delete-document", {
                     document: t("menu-scenario"),
@@ -161,17 +181,21 @@ const ScenarioList: React.FC = () => {
                   description={t("delete-document-2", {
                     document: t("menu-scenario"),
                   })}
-                  onConfirm={() => handleDeleteEmailTemplate(scenario._id)}
+                  onConfirm={() => handleDeleteScenario(scenario._id)}
                   okText={t("yes-btn")}
                   cancelText={t("no-btn")}
                 >
                   <DeleteOutlined />
                 </Popconfirm>
               );
+              editIcon = (
+                <Link href={"/dashboard/scenario/update/" + scenario._id}>
+                  <EditOutlined key="edit" />
+                </Link>
+              );
+            }
             const actions: React.ReactNode[] = [
-              <Link href={"/dashboard/scenario/update/" + scenario._id}>
-                <EditOutlined key="edit" />
-              </Link>,
+              editIcon,
               <EyeOutlined
                 key="ellipsis"
                 onClick={() =>
@@ -237,7 +261,7 @@ const ScenarioList: React.FC = () => {
             onChange={onChangePagitnation}
             total={totalItems}
             pageSize={pageSize}
-            showTotal={(total) => `Total ${total} items`}
+            showTotal={(total) => t("total-count", { count: total })}
             showSizeChanger
             defaultPageSize={8}
             align="center"
@@ -259,17 +283,29 @@ const ScenarioList: React.FC = () => {
       </Modal>
       <Modal
         title=""
-        key={"local-modal"}
+        key={"edit-modal"}
         centered
-        open={localOpen}
-        onOk={() => setLocalOpen(false)}
-        onCancel={() => setLocalOpen(false)}
-        onClose={() => setLocalOpen(false)}
-        footer={[]}
-        width={1000}
+        open={isEdit.show}
+        onCancel={() => setIsEdit({ show: false, id: "" })}
+        onClose={() => setIsEdit({ show: false, id: "" })}
+        footer={[
+          <Button key="back" onClick={() => setIsEdit({ show: false, id: "" })}>
+            {t("cancel-btn")}
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={() => {
+              router.push("/dashboard/scenario/update/" + isEdit.id);
+              setIsEdit({ id: "", show: false });
+            }}
+          >
+            {t("save-and-continue")}
+          </Button>,
+        ]}
       >
-        <div>
-          <p>{t("global-edit")}</p>
+        <div className="p-5">
+          <p>{t("global-edit-scenario")}</p>
         </div>
       </Modal>
     </div>

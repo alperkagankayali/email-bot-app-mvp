@@ -27,9 +27,9 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
   );
   useEffect(() => {
     async function fetchEmailTemplate() {
-      const res = await getEmailTemplate({id});
+      const res = await getEmailTemplate({ id });
       if (res.success) {
-        form.setFieldsValue(res.data)
+        form.setFieldsValue(res.data);
         setData(res.data);
       } else {
         message.error(res.message);
@@ -41,7 +41,7 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
   const handleSave = async (data: ILandingPage) => {
     const res = await updateEmailTemplate(id, data);
     if (res.success) {
-      dispatch(fetchEmailTemplate(8));
+      dispatch(fetchEmailTemplate({ limit: 8 }));
       router.push("/dashboard/scenario/email-templates");
     } else {
       message.error(res.message);
@@ -63,7 +63,9 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
         form={form}
         title={data?.title}
         img={data?.img}
-        language={typeof data?.language === 'string' ? data.language : undefined}
+        language={
+          typeof data?.language === "string" ? data.language : undefined
+        }
         defaultContent={data?.content}
         istType={true}
       />

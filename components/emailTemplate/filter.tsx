@@ -46,7 +46,7 @@ const EmailTemplateFilter: React.FC<IEmailTemplateFilter> = ({
     if (isDelete) {
       dispatch(
         fetchEmailTemplate({
-          limit: 6,
+          limit: isPage ? 8 : 6,
           page: pageSize,
         })
       );
@@ -54,7 +54,7 @@ const EmailTemplateFilter: React.FC<IEmailTemplateFilter> = ({
     } else {
       dispatch(
         fetchEmailTemplate({
-          limit: 6,
+          limit: isPage ? 8 : 6,
           page: pageSize,
           ...filter,
           [key]: value,
@@ -126,14 +126,17 @@ const EmailTemplateFilter: React.FC<IEmailTemplateFilter> = ({
           setFilter({ ...filter, name: event.target.value });
         }}
         onSearch={(value: any, event: any, info: any) => {
-          handleGetEmailTemplateFilter("name", event.target.value);
+          handleGetEmailTemplateFilter(
+            "name",
+            event.target.value?.toLowerCase()
+          );
         }}
         enterButton
       />
       <Select
         size="large"
         className="w-auto min-w-54"
-        placeholder="language"
+        placeholder={t("language")}
         value={filter.language || undefined}
         onChange={(value: string) => {
           handleGetEmailTemplateFilter("language", value);

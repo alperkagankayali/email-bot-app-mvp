@@ -9,7 +9,7 @@ const AddLandingPage: React.FC = async () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="landing-page-add" />
+        <Breadcrumb pageName="email-template-add" />
         <div>
           <Suspense fallback={<Loader />}>
             <AddEmailTemplateForm />

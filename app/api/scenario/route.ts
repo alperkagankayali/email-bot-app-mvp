@@ -80,13 +80,12 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
-          
           const filter: any = {};
           if (!!authorType) {
             if (authorType.split("&").length > 1) {
               filter["$or"] = [
                 { company: verificationResult?.companyId },
-                { authorType: authorType.split("&")},
+                { authorType: authorType.split("&") },
               ];
             } else {
               filter.authorType = authorType;
@@ -104,7 +103,8 @@ export async function GET(request: Request) {
               { path: "language", model: Languages, select: ["code", "name"] },
             ])
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ created_at: -1 });
           return NextResponse.json(
             {
               ...message200,
