@@ -169,8 +169,8 @@ export const getUserCsv = async (id: string) => {
   return result;
 };
 
-export const getLandingPage = async (id: string, limit = 8, page = 1) => {
-  const queryParams = jsonToQueryString({ id, limit, page });
+export const getLandingPage = async (filter: any) => {
+  const queryParams = jsonToQueryString({ ...filter });
   const url = servicesBaseUrl + finalConfig.GET_LANDING_PAGE + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
@@ -244,6 +244,13 @@ export const updateEmailTemplate = async (id: string, updateData: any) => {
   return result;
 };
 export const deleteEmailTemplate = async (id: string) => {
+  const url = servicesBaseUrl + finalConfig.DELETE_LANDING_PAGE;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};
+
+export const deleteLandingPage = async (id: string) => {
   const url = servicesBaseUrl + finalConfig.DELETE_EMAIL_TEMPLATE;
   const config = headers.content_type.application_json;
   const result: IResponseType = await postRequest(url, { id }, config);

@@ -40,7 +40,7 @@ const AddEmailTemplateForm: React.FC = () => {
   }
   return (
     <div>
-      <TemplateForm handleSave={handleSave} istType={true} />
+      <TemplateForm handleSave={handleSave} istType={true} isLanguage={true}/>
     </div>
   );
 };

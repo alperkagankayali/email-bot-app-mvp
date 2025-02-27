@@ -22,6 +22,7 @@ export interface IScenario {
   // dataEntryPageUrl: string;
   // author: IUser;
   // created_at: Date;
+  company: ICompany | string;
   _id: string;
   education: IEducationList[];
   language: ILanguage;

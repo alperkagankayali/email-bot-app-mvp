@@ -19,6 +19,7 @@ type IProps = {
   handleResetForm?: () => void;
   form?: FormInstance<any>;
   language?: string;
+  isLanguage?:boolean;
 };
 const TemplateForm = ({
   handleSave,
@@ -28,6 +29,7 @@ const TemplateForm = ({
   handleResetForm,
   form,
   language,
+  isLanguage=false
 }: IProps) => {
   const [fileUrl, setFileUrl] = useState(img);
   const [content, setContent] = useState(defaultContent);
@@ -75,7 +77,7 @@ const TemplateForm = ({
             </Form.Item>
           </div>
         </div>
-        {!!languages && languages?.length > 0 && (
+        {isLanguage && !!languages && languages?.length > 0 && (
           <div className="mb-4">
             <label className="mb-2.5 block font-medium text-black dark:text-white">
               {t("menu-language")}

@@ -36,6 +36,7 @@ const scenarioSchema = new Schema<IScenario>({
   isDelete: { type: Boolean, default: false },
   education: [{ type: Types.ObjectId, ref: "EducationList" }],
   language: { type: Types.ObjectId, ref: "Languages" },
+  company: { type: Types.ObjectId, ref: "Company" },
 });
 
 const Scenario =

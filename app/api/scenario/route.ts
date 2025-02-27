@@ -91,6 +91,12 @@ export async function GET(request: Request) {
               filter.authorType = authorType;
             }
           }
+          else if (verificationResult?.role !== "superadmin") {
+            filter["$or"] = [
+              { company: verificationResult?.companyId },
+              { authorType: "superadmin" },
+            ]
+          }
           filter.isDelete = false;
           !!scenarioType && (filter.scenarioType = scenarioType);
           !!language && (filter.language = language);

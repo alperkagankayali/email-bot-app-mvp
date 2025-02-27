@@ -39,11 +39,17 @@ export async function GET(request: Request) {
             if (authorType.split("&").length > 1) {
               filter["$or"] = [
                 { company: verificationResult?.companyId },
-                { authorType: "superadmin" },
+                { authorType: authorType.split("&") },
               ];
             } else {
               filter.authorType = authorType;
             }
+          }
+          else if (verificationResult?.role !== "superadmin") {
+            filter["$or"] = [
+              { company: verificationResult?.companyId },
+              { authorType: "superadmin" },
+            ]
           }
           filter.isDelete = false;
           !!language && (filter.language = language);

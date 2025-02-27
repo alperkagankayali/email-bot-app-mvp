@@ -1,7 +1,7 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
-import { message201, message401, message500 } from "@/constants";
+import { message201, message401, message404, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import LandingPage from "@/models/landingPage";
 
@@ -11,22 +11,56 @@ export async function POST(request: Request) {
     const { id, updateData } = await request.json();
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     if (!!token) {
-      const verificationResult = await verifyToken(token.split(" ")[1]);
+      const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
         return verificationResult; // 401 döndürecek
-      } else {
-        const landingPage = await LandingPage.findOneAndUpdate(
-          { _id: id },
-          { $set: updateData },
-          { new: true }
-        );
-        return NextResponse.json(
-          {
-            ...message201,
-            data: landingPage,
-          },
-          { status: 201 }
-        );
+      } else if (
+        verificationResult?.role === "admin" ||
+        verificationResult?.role === "superadmin"
+      ) {
+        const findLandingPage = await LandingPage.findById(id);
+        if (!findLandingPage) {
+          return NextResponse.json(
+            {
+              ...message404,
+            },
+            { status: 404 }
+          );
+        } else if (
+          verificationResult?.role === "admin" &&
+          findLandingPage.authorType === "superadmin"
+        ) {
+          const newLandingPage = new LandingPage({
+            ...findLandingPage.toObject(),
+            ...updateData,
+            _id: undefined,
+            authorType: "User",
+            author: verificationResult.id,
+          });
+
+          await newLandingPage.save();
+
+          return NextResponse.json(
+            {
+              ...message201,
+              data: newLandingPage,
+            },
+            { status: 201 }
+          );
+        } else {
+          const landingPage = await LandingPage.findOneAndUpdate(
+            { _id: id },
+            { $set: updateData },
+            { new: true }
+          );
+          return NextResponse.json(
+            {
+              ...message201,
+              data: landingPage,
+            },
+            { status: 201 }
+          );
+        }
       }
     } else {
       return NextResponse.json(

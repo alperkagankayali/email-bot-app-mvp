@@ -32,6 +32,7 @@
   "CREATE_EMAIL_TEMPLATE": "/email-template/add",
   "UPDATE_EMAIL_TEMPLATE": "/email-template/update",
   "DELETE_EMAIL_TEMPLATE": "/email-template/delete",
+  "DELETE_LANDING_PAGE": "/landing-page/delete",
   "CREATE_DATA_ENTRY": "/data-entry/add",
   "CREATE_SCENARIO": "/scenario/add",
   "UPDATE_DATA_ENTRY": "/data-entry/update",

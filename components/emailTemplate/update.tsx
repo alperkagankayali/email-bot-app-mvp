@@ -63,6 +63,7 @@ const UpdateEmailTemplateForm: React.FC<IProps> = ({ id }) => {
         form={form}
         title={data?.title}
         img={data?.img}
+        isLanguage={true}
         language={
           typeof data?.language === "string" ? data.language : undefined
         }

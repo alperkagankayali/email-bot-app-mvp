@@ -20,11 +20,11 @@ type IProps = {
 const UpdateLandingPageForm: React.FC<IProps> = ({ id }) => {
   const router = useRouter();
   const [data, setData] = useState<ILandingPage | null>(null);
-  const dispatch= useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     async function fetchLandingPage() {
-      const res = await getLandingPage(id);
+      const res = await getLandingPage({ id });
       if (res.success) {
         setData(res.data);
       } else {
@@ -37,7 +37,7 @@ const UpdateLandingPageForm: React.FC<IProps> = ({ id }) => {
   const handleSave = async (data: ILandingPage) => {
     const res = await updateLandingPage(id, data);
     if (res.success) {
-      dispatch(fetchLandingPage())
+      dispatch(fetchLandingPage({ limit: 8 }));
       router.push("/dashboard/scenario/landing-page");
     } else {
       message.error(res.message);

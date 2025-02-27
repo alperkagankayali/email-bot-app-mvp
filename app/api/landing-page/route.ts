@@ -13,6 +13,8 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get("page") || "1"); // Varsayılan 1. sayfa
     const limit = parseInt(searchParams.get("limit") || "10"); // Varsayılan limit 10
     const skip = (page - 1) * limit; //
+    const authorType = searchParams.get("authorType");
+    const name = searchParams.get("name");
     const id = searchParams.get("id");
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
@@ -30,22 +32,30 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
-          const landingPageTotal = await LandingPage.countDocuments({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
+          const filter: any = {};
+          if (!!authorType) {
+            if (authorType.split("&").length > 1) {
+              filter["$or"] = [
+                { company: verificationResult?.companyId },
+                { authorType: authorType.split("&") },
+              ];
+            } else {
+              filter.authorType = authorType;
+            }
+          } else if (verificationResult?.role !== "superadmin") {
+            filter["$or"] = [
+              { company: verificationResult?.companyId },
               { authorType: "superadmin" },
-            ],
-          });
-          const landingPage = await LandingPage.find({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
-          })
+            ];
+          }
+          filter.isDelete = false;
+          !!name && (filter.title = { $regex: name, $options: "i" });
+
+          const landingPageTotal = await LandingPage.countDocuments(filter);
+          const landingPage = await LandingPage.find(filter)
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ created_at: -1 });
           return NextResponse.json(
             {
               ...message200,

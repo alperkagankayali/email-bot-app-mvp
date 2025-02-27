@@ -151,8 +151,8 @@ export const fetchScenario = createAsyncThunk(
 
 export const fetchLandingPage = createAsyncThunk(
   "/landing-page",
-  async (limit: number) => {
-    const response = await getLandingPage("", limit, 1);
+  async (filter: any) => {
+    const response = await getLandingPage(filter);
     return response;
   }
 );

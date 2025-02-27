@@ -22,6 +22,7 @@ export async function POST(request: Request) {
           authorType:
             verificationResult?.role === "superadmin" ? "superadmin" : "User",
           author: verificationResult?.id,
+          company: verificationResult?.companyId,
         });
         const scenario = await scenarioCreate.save();
         return NextResponse.json(

@@ -13,19 +13,18 @@ const AddLandingPageForm: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleSave = async (data:ILandingPage) =>{
+  const handleSave = async (data: ILandingPage) => {
     const res = await createLandingPage(data);
-    if(res.success) {
-      dispatch(fetchLandingPage())
-      router.push("/dashboard/scenario/landing-page")
-    } 
-    else {
-      message.error(res.message)
+    if (res.success) {
+      dispatch(fetchLandingPage({ limit: 8, page: 1 }));
+      router.push("/dashboard/scenario/landing-page");
+    } else {
+      message.error(res.message);
     }
-  }
+  };
   return (
     <div>
-      <TemplateForm handleSave={handleSave}/>
+      <TemplateForm handleSave={handleSave} />
     </div>
   );
 };
