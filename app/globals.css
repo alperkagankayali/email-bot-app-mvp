@@ -52,6 +52,10 @@ body {
 .template-list .ant-radio {
   display: none !important;
 }
+.template-list .ant-ribbon-wrapper {
+  height: 100%;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

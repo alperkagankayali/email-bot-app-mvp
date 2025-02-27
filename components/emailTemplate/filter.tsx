@@ -1,15 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Button, Checkbox, Popover, Tag } from "antd";
+import React, { useState } from "react";
+import { Checkbox, Popover, Tag } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchEmailTemplate, fetchScenario } from "@/redux/slice/scenario";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { fetchEmailTemplate } from "@/redux/slice/scenario";
+import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { DeleteFilled, InfoCircleOutlined } from "@ant-design/icons";
+import { DeleteFilled } from "@ant-design/icons";
 import { Input, Select } from "antd";
-import { useSearchParams } from "next/navigation";
-import parse from "html-react-parser";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -20,194 +18,167 @@ const options = [
 ];
 type IFilter = {
   name: string;
-  authorType: Array<string>;
   language: string;
+  authorType: string[];
 };
 type IEmailTemplateFilter = {
   pageSize: number;
+  isPage: boolean;
   setFilter: (x: IFilter) => void;
   filter: IFilter;
 };
 
 const EmailTemplateFilter: React.FC<IEmailTemplateFilter> = ({
   pageSize,
+  isPage,
   filter,
   setFilter,
 }) => {
   const languages = useSelector((state: RootState) => state.language.language);
-  const data = useSelector((state: RootState) => state.scenario.emailTemplate);
-  const dispatch = useDispatch<AppDispatch>();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
   const t = useTranslations("pages");
-  const [selectLanguage, setSelectLanguage] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
 
-  const onSearch = (value: any, event: any, info: any, name: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (value.length > 3) {
-      params.set(name, value);
-    } else {
-      params.delete(name);
-    }
-    replace(`${pathname}?${params.toString()}`);
-  };
-
-  const handleSelect = (value: string | string[], type: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (value) {
-      params.set(
-        type,
-        Array.isArray(value) ? value.join("&").replaceAll(" ", "") : value
+  const handleGetEmailTemplateFilter = async (
+    key: string,
+    value: string | string[],
+    isDelete?: boolean
+  ) => {
+    if (isDelete) {
+      dispatch(
+        fetchEmailTemplate({
+          limit: 6,
+          page: pageSize,
+        })
       );
+      setFilter({ name: "", authorType: [], language: "" });
     } else {
-      params.delete(type);
+      dispatch(
+        fetchEmailTemplate({
+          limit: 6,
+          page: pageSize,
+          ...filter,
+          [key]: value,
+        })
+      );
+      setFilter({ ...filter, [key]: value });
     }
-    replace(`${pathname}?${params.toString()}`);
   };
 
-  useEffect(() => {
-    dispatch(
-      fetchEmailTemplate({
-        name: searchParams.get("name") ?? "",
-        language:
-          languages.find((e) => e.code === searchParams.get("language"))?._id ??
-          "",
-        authorType: searchParams.get("authorType") ?? "",
-        limit: pageSize,
-        page: 1,
-      })
-    );
-  }, [searchParams]);
+  const FilterTagList = (!!filter.name ||
+    filter.language ||
+    filter.authorType.length > 0) && (
+    <div className="flex">
+      {filter.authorType.length > 0 &&
+        filter.authorType.map((e) => (
+          <Tag
+            bordered={false}
+            key={e}
+            onClose={(event) =>
+              handleGetEmailTemplateFilter(
+                "authorType",
+                filter.authorType.filter((element) => element !== e)
+              )
+            }
+            closable
+          >
+            {e === "superadmin" ? "Global" : "Local"}
+          </Tag>
+        ))}
+      {!!filter.language && (
+        <Tag
+          bordered={false}
+          onClose={(event) => handleGetEmailTemplateFilter("language", "")}
+          closable
+        >
+          {languages.find((e) => e._id === filter.language)?.name}
+        </Tag>
+      )}
+      {!!filter.name && (
+        <Tag
+          bordered={false}
+          onClose={(event) => handleGetEmailTemplateFilter("name", "")}
+          closable
+        >
+          {filter.name}
+        </Tag>
+      )}
+      <Popover content={t("clear-filter")} title="">
+        <DeleteFilled
+          className="ml-2 cursor-pointer"
+          onClick={() => {
+            handleGetEmailTemplateFilter("", "", true);
+          }}
+        />
+      </Popover>
+    </div>
+  );
+
+  const FilterInput = (
+    <div className="flex items-center gap-2">
+      <Search
+        placeholder={t("title")}
+        size="large"
+        value={filter.name}
+        className="!w-72 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+        allowClear
+        onClear={() => handleGetEmailTemplateFilter("name", "")}
+        onChange={(event) => {
+          setFilter({ ...filter, name: event.target.value });
+        }}
+        onSearch={(value: any, event: any, info: any) => {
+          handleGetEmailTemplateFilter("name", event.target.value);
+        }}
+        enterButton
+      />
+      <Select
+        size="large"
+        className="w-auto min-w-54"
+        placeholder="language"
+        value={filter.language || undefined}
+        onChange={(value: string) => {
+          handleGetEmailTemplateFilter("language", value);
+        }}
+      >
+        {languages.map((e) => {
+          return (
+            <Option key={e.code} value={e._id}>
+              {e.name}
+            </Option>
+          );
+        })}
+      </Select>
+      <Checkbox.Group
+        className="!my-4"
+        options={options}
+        value={filter.authorType}
+        onChange={(value: string[]) => {
+          handleGetEmailTemplateFilter("authorType", value);
+        }}
+      />
+    </div>
+  );
 
   return (
     <div className="w-full">
-      <div className="flex justify-between w-full items-center mb-4">
-        {!!filter.name || filter.language || filter.authorType ? (
-          <div className="flex">
-            {filter.authorType.length > 0 &&
-              filter.authorType.map((e) => (
-                <Tag
-                  bordered={false}
-                  key={e}
-                  onClose={(event) =>
-                    setFilter({
-                      ...filter,
-                      authorType: filter.authorType.filter(
-                        (element) => element !== e
-                      ),
-                    })
-                  }
-                  closable
-                >
-                  {e === "superadmin" ? "Global" : "Local"}
-                </Tag>
-              ))}
-            {!!filter.language && (
-              <Tag
-                bordered={false}
-                onClose={(event) =>
-                  setFilter({
-                    ...filter,
-                    language: filter.language,
-                  })
-                }
-                closable
-              >
-                {filter.language}
-              </Tag>
-            )}
-            {!!filter.name && (
-              <Tag
-                bordered={false}
-                onClose={(event) =>
-                  setFilter({
-                    ...filter,
-                    name: "",
-                  })
-                }
-                closable
-              >
-                {filter.name}
-              </Tag>
-            )}
-            <Popover content={t("clear-filter")} title="">
-              <DeleteFilled
-                className="ml-2 cursor-pointer"
-                onClick={() => {
-                  setFilter({
-                    authorType: [],
-                    name: "",
-                    language: "",
-                  });
-                  setSelectLanguage("");
-                  replace(`${pathname}`);
-                }}
-              />
-            </Popover>
+      {isPage ? (
+        <div className="flex justify-between w-full items-center mb-4">
+          <div>
+            {FilterTagList}
+            {FilterInput}
           </div>
-        ) : (
-          <span></span>
-        )}
-        <Link
-          href={"/dashboard/scenario/email-templates/add"}
-          className="bg-[#181140] text-white px-4 py-2 rounded-md"
-        >
-          {t("email-template-add")}
-        </Link>
-      </div>
-      <div className="">
-        {!!data && (
-          <div className="flex items-center gap-1">
-            <Search
-              placeholder={t("title")}
-              size="large"
-              className="!w-72 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              allowClear
-              onSearch={(value: any, event: any, info: any) => {
-                setFilter({ ...filter, name: value });
-                onSearch(value, event, info, "name");
-              }}
-              enterButton
-            />
-
-            <Select
-              size="large"
-              className="w-auto min-w-54"
-              placeholder="language"
-              value={selectLanguage || undefined}
-              onChange={(value: string) => {
-                setSelectLanguage(value);
-                setFilter({ ...filter, language: value });
-                handleSelect(value, "language");
-              }}
-            >
-              {languages.map((e) => {
-                return (
-                  <Option key={e.code} value={e.code}>
-                    {e.name}
-                  </Option>
-                );
-              })}
-            </Select>
-            <Checkbox.Group
-              className="!my-4"
-              options={options}
-              value={filter.authorType}
-              onChange={(value: string[]) => {
-                setFilter({ ...filter, authorType: value });
-                handleSelect(value, "authorType");
-              }}
-            />
-            <Popover
-              content={parse(t.raw("author-type-desc"))}
-              title={t("description")}
-            >
-              <InfoCircleOutlined />
-            </Popover>
-          </div>
-        )}
-      </div>
+          <Link
+            href={"/dashboard/scenario/email-templates/add"}
+            className="bg-[#181140] text-white px-4 py-2 rounded-md"
+          >
+            {t("email-template-add")}
+          </Link>
+        </div>
+      ) : (
+        <div>
+          {FilterTagList}
+          {FilterInput}
+        </div>
+      )}
     </div>
   );
 };
