@@ -9,7 +9,7 @@ const QuizUpdate: React.FC<{
 }> = async ({ params: { id } }) => {
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-242.5">
+      <div className="mx-auto max-w-[67rem]">
         <Breadcrumb pageName="menu-academy-quiz-update" />
         <div>
           <Suspense fallback={<Loader />}>

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 const Scenario: React.FC = async () => {
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-242.5">
+      <div className="mx-auto max-w-[67rem]">
       <Breadcrumb pageName="menu-scenario" />
         <div>
           <Suspense fallback={<Loader />}>

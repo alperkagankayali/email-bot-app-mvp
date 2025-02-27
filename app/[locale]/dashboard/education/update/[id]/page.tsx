@@ -9,7 +9,7 @@ const EducationUpdate: React.FC<{
 }> = async ({ params: { id, locale } }) => {
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-242.5">
+      <div className="mx-auto max-w-[67rem]">
         <Breadcrumb pageName="menu-academy-education-Edit" />
         <div>
           <Suspense fallback={<Loader />}>

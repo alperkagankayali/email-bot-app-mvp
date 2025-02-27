@@ -43,18 +43,20 @@ const LandingPageList: React.FC = () => {
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchLandingPage(10));
+      dispatch(fetchLandingPage(pageSize));
     }
   }, [status, dispatch]);
 
   return (
     <div className="flex flex-col items-start">
-      <Link
-        href={"/dashboard/scenario/landing-page/add"}
-        className="bg-[#181140] text-white px-4 py-2 rounded-md"
-      >
-        {t("landing-page-add")}
-      </Link>
+      <div className="flex justify-end w-full">
+        <Link
+          href={"/dashboard/scenario/landing-page/add"}
+          className="bg-[#181140] text-white px-4 py-2 rounded-md"
+        >
+          {t("landing-page-add")}
+        </Link>
+      </div>
 
       <div className="grid grid-cols-4 gap-8 mt-4">
         {data?.map((landingpage) => {

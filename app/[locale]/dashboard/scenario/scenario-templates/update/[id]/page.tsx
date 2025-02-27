@@ -11,7 +11,7 @@ type Props = {
 const UpdateScenarioTemplate: React.FC<Props> = async ({ params: { id } }) => {
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-242.5">
+      <div className="mx-auto max-w-[67rem]">
         <Breadcrumb pageName="email-template-update" />
         <div>
           <Suspense fallback={<Loader />}>

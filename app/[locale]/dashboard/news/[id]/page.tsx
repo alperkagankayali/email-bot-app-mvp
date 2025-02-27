@@ -9,7 +9,7 @@ type Props = {
 const UpdateNews: React.FC<Props> = async ({ params: { id } }) => {
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-242.5 pb-10">
+      <div className="mx-auto max-w-[67rem] pb-10">
         <Breadcrumb pageName="menu-news-update" />
         <div>
           <Suspense fallback={<Loader />}>

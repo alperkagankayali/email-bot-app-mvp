@@ -147,7 +147,7 @@ const ScenarioList: React.FC = () => {
         setFilter={setFilter}
         pageSize={pageSize}
       />
-      <div className="w-full">
+      <div className="w-full mt-8">
         <div className="grid grid-cols-3 xl:grid-cols-4 gap-4 2xl:grid-cols-4">
           {data?.map((scenario) => {
             let deleteIcon;

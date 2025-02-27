@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const Campanies: React.FC = async () => {
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-242.5">
+      <div className="mx-auto max-w-[67rem]">
         <Breadcrumb pageName="menu-companies" />
         <div>
           <Suspense fallback={<Loader />}>

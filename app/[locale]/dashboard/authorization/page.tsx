@@ -7,7 +7,7 @@ import Loader from "@/components/common/Loader";
 const Authorization: React.FC = async () => {
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-242.5">
+      <div className="mx-auto max-w-[67rem]">
         <Breadcrumb pageName="menu-user-authorization" />
         <div>
           <Suspense fallback={<Loader />}>

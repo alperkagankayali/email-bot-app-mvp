@@ -7,7 +7,7 @@ import Loader from "@/components/common/Loader";
 const Article: React.FC = async () => {
   return (
     <DefaultLayout>
-      <div className="mx-auto max-w-242.5">
+      <div className="mx-auto max-w-[67rem]">
         <Breadcrumb pageName="menu-academy-article" />
         <div>
           <Suspense fallback={<Loader />}>
