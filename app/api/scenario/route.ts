@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     const page = parseInt(searchParams.get("page") || "1"); // Varsayılan 1. sayfa
-    const limit = parseInt(searchParams.get("limit") || "10"); // Varsayılan limit 10
+    const limit = parseInt(searchParams.get("limit") || "8"); // Varsayılan limit 10
     const name = searchParams.get("name") ?? "";
     const language = searchParams.get("language") ?? "";
     const scenarioType = searchParams.get("scenarioType") ?? "";

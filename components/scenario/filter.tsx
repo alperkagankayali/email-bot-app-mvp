@@ -1,14 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button, Checkbox, Popover, Tag } from "antd";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { DeleteFilled, InfoCircleOutlined } from "@ant-design/icons";
 import { Input, Select } from "antd";
 import { useSearchParams } from "next/navigation";
 import parse from "html-react-parser";
+import { fetchScenario } from "@/redux/slice/scenario";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -17,7 +18,7 @@ const options = [
   { label: "Global", value: "superadmin" },
   { label: "Local", value: "User" },
 ];
-type IFilter = {
+export type IFilter = {
   name: string;
   scenarioType: string;
   authorType: Array<string>;
@@ -27,63 +28,46 @@ type IScenarioListFilter = {
   pageSize: number;
   setFilter: (x: IFilter) => void;
   filter: IFilter;
-  setPage: (x: number) => void;
 };
 
 const ScenarioListFilter: React.FC<IScenarioListFilter> = ({
   filter,
   setFilter,
-  setPage,
+  pageSize,
 }) => {
   const scenarioType = useSelector(
     (state: RootState) => state.scenario.scenarioType
   );
   const languages = useSelector((state: RootState) => state.language.language);
   const data = useSelector((state: RootState) => state.scenario.scenario);
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
   const t = useTranslations("pages");
-  const [selectLanguage, setSelectLanguage] = useState("");
-  const [selectScenarioType, setSelectSecenariType] = useState("");
-  const [name, setName] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
 
-  const onSearch = (value: any, event: any, info: any, name: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (value.length > 0) {
-      params.set(name, value);
-    } else {
-      params.delete(name);
-    }
-    replace(`${pathname}?${params.toString()}`);
-  };
-
-  useEffect(() => {
-    if (
-      !(
-        !!filter.name ||
-        filter.language ||
-        filter.authorType.length > 0 ||
-        filter.scenarioType
-      )
-    ) {
-      setPage(1);
-    }
-  }, [filter]);
-
-  const handleSelect = (value: string | string[], type: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (value) {
-      params.set(
-        type,
-        Array.isArray(value) ? value.join("&").replaceAll(" ", "") : value
+  const handleGetScenarioFilter = async (
+    key: string,
+    value: string | string[],
+    isDelete?: boolean
+  ) => {
+    if (isDelete) {
+      dispatch(
+        fetchScenario({
+          limit: 8,
+          page: pageSize,
+        })
       );
+      setFilter({ name: "", authorType: [], language: "", scenarioType: "" });
     } else {
-      params.delete(type);
+      dispatch(
+        fetchScenario({
+          limit: 8,
+          page: pageSize,
+          ...filter,
+          [key]: value,
+        })
+      );
+      setFilter({ ...filter, [key]: value });
     }
-    replace(`${pathname}?${params.toString()}`);
   };
-
   return (
     <div className="">
       <div className="flex justify-between w-full items-center mb-4">
@@ -98,15 +82,9 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({
                   bordered={false}
                   key={e}
                   onClose={(event) => {
-                    setFilter({
-                      ...filter,
-                      authorType: filter.authorType.filter(
-                        (element) => element !== e
-                      ),
-                    });
-                    handleSelect(
-                      filter.authorType.filter((element) => element !== e),
-                      "authorType"
+                    handleGetScenarioFilter(
+                      "authorType",
+                      filter.authorType.filter((element) => element !== e)
                     );
                   }}
                   closable
@@ -117,26 +95,16 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({
             {!!filter.language && (
               <Tag
                 bordered={false}
-                onClose={(event) =>
-                  setFilter({
-                    ...filter,
-                    language: filter.language,
-                  })
-                }
+                onClose={(event) => handleGetScenarioFilter("language", "")}
                 closable
               >
-                {filter.language}
+                {languages?.find((e) => e._id === filter.language)?.name}
               </Tag>
             )}
             {!!filter.name && (
               <Tag
                 bordered={false}
-                onClose={(event) =>
-                  setFilter({
-                    ...filter,
-                    name: "",
-                  })
-                }
+                onClose={(event) => handleGetScenarioFilter("name", "")}
                 closable
               >
                 {filter.name}
@@ -145,31 +113,20 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({
             {!!filter.scenarioType && (
               <Tag
                 bordered={false}
-                onClose={(event) =>
-                  setFilter({
-                    ...filter,
-                    scenarioType: "",
-                  })
-                }
+                onClose={(event) => handleGetScenarioFilter("scenarioType", "")}
                 closable
               >
-                {filter.scenarioType}
+                {
+                  scenarioType?.find((e) => e._id === filter.scenarioType)
+                    ?.title
+                }
               </Tag>
             )}
             <Popover content={t("clear-filter")} title="">
               <DeleteFilled
                 className="ml-2 cursor-pointer"
                 onClick={() => {
-                  setFilter({
-                    authorType: [],
-                    name: "",
-                    scenarioType: "",
-                    language: "",
-                  });
-                  setName("");
-                  setSelectSecenariType("");
-                  setSelectLanguage("");
-                  replace(`${pathname}`);
+                  handleGetScenarioFilter("", "", true);
                 }}
               />
             </Popover>
@@ -192,16 +149,15 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({
               size="large"
               className="!w-72 rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               allowClear
-              value={name}
+              value={filter.name}
               onClear={() => {
-                setFilter({ ...filter, name: "" });
-                setName("");
-                onSearch("", "", "", "name");
+                handleGetScenarioFilter("name", "");
               }}
-              onChange={(event) => setName(event.target.value)}
+              onChange={(event) =>
+                setFilter({ ...filter, name: event.target.value })
+              }
               onSearch={(value: any, event: any, info: any) => {
-                setFilter({ ...filter, name: value });
-                onSearch(value, event, info, "name");
+                handleGetScenarioFilter("name", value);
               }}
               enterButton
             />
@@ -209,44 +165,34 @@ const ScenarioListFilter: React.FC<IScenarioListFilter> = ({
               <Select
                 size="large"
                 className="w-auto min-w-54"
-                value={selectScenarioType || undefined}
+                value={filter.scenarioType || undefined}
                 placeholder={t("scenario-type")}
                 onChange={(value: string) => {
-                  setFilter({ ...filter, scenarioType: value });
-                  setSelectSecenariType(value);
-                  handleSelect(value, "scenarioType");
+                  handleGetScenarioFilter("scenarioType", value);
                 }}
                 options={scenarioType?.map((type) => {
-                  return { value: type.title, label: type.title };
+                  return { value: type._id, label: type.title };
                 })}
               />
             )}
             <Select
               size="large"
               className="w-auto min-w-54"
-              placeholder="language"
-              value={selectLanguage || undefined}
+              placeholder={t("language")}
+              value={filter.language || undefined}
               onChange={(value: string) => {
-                setSelectLanguage(value);
-                setFilter({ ...filter, language: value });
-                handleSelect(value, "language");
+                handleGetScenarioFilter("language", value);
               }}
-            >
-              {languages.map((e) => {
-                return (
-                  <Option key={e.code} value={e.code}>
-                    {e.name}
-                  </Option>
-                );
+              options={languages?.map((type) => {
+                return { value: type._id, label: type.name };
               })}
-            </Select>
+            />
             <Checkbox.Group
               className="!my-4"
               options={options}
               value={filter.authorType}
               onChange={(value: string[]) => {
-                setFilter({ ...filter, authorType: value });
-                handleSelect(value, "authorType");
+                handleGetScenarioFilter("authorType", value);
               }}
             />
             <Popover

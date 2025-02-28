@@ -72,6 +72,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
     data: "",
   });
   const [selected, setSelected] = useState(scenarioData[type] ?? "");
+  const [page, setPage] = useState(1);
   const [filter, setFilter] = useState<{
     name: string;
     language: string;
@@ -84,27 +85,21 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
 
   const onChange: PaginationProps["onChange"] = async (page, pageNumber) => {
     if (type === "emailTemplate") {
-      const res = await getEmailTemplate({
-        limit: pageNumber,
-        page: page,
-        ...filter,
-      });
-      if (res.success && !!emailTemplate) {
-        dispatch(handleChangeEmailData(res.data));
-      }
+      dispatch(
+        fetchEmailTemplate({
+          limit: pageNumber,
+          page: page,
+          ...filter,
+        })
+      );
     } else if (type === "landingPage") {
-      const res = await getLandingPage("", pageNumber, page);
-      if (res.success && !!landingPage) {
-        dispatch(handleChangeLandingPage(res.data));
-      }
+      dispatch(fetchLandingPage({ limit: pageNumber, page }));
     } else if (type === "dataEntry") {
-      const res = await getDataEntries("", pageNumber, page);
-      if (res.success && !!dataEntries) {
-        dispatch(handleChangeDataEntry(res.data));
-      }
+      dispatch(fetchDataEntry({ limit: pageNumber, page }));
     } else {
       notification.error({ message: "type is not defined" });
     }
+    setPage(page)
     setPageSize(pageNumber);
   };
 
@@ -128,6 +123,8 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
 
   useEffect(() => {
     if (!!scenarioData[type]) {
+      setPage(1)
+      setPageSize(6)
       setSelected(scenarioData[type]);
     }
   }, [type]);
@@ -154,7 +151,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
   }
 
   return (
-    <div className="flex flex-col items-start">
+    <div className="flex flex-col items-start bg-white">
       {type === "emailTemplate" && (
         <EmailTemplateFilter
           filter={filter}
@@ -164,7 +161,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
         />
       )}
       {selectData !== null && !!selectData && selectData?.length > 0 ? (
-        <div className="grid grid-cols-3 gap-4 p-8 mt-4 h-[600px] bg-white">
+        <div className="grid grid-cols-3 gap-4 p-8 mt-4 w-full bg-white">
           {selectData?.slice(0, 6).map((list) => {
             const actions: React.ReactNode[] = [
               <EyeOutlined
@@ -260,6 +257,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
         {!!allstate[itemName] && (
           <Pagination
             onChange={onChange}
+            current={page}
             total={allstate[itemName]}
             pageSize={pageSize}
             showTotal={(total) => t("total-count", { count: total })}

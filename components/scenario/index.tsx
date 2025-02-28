@@ -26,7 +26,7 @@ import {
 import type { PaginationProps } from "antd";
 import { useSearchParams } from "next/navigation";
 import { deleteScenario } from "@/services/service/scenarioService";
-import ScenarioListFilter from "./filter";
+import ScenarioListFilter, { IFilter } from "./filter";
 
 const { Meta } = Card;
 
@@ -35,27 +35,22 @@ const ScenarioList: React.FC = () => {
   const scenarioTypeStatus = useSelector(
     (state: RootState) => state.scenario.scenarioTypeStatus
   );
-  const scenarioType = useSelector(
-    (state: RootState) => state.scenario.scenarioType
-  );
   const user = useSelector((state: RootState) => state.user.user);
-  const languages = useSelector((state: RootState) => state.language.language);
   const data = useSelector((state: RootState) => state.scenario.scenario);
   const totalItems = useSelector(
     (state: RootState) => state.scenario.scenarioTotalItem
   );
   const dispatch = useDispatch<AppDispatch>();
-  const searchParams = useSearchParams();
   const t = useTranslations("pages");
   const [open, setOpen] = useState({
     show: false,
     data: "",
   });
-  const [filter, setFilter] = useState({
-    name: searchParams.get("name") ?? "",
-    scenarioType: searchParams.get("scenarioType") ?? "",
-    authorType: searchParams.get("authorType")?.split("&") ?? [],
-    language: searchParams.get("language") ?? "",
+  const [filter, setFilter] = useState<IFilter>({
+    name: "",
+    scenarioType: "",
+    authorType: [],
+    language: "",
   });
   const [pageSize, setPageSize] = useState(8);
   const [page, setPage] = useState(1);
@@ -77,23 +72,23 @@ const ScenarioList: React.FC = () => {
     }
   }, [scenarioTypeStatus, dispatch]);
 
-  useEffect(() => {
-    dispatch(
-      fetchScenario({
-        name: searchParams.get("name") ?? "",
-        language:
-          languages.find((e) => e.code === searchParams.get("language"))?._id ??
-          "",
-        authorType: searchParams.get("authorType") ?? "",
-        scenarioType:
-          scenarioType?.find(
-            (e) => e.title === searchParams.get("scenarioType")
-          )?._id ?? "",
-        limit: pageSize,
-        page: 1,
-      })
-    );
-  }, [searchParams]);
+  // useEffect(() => {
+  //   dispatch(
+  //     fetchScenario({
+  //       name: "",
+  //       language:
+  //         languages.find((e) => e.code === "",
+  //         "",
+  //       authorType: "",
+  //       scenarioType:
+  //         scenarioType?.find(
+  //           (e) => e.title === "",
+  //         )?._id ?? "",
+  //       limit: pageSize,
+  //       page: 1,
+  //     })
+  //   );
+  // }, [searchParams]);
 
   const handleDeleteScenario = async (id: string) => {
     const res = await deleteScenario(id);
@@ -101,15 +96,6 @@ const ScenarioList: React.FC = () => {
       notification.success({ message: res.data?.title + " deleted" });
       dispatch(
         fetchScenario({
-          name: searchParams.get("name") ?? "",
-          language:
-            languages.find((e) => e.code === searchParams.get("language"))
-              ?._id ?? "",
-          authorType: searchParams.get("authorType") ?? "",
-          scenarioType:
-            scenarioType?.find(
-              (e) => e.title === searchParams.get("scenarioType")
-            )?._id ?? "",
           limit: pageSize,
           page: page,
         })
@@ -129,10 +115,10 @@ const ScenarioList: React.FC = () => {
       fetchScenario({
         limit: pageNumber,
         page,
-        name: searchParams.get("name") ?? "",
-        language: searchParams.get("language") ?? "",
-        authorType: searchParams.get("authorType") ?? "",
-        scenarioType: searchParams.get("scenarioType") ?? "",
+        name: "",
+        language: "",
+        authorType: "",
+        scenarioType: "",
       })
     );
     setPageSize(pageNumber);
@@ -143,9 +129,8 @@ const ScenarioList: React.FC = () => {
     <div className="">
       <ScenarioListFilter
         filter={filter}
-        setPage={setPage}
         setFilter={setFilter}
-        pageSize={pageSize}
+        pageSize={page}
       />
       <div className="w-full mt-8">
         <div className="grid grid-cols-3 xl:grid-cols-4 gap-4 2xl:grid-cols-4">

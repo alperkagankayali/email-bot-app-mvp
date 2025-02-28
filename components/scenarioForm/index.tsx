@@ -9,6 +9,7 @@ import TemplateList from "./templateList";
 import { useTranslations } from "next-intl";
 import Summary from "./summury";
 import DataEntryTab from "./dataEntryTab";
+import { useRouter } from "@/i18n/routing";
 
 type IProps = { handleCreateScenario: () => void };
 const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
@@ -56,6 +57,7 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
   const prev = () => {
     setCurrent(current - 1);
   };
+  const router = useRouter();
 
   const t = useTranslations("pages");
   const isDataEntry =
@@ -129,11 +131,14 @@ const ScenarioForm: React.FC<IProps> = ({ handleCreateScenario }) => {
         {current !== steps.length - 1 && (
           <div className="flex w-full justify-between">
             <Button
-              disabled={current === 0}
               className="cursor-pointer rounded-lg border !border-black-2 !bg-transparent !p-7 !text-black transition hover:bg-opacity-90 mr-4"
-              onClick={() => prev()}
+              onClick={() => {
+                if (current === 0) {
+                  router.back();
+                } else prev();
+              }}
             >
-              {t("previous-btn")}
+              {current === 0 ? t("back-btn-form") : t("previous-btn")}
             </Button>
 
             {current > 0 ? (

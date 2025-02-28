@@ -3,11 +3,17 @@ import React, { useEffect } from "react";
 import ScenarioForm from ".";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { handleChangeScenarioData } from "@/redux/slice/scenario";
+import {
+  fetchScenario,
+  handleChangeScenarioData,
+} from "@/redux/slice/scenario";
 import Loader from "../common/Loader";
 import { useRouter } from "@/i18n/routing";
 import { notification } from "antd";
-import { getScenario, updateScenario } from "@/services/service/scenarioService";
+import {
+  getScenario,
+  updateScenario,
+} from "@/services/service/scenarioService";
 type IProps = {
   id: string;
 };
@@ -22,6 +28,7 @@ const UpdateScenarioForm: React.FC<IProps> = ({ id }) => {
   const handleUpdateScenario = async () => {
     const res = await updateScenario(id, scenarioData);
     if (res.success) {
+      dispatch(fetchScenario({ limit: 8, page: 1 }));
       router.push("/dashboard/scenario");
     } else {
       notification.error({ message: res.message });
@@ -50,7 +57,6 @@ const UpdateScenarioForm: React.FC<IProps> = ({ id }) => {
       dispatch(handleChangeScenarioData(null));
     };
   }, []);
-
 
   if (!!scenarioData) {
     return (
