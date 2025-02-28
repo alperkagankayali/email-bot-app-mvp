@@ -14,7 +14,8 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get("limit") || "10"); // Varsayılan limit 10
     const skip = (page - 1) * limit; //
     const id = searchParams.get("id");
-
+    const authorType = searchParams.get("authorType");
+    const name = searchParams.get("name");
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
@@ -31,22 +32,31 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
-          const dataEntryTotal = await DataEntry.countDocuments({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
+          const filter: any = {};
+          if (!!authorType) {
+            if (authorType.split("&").length > 1) {
+              filter["$or"] = [
+                { company: verificationResult?.companyId },
+                { authorType: authorType.split("&") },
+              ];
+            } else {
+              filter.authorType = authorType;
+            }
+          } else if (verificationResult?.role !== "superadmin") {
+            filter["$or"] = [
+              { company: verificationResult?.companyId },
               { authorType: "superadmin" },
-            ],
-          });
-          const dataEntry = await DataEntry.find({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
-          })
+            ];
+          }
+          filter.isDelete = false;
+          !!name && (filter.title = { $regex: name, $options: "i" });
+
+          const dataEntryTotal = await DataEntry.countDocuments(filter);
+          const dataEntry = await DataEntry.find(filter)
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ created_at: -1 });
+
           return NextResponse.json(
             {
               ...message200,

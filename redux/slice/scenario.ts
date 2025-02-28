@@ -167,8 +167,8 @@ export const fetchEmailTemplate = createAsyncThunk(
 
 export const fetchDataEntry = createAsyncThunk(
   "/data-entry",
-  async (limit: number) => {
-    const response = await getDataEntries("", limit, 1);
+  async (filter: any) => {
+    const response = await getDataEntries(filter);
     return response;
   }
 );

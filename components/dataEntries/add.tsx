@@ -16,7 +16,7 @@ const AddDataEntryForm: React.FC = () => {
   const handleSave = async (data: ILandingPage) => {
     const res = await createDataEntry(data);
     if (res.success) {
-      dispatch(fetchDataEntry());
+      dispatch(fetchDataEntry({ limit: 8, page: 1 }));
       router.push("/dashboard/scenario/data-entries");
     } else {
       message.error(res.message);

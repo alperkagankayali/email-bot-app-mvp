@@ -2,9 +2,9 @@ import { IDataEntry } from "@/types/scenarioType";
 import { Schema, Types, model, models } from "mongoose";
 
 const dataEntrySchema = new Schema<IDataEntry>({
-  title: { type: String },
+  title: { type: String, required: true },
   img: { type: String },
-  content: { type: String },
+  content: { type: String, required: true },
   created_at: { type: Date, default: Date.now },
   isDelete: { type: Boolean, default: false },
   authorType: {
@@ -15,11 +15,12 @@ const dataEntrySchema = new Schema<IDataEntry>({
   author: {
     type: Types.ObjectId,
     required: true,
-    refPath: "authorType", 
+    refPath: "authorType",
   },
   company: { type: Types.ObjectId, ref: "Company" },
 });
 
-const DataEntry = models.DataEntry || model<IDataEntry>("DataEntry", dataEntrySchema);
+const DataEntry =
+  models.DataEntry || model<IDataEntry>("DataEntry", dataEntrySchema);
 
 export default DataEntry;

@@ -116,7 +116,7 @@ const LandingPageList: React.FC = () => {
           ) {
             deleteIcon = (
               <Popover
-                content={t("not-deleted", { name: t("menu-scenario") })}
+                content={t("not-deleted", { name: t("menu-landing-pages") })}
                 title={""}
               >
                 <CloseCircleOutlined />
@@ -136,10 +136,10 @@ const LandingPageList: React.FC = () => {
             deleteIcon = (
               <Popconfirm
                 title={t("delete-document", {
-                  document: t("menu-scenario"),
+                  document: t("menu-landing-pages"),
                 })}
                 description={t("delete-document-2", {
-                  document: t("menu-scenario"),
+                  document: t("menu-landing-pages"),
                 })}
                 onConfirm={() => handleDeleteLandingPage(landingpage._id || "")}
                 okText={t("yes-btn")}

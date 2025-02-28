@@ -1,9 +1,8 @@
 import connectToDatabase from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
-import { message200, message201, message401, message500 } from "@/constants";
+import { message201, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
-import LandingPage from "@/models/landingPage";
 import DataEntry from "@/models/dataEntry";
 import { ISuperAdminJWT, IUserJWT } from "../../user/login/route";
 
@@ -22,7 +21,7 @@ export async function POST(request: Request) {
           ...body,
           author: verificationResult?.id,
           authorType:
-            verificationResult?.role === "admin" ? "user" : "superadmin",
+            verificationResult?.role === "admin" ? "User" : "superadmin",
           company: verificationResult?.companyId,
         });
         const dataEntry = await dataEntryCreate.save();

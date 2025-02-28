@@ -177,8 +177,8 @@ export const getLandingPage = async (filter: any) => {
   return result;
 };
 
-export const getDataEntries = async (id: string, limit = 8, page = 1) => {
-  const queryParams = jsonToQueryString({ id, limit, page });
+export const getDataEntries = async (filter:any) => {
+  const queryParams = jsonToQueryString({ ...filter });
   const url = servicesBaseUrl + finalConfig.GET_DATA_ENTRY + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
@@ -250,8 +250,15 @@ export const deleteEmailTemplate = async (id: string) => {
   return result;
 };
 
+export const deleteDataEntry = async (id: string) => {
+  const url = servicesBaseUrl + finalConfig.DELETE_LANDING_PAGE;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};
+
 export const deleteLandingPage = async (id: string) => {
-  const url = servicesBaseUrl + finalConfig.DELETE_EMAIL_TEMPLATE;
+  const url = servicesBaseUrl + finalConfig.DELETE_DATA_ENTRY;
   const config = headers.content_type.application_json;
   const result: IResponseType = await postRequest(url, { id }, config);
   return result;
