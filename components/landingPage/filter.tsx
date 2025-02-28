@@ -111,7 +111,7 @@ const LandingPageFilter: React.FC<ILandingPageFilter> = ({
           setFilter({ ...filter, name: event.target.value });
         }}
         onSearch={(value: any, event: any, info: any) => {
-          handleGetLandingPageFilter("name", event.target.value);
+          handleGetLandingPageFilter("name", value);
         }}
         enterButton
       />

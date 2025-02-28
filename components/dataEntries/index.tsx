@@ -43,7 +43,9 @@ const DataEntriesList: React.FC = () => {
     (state: RootState) => state.scenario.dataEntryStatus
   );
   const data = useSelector((state: RootState) => state.scenario.dataEntries);
-  const totalItems = useSelector((state: RootState) => state.scenario.dataEntryTotalItem);
+  const totalItems = useSelector(
+    (state: RootState) => state.scenario.dataEntryTotalItem
+  );
   const dispatch = useDispatch<AppDispatch>();
   const t = useTranslations("pages");
   const user = useSelector((state: RootState) => state.user.user);
@@ -72,10 +74,7 @@ const DataEntriesList: React.FC = () => {
   const handleDeleteDataEntry = async (id: string) => {
     const res = await deleteLandingPage(id);
     if (res.success) {
-      const res2 = await getDataEntries({ limit: pageSize, page });
-      if (res2.success && !!data) {
-        dispatch(handleChangeDataEntry(res.data));
-      }
+      dispatch(fetchDataEntry({ limit: pageSize, page }));
       notification.success({ message: t(res.message) });
     }
   };
@@ -110,7 +109,7 @@ const DataEntriesList: React.FC = () => {
           if (user?.role === "admin" && dataEntry.authorType === "superadmin") {
             deleteIcon = (
               <Popover
-                content={t("not-deleted", { name: t("menu-data-etnry") })}
+                content={t("not-deleted", { name: t("menu-data-entries") })}
                 title={""}
               >
                 <CloseCircleOutlined />
@@ -130,10 +129,10 @@ const DataEntriesList: React.FC = () => {
             deleteIcon = (
               <Popconfirm
                 title={t("delete-document", {
-                  document: t("menu-data-etnry"),
+                  document: t("menu-data-entries"),
                 })}
                 description={t("delete-document-2", {
-                  document: t("menu-data-etnry"),
+                  document: t("menu-data-entries"),
                 })}
                 onConfirm={() => handleDeleteDataEntry(dataEntry._id || "")}
                 okText={t("yes-btn")}

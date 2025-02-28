@@ -24,7 +24,6 @@ import {
   EyeOutlined,
 } from "@ant-design/icons";
 import type { PaginationProps } from "antd";
-import { useSearchParams } from "next/navigation";
 import { deleteScenario } from "@/services/service/scenarioService";
 import ScenarioListFilter, { IFilter } from "./filter";
 
@@ -72,24 +71,6 @@ const ScenarioList: React.FC = () => {
     }
   }, [scenarioTypeStatus, dispatch]);
 
-  // useEffect(() => {
-  //   dispatch(
-  //     fetchScenario({
-  //       name: "",
-  //       language:
-  //         languages.find((e) => e.code === "",
-  //         "",
-  //       authorType: "",
-  //       scenarioType:
-  //         scenarioType?.find(
-  //           (e) => e.title === "",
-  //         )?._id ?? "",
-  //       limit: pageSize,
-  //       page: 1,
-  //     })
-  //   );
-  // }, [searchParams]);
-
   const handleDeleteScenario = async (id: string) => {
     const res = await deleteScenario(id);
     if (res.success) {
@@ -133,7 +114,7 @@ const ScenarioList: React.FC = () => {
         pageSize={page}
       />
       <div className="w-full mt-8">
-        <div className="grid grid-cols-3 xl:grid-cols-4 gap-4 2xl:grid-cols-4">
+        <div className="grid grid-cols-3 xl:grid-cols-4 gap-4 2xl:grid-cols-4 w-full">
           {data?.map((scenario) => {
             let deleteIcon;
             let editIcon;

@@ -66,10 +66,7 @@ const LandingPageList: React.FC = () => {
   const handleDeleteLandingPage = async (id: string) => {
     const res = await deleteEmailTemplate(id);
     if (res.success) {
-      const res2 = await getLandingPage({ limit: pageSize, page });
-      if (res2.success && !!data) {
-        dispatch(handleChangeLandingPage(res.data));
-      }
+      dispatch(fetchLandingPage({ limit: pageSize, page }));
       notification.success({ message: t(res.message) });
     }
   };
@@ -106,7 +103,7 @@ const LandingPageList: React.FC = () => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-4 gap-8 mt-4">
+      <div className="grid grid-cols-3 xl:grid-cols-4 gap-4 2xl:grid-cols-4 mt-8 w-full">
         {data?.map((landingpage) => {
           let deleteIcon;
           let editIcon;
@@ -181,13 +178,19 @@ const LandingPageList: React.FC = () => {
                 hoverable
                 loading={status === "loading"}
                 style={{ width: 240 }}
+                rootClassName="flex h-full"
+                className="flex flex-col "
                 cover={
                   <Image
                     width={240}
                     height={100}
                     className="h-30 object-contain bg-[#03162b]"
                     alt={landingpage.title}
-                    src={status === "loading" || !!!landingpage.img ? noImage : landingpage.img}
+                    src={
+                      status === "loading" || !!!landingpage.img
+                        ? noImage
+                        : landingpage.img
+                    }
                   />
                 }
               >

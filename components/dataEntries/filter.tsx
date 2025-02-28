@@ -110,7 +110,7 @@ const DataEntryFilter: React.FC<IDataEntryFilter> = ({
           setFilter({ ...filter, name: event.target.value });
         }}
         onSearch={(value: any, event: any, info: any) => {
-          handleGetDataEntryFilter("name", event.target.value);
+          handleGetDataEntryFilter("name", value);
         }}
         enterButton
       />

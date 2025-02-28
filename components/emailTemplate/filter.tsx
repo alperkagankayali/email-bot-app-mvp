@@ -126,10 +126,7 @@ const EmailTemplateFilter: React.FC<IEmailTemplateFilter> = ({
           setFilter({ ...filter, name: event.target.value });
         }}
         onSearch={(value: any, event: any, info: any) => {
-          handleGetEmailTemplateFilter(
-            "name",
-            event.target.value?.toLowerCase()
-          );
+          handleGetEmailTemplateFilter("name", value);
         }}
         enterButton
       />

@@ -95,7 +95,7 @@ const EmailTemplateList: React.FC = () => {
         isPage={true}
         setFilter={setFilter}
       />
-      <div className="grid grid-cols-4 gap-8 mt-4">
+      <div className="grid grid-cols-3 xl:grid-cols-4 gap-4 2xl:grid-cols-4 mt-4 w-full">
         {data?.map((emailTemplate) => {
           let deleteIcon;
           let editIcon;
@@ -173,6 +173,7 @@ const EmailTemplateList: React.FC = () => {
                 key={emailTemplate._id}
                 hoverable
                 rootClassName="flex h-full"
+                className="flex flex-col "
                 loading={status === "loading"}
                 style={{ width: 240 }}
                 cover={

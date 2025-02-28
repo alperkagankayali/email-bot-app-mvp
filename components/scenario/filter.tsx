@@ -1,18 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, Checkbox, Popover, Tag } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { DeleteFilled, InfoCircleOutlined } from "@ant-design/icons";
 import { Input, Select } from "antd";
-import { useSearchParams } from "next/navigation";
 import parse from "html-react-parser";
 import { fetchScenario } from "@/redux/slice/scenario";
 
 const { Search } = Input;
-const { Option } = Select;
 
 const options = [
   { label: "Global", value: "superadmin" },
