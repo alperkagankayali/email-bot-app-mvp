@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import StoreProvider from "../StoreProvider";
 import { routing } from "@/i18n/routing";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { getResource } from "@/services/service/generalService";
 import Loader from "@/components/common/Loader";
 import Favicon from "@/components/favicon";
@@ -30,7 +30,7 @@ export async function generateMetadata({
     };
   } catch (error) {
     return {
-      title: "Email MVP",
+      title: "Email MVP"
     };
   }
 }
@@ -52,14 +52,23 @@ export default async function LocaleLayout({
         <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body>
-        <StoreProvider>
-          <NextIntlClientProvider locale={locale} messages={messages?.data || {}}>
-            <AntdRegistry>
-              <Favicon />
-              {children}
-            </AntdRegistry>
-          </NextIntlClientProvider>
-        </StoreProvider>
+        <Suspense fallback={<Loader />}>
+          <StoreProvider>
+            <NextIntlClientProvider 
+              locale={locale} 
+              messages={messages?.data || {}}
+              now={new Date()}
+              timeZone="Europe/Istanbul"
+            >
+              <AntdRegistry>
+                <Suspense fallback={<Loader />}>
+                  <Favicon />
+                  {children}
+                </Suspense>
+              </AntdRegistry>
+            </NextIntlClientProvider>
+          </StoreProvider>
+        </Suspense>
       </body>
     </html>
   );

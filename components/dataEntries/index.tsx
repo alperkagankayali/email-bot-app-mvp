@@ -72,7 +72,7 @@ const DataEntriesList: React.FC = () => {
                     height={150}
                     className="min-h-50 object-cover"
                     alt={dataEntry.title}
-                    src={status === "loading" ? noImage : dataEntry.img}
+                    src={status === "loading" || !!!dataEntry.img ? noImage : dataEntry.img}
                   />
                 }
               >

@@ -2,15 +2,21 @@ import { defineRouting } from "next-intl/routing";
 import { createNavigation } from "next-intl/navigation";
 import { languageCodeLists } from "@/constants";
 
+// Routing yapılandırmasını optimize edelim
 export const routing = defineRouting({
   // A list of all locales that are supported
   locales: languageCodeLists,
 
   // Used when no locale matches
   defaultLocale: "en",
+
+  // Sayfa geçişlerini hızlandırmak için
+  prefetch: "intent", // Mouse hover olduğunda prefetch yapar
+
+  // Locale detection'ı devre dışı bırakalım
+  localeDetection: false,
 });
 
-// Lightweight wrappers around Next.js' navigation APIs
-// that will consider the routing configuration
-export const { Link, redirect, usePathname, useRouter,getPathname,permanentRedirect } =
+// Navigation API'lerini optimize edelim
+export const { Link, redirect, usePathname, useRouter, getPathname, permanentRedirect } =
   createNavigation(routing);
