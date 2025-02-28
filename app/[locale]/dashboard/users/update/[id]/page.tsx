@@ -1,24 +1,23 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import UserTable from "@/components/users";
 import Loader from "@/components/common/Loader";
-
+import AddUser from "@/components/users/addUser";
 
 type Props = {
   params: { id: string };
 };
-const UserById = async ({ params: { id } }: Props) => {
+const UserUpdate = async ({ params: { id } }: Props) => {
   return (
     <DefaultLayout>
       <div className="mx-auto">
-      <Suspense fallback={<Loader />}>
-        <Breadcrumb pageName="menu-users" />
-        <UserTable id={id} />
-      </Suspense>
+        <Suspense fallback={<Loader />}>
+          <Breadcrumb pageName="menu-users" />
+          <AddUser id={id} />
+        </Suspense>
       </div>
     </DefaultLayout>
   );
 };
 
-export default UserById;
+export default UserUpdate;

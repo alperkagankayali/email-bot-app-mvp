@@ -57,7 +57,7 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({
         value={content}
         config={config}
         onBlur={(newContent) => setContent(newContent)}
-        onChange={(newContent) => {}}
+        onChange={(newContent) => {setContent(newContent)}}
       />
     </div>
   );

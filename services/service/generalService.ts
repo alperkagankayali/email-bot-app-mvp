@@ -49,8 +49,8 @@ export const getResourceAll = async (limit = 10, page = 1, filter: any) => {
   return result;
 };
 
-export const getAllUsers = async (limit = 10, page = 1) => {
-  const queryParams = jsonToQueryString({ limit, page });
+export const getAllUsers = async (id = "") => {
+  const queryParams = jsonToQueryString({ id });
   const url = servicesBaseUrl + finalConfig.GET_ALL_USERS + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);
@@ -177,7 +177,7 @@ export const getLandingPage = async (filter: any) => {
   return result;
 };
 
-export const getDataEntries = async (filter:any) => {
+export const getDataEntries = async (filter: any) => {
   const queryParams = jsonToQueryString({ ...filter });
   const url = servicesBaseUrl + finalConfig.GET_DATA_ENTRY + queryParams;
   const config = headers.content_type.application_json;
@@ -243,6 +243,17 @@ export const updateEmailTemplate = async (id: string, updateData: any) => {
   );
   return result;
 };
+export const updateUser = async (id: string, updateData: any) => {
+  const url = servicesBaseUrl + finalConfig.UPDATE_USER;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(
+    url,
+    { id, updateData },
+    config
+  );
+  return result;
+};
+
 export const deleteEmailTemplate = async (id: string) => {
   const url = servicesBaseUrl + finalConfig.DELETE_LANDING_PAGE;
   const config = headers.content_type.application_json;

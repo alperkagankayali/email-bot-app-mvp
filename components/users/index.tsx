@@ -257,7 +257,9 @@ const UserTable = ({ id }: IProps) => {
             ) : (
               <Typography.Link
                 disabled={editingKey !== ""}
-                // onClick={() => edit(record._id)}
+                onClick={() =>
+                  router.push("/dashboard/users/update/" + record._id)
+                }
               >
                 {t("resources-edit")}
               </Typography.Link>

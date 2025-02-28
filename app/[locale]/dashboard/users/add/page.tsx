@@ -17,7 +17,7 @@ const Resource = async () => {
         <Breadcrumb pageName="menu-users" />
         <div>
           <Suspense fallback={<Loader />}>
-            <AddUser />
+            <AddUser id=""/>
           </Suspense>
         </div>
       </div>

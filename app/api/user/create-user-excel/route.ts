@@ -26,7 +26,12 @@ async function processExcelData(rows: any[], user: any) {
 
     const userCreated = await User.insertMany(
       rows.map((usermap: any) => {
-        return { ...usermap, password: passwordHash, company: user.companyId };
+        return {
+          ...usermap,
+          nameSurname: usermap.name +" "+ usermap.surname,
+          password: passwordHash,
+          company: user.companyId,
+        };
       })
     );
 

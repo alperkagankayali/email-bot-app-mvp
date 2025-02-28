@@ -38,6 +38,7 @@
   "UPDATE_DATA_ENTRY": "/data-entry/update",
   "DELETE_DATA_ENTRY": "/data-entry/delete",
   "UPDATE_PASSWORD": "/user/update-password",
+  "UPDATE_USER": "/user/update",
   "DELETE_SCENARIO": "/scenario/delete",
   "GET_VIDEO": "/education-content/video",
   "ADD_VIDEO": "/education-content/video/add",

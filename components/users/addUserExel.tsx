@@ -103,7 +103,10 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
         <table className="w-full mt-4">
           <tr>
             <th className="border border-gray-200 text-center p-2">
-              nameSurname
+              {t("user-table-name-surname")?.split(" ")[0]}
+            </th>
+            <th className="border border-gray-200 text-center p-2">
+              {t("user-table-name-surname")?.split(" ")[1]}
             </th>
             <th className="border border-gray-200 text-center p-2">email</th>
             <th className="border border-gray-200 text-center p-2">language</th>
@@ -122,6 +125,7 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
             <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center">
               admin | user
             </td>
+            <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center"></td>
           </tr>
         </table>
         <div className="mt-6">

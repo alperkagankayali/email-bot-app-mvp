@@ -30,7 +30,7 @@ export async function POST(request: Request) {
           return NextResponse.json(
             {
               ...message403,
-              message: "Excel'deki email adresleri şirketinizde ekli değil",
+              message: "kayıtlı email adresleri şirketinizde ekli değil",
             },
             { status: 403 }
           );
