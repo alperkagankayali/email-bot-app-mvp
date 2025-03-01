@@ -66,7 +66,7 @@ const DataEntriesList: React.FC = () => {
   });
 
   const onChange: PaginationProps["onChange"] = async (page, pageNumber) => {
-    dispatch(fetchDataEntry({ limit: pageSize, page }));
+    dispatch(fetchDataEntry({ limit: pageNumber, page }));
     setPage(page);
     setPageSize(pageNumber);
   };
