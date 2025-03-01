@@ -13,6 +13,7 @@ import Loader from "../common/Loader";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { fetchLandingPage } from "@/redux/slice/scenario";
+import { useForm } from "antd/es/form/Form";
 
 type IProps = {
   id: string;
@@ -21,11 +22,13 @@ const UpdateLandingPageForm: React.FC<IProps> = ({ id }) => {
   const router = useRouter();
   const [data, setData] = useState<ILandingPage | null>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const [form] = useForm();
 
   useEffect(() => {
     async function fetchLandingPage() {
       const res = await getLandingPage({ id });
       if (res.success) {
+        form.setFieldsValue(res.data)
         setData(res.data);
       } else {
         message.error(res.message);
@@ -53,6 +56,7 @@ const UpdateLandingPageForm: React.FC<IProps> = ({ id }) => {
       <TemplateForm
         handleSave={handleSave}
         title={data?.title}
+        form={form}
         img={data?.img}
         defaultContent={data?.content}
       />

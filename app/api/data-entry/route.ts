@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { message200, message401, message500 } from "@/constants";
 import DataEntry from "@/models/dataEntry";
 import { verifyToken } from "@/lib/jwt";
+import { Types } from "mongoose";
 
 export async function GET(request: Request) {
   try {
@@ -16,6 +17,8 @@ export async function GET(request: Request) {
     const id = searchParams.get("id");
     const authorType = searchParams.get("authorType");
     const name = searchParams.get("name");
+    const orderId = searchParams.get("orderId");
+
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
@@ -51,17 +54,27 @@ export async function GET(request: Request) {
           filter.isDelete = false;
           !!name && (filter.title = { $regex: name, $options: "i" });
 
-          const dataEntryTotal = await DataEntry.countDocuments(filter);
-          const dataEntry = await DataEntry.find(filter)
+          let orderObjectId = null;
+          let dataEntryList = [];
+          let total = await DataEntry.countDocuments(filter);
+          if (orderId && Types.ObjectId.isValid(orderId) && page === 1) {
+            orderObjectId = new Types.ObjectId(orderId);
+            const firstItems = await DataEntry.findById(orderObjectId);
+            dataEntryList.push(firstItems.toObject());
+            filter._id = { $nin: orderId }; // orderId'leri diğer listeden hariç tut
+          }
+          const emailTemplate = await DataEntry.find(filter)
             .skip(skip)
-            .limit(limit)
+            .limit(limit - dataEntryList.length) // orderId varsa limitten düş
             .sort({ created_at: -1 });
+
+          dataEntryList = [...dataEntryList, ...emailTemplate];
 
           return NextResponse.json(
             {
               ...message200,
-              data: dataEntry,
-              totalItems: dataEntryTotal,
+              data: dataEntryList,
+              totalItems: total,
             },
             { status: 200, statusText: message200.message }
           );

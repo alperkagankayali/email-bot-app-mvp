@@ -213,9 +213,13 @@ const DataEntriesList: React.FC = () => {
         open={open.show}
         onOk={() => setOpen({ show: false, data: "" })}
         onCancel={() => setOpen({ show: false, data: "" })}
-        width={1000}
+        footer={[]}
+        width={"auto"}
       >
-        <div dangerouslySetInnerHTML={{ __html: open.data }}></div>
+        <div
+          className="w-auto min-w-[520px] overflow-auto min-h-75 max-h-[600px]"
+          dangerouslySetInnerHTML={{ __html: open.data }}
+        ></div>
       </Modal>
       <Modal
         title=""
@@ -224,6 +228,7 @@ const DataEntriesList: React.FC = () => {
         open={isEdit.show}
         onCancel={() => setIsEdit({ show: false, id: "" })}
         onClose={() => setIsEdit({ show: false, id: "" })}
+        className="min-w-[620px]"
         footer={[
           <Button key="back" onClick={() => setIsEdit({ show: false, id: "" })}>
             {t("cancel-btn")}

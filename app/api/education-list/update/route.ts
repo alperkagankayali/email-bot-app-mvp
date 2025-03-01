@@ -34,6 +34,7 @@ export async function POST(request: Request) {
           const newEducationList = new EducationList({
             ...findEducationList.toObject(),
             ...updateData,
+            created_at: Date.now(),
             _id: undefined,
             authorType: "User",
             author: verificationResult.id,

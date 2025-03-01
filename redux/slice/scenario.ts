@@ -77,6 +77,10 @@ const resourceSlice = createSlice({
     changeScenarioStatus: (state, action) => {
       state.status = action.payload;
     },
+    changeContentStatus: (state, action) => {
+      const statusPayload = (action.payload.status as "dataEntryStatus" | "landingPageStatus"  | "scenarioTypeStatus")
+      state[statusPayload] = action.payload.value;
+    },
   },
   extraReducers(builder) {
     builder
@@ -184,6 +188,7 @@ export const {
   changeNewScenarioData,
   handleChangeEmailData,
   handleChangeDataEntry,
+  changeContentStatus,
   handleChangeLandingPage,
   changeScenarioStatus,
 } = resourceSlice.actions;

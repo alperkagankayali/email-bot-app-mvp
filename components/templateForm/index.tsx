@@ -63,7 +63,7 @@ const TemplateForm = ({
               rules={[
                 {
                   required: true,
-                  message: "Please input your scenario type!",
+                  message: t("title-required"),
                 },
               ]}
             >

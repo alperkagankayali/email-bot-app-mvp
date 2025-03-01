@@ -217,9 +217,10 @@ const EmailTemplateList: React.FC = () => {
         open={open.show}
         onOk={() => setOpen({ show: false, data: "" })}
         onCancel={() => setOpen({ show: false, data: "" })}
-        width={1000}
+        footer={[]}
+        width={"auto"}
       >
-        <div dangerouslySetInnerHTML={{ __html: open.data }}></div>
+        <div className="w-auto min-w-[520px] overflow-auto min-h-75 max-h-[600px]" dangerouslySetInnerHTML={{ __html: open.data }}></div>
       </Modal>
       <Modal
         title=""

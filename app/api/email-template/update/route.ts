@@ -34,6 +34,7 @@ export async function POST(request: Request) {
           const newEmailTemplate = new EmailTemplate({
             ...findEmailTemplate.toObject(),
             ...updateData,
+            created_at: Date.now(),
             _id: undefined,
             authorType: "User",
             author: verificationResult.id,

@@ -255,7 +255,7 @@ export const updateUser = async (id: string, updateData: any) => {
 };
 
 export const deleteEmailTemplate = async (id: string) => {
-  const url = servicesBaseUrl + finalConfig.DELETE_LANDING_PAGE;
+  const url = servicesBaseUrl + finalConfig.DELETE_EMAIL_TEMPLATE;
   const config = headers.content_type.application_json;
   const result: IResponseType = await postRequest(url, { id }, config);
   return result;

@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { message200, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import LandingPage from "@/models/landingPage";
+import { Types } from "mongoose";
 
 export async function GET(request: Request) {
   try {
@@ -16,6 +17,8 @@ export async function GET(request: Request) {
     const authorType = searchParams.get("authorType");
     const name = searchParams.get("name");
     const id = searchParams.get("id");
+    const orderId = searchParams.get("orderId");
+
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
@@ -50,17 +53,27 @@ export async function GET(request: Request) {
           }
           filter.isDelete = false;
           !!name && (filter.title = { $regex: name, $options: "i" });
-
-          const landingPageTotal = await LandingPage.countDocuments(filter);
-          const landingPage = await LandingPage.find(filter)
+          let orderObjectId = null;
+          let landingPageList = [];
+          let total = await LandingPage.countDocuments(filter);
+          if (orderId && Types.ObjectId.isValid(orderId) && page === 1) {
+            orderObjectId = new Types.ObjectId(orderId);
+            const firstItems = await LandingPage.findById(orderObjectId);
+            landingPageList.push(firstItems.toObject());
+            filter._id = { $nin: orderId }; // orderId'leri diğer listeden hariç tut
+          }
+          const emailTemplate = await LandingPage.find(filter)
             .skip(skip)
-            .limit(limit)
+            .limit(limit - landingPageList.length) // orderId varsa limitten düş
             .sort({ created_at: -1 });
+
+          landingPageList = [...landingPageList, ...emailTemplate];
+
           return NextResponse.json(
             {
               ...message200,
-              data: landingPage,
-              totalItems: landingPageTotal,
+              data: landingPageList,
+              totalItems: total,
             },
             { status: 200, statusText: message200.message }
           );

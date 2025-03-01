@@ -33,6 +33,7 @@ export async function POST(request: Request) {
           const newLandingPage = new LandingPage({
             ...findLandingPage.toObject(),
             ...updateData,
+            created_at: Date.now(),
             _id: undefined,
             authorType: "User",
             author: verificationResult.id,

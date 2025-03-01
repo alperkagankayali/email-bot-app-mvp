@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { message200, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import EmailTemplate from "@/models/emailTemplate";
+import { Types } from "mongoose";
 
 export async function GET(request: Request) {
   try {
@@ -17,6 +18,7 @@ export async function GET(request: Request) {
     const name = searchParams.get("name");
     const skip = (page - 1) * limit; //
     const id = searchParams.get("id");
+    const orderId = searchParams.get("orderId");
 
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
@@ -44,26 +46,35 @@ export async function GET(request: Request) {
             } else {
               filter.authorType = authorType;
             }
-          }
-          else if (verificationResult?.role !== "superadmin") {
+          } else if (verificationResult?.role !== "superadmin") {
             filter["$or"] = [
               { company: verificationResult?.companyId },
               { authorType: "superadmin" },
-            ]
+            ];
           }
           filter.isDelete = false;
           !!language && (filter.language = language);
           !!name && (filter.title = { $regex: name, $options: "i" });
-
-          const emailTemplateTotal = await EmailTemplate.countDocuments(filter);
+          let orderObjectId = null;
+          let emailTemplateList = [];
+          let emailTemplateTotal = await EmailTemplate.countDocuments(filter);
+          if (orderId && Types.ObjectId.isValid(orderId) && page === 1) {
+            orderObjectId = new Types.ObjectId(orderId);
+            const firstItems = await EmailTemplate.findById(orderObjectId);
+            emailTemplateList.push(firstItems.toObject());
+            filter._id = { $nin: orderId }; // orderId'leri diğer listeden hariç tut
+          }
           const emailTemplate = await EmailTemplate.find(filter)
             .skip(skip)
-            .limit(limit)
+            .limit(limit - emailTemplateList.length) // orderId varsa limitten düş
             .sort({ created_at: -1 });
+
+          emailTemplateList = [...emailTemplateList, ...emailTemplate];
+
           return NextResponse.json(
             {
               ...message200,
-              data: emailTemplate,
+              data: emailTemplateList,
               totalItems: emailTemplateTotal,
             },
             { status: 200, statusText: message200.message }

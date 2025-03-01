@@ -21,6 +21,7 @@ const FileUpload = ({ handleUploadFile, defaultValue, type }: IProps) => {
     const isJpgOrPng =
       file.type === "image/jpeg" ||
       file.type === "image/png" ||
+      file.type === "image/svg+xml" ||
       file.type === "image/webp";
     if (type === "video") {
       const isLt2M = file.size / 1024 / 1024 < 50;
@@ -45,13 +46,14 @@ const FileUpload = ({ handleUploadFile, defaultValue, type }: IProps) => {
     listType: "picture",
     action: servicesBaseUrl + finalConfig.FILE_UPLOAD + "?file=upload",
     beforeUpload: beforeUpload,
+    maxCount: 1,
     defaultFileList: !!defaultValue
       ? [{ url: defaultValue, name: "image", uid: uuidv4(), status: "done" }]
       : [],
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
-        console.log(info.file, info.fileList);
+        // console.log(info.file, info.fileList);
       }
       if (status === "done") {
         handleUploadFile(info.file.response.data.url);

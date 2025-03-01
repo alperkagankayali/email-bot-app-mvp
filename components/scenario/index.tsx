@@ -243,9 +243,12 @@ const ScenarioList: React.FC = () => {
         onCancel={() => setOpen({ show: false, data: "" })}
         onClose={() => setOpen({ show: false, data: "" })}
         footer={[]}
-        width={1000}
+        width={"auto"}
       >
-        <div dangerouslySetInnerHTML={{ __html: open.data }}></div>
+        <div
+          className="w-auto min-w-[520px] overflow-auto min-h-75 max-h-[600px]"
+          dangerouslySetInnerHTML={{ __html: open.data }}
+        ></div>
       </Modal>
       <Modal
         title=""

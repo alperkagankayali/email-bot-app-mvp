@@ -35,6 +35,7 @@ export async function POST(request: Request) {
             ...findScenario.toObject(),
             ...updateData,
             _id: undefined,
+            created_at: Date.now(),
             authorType: "User",
             author: verificationResult.id,
             company: verificationResult?.companyId,
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
 
           await newScenario.save();
 
-            return NextResponse.json(
+          return NextResponse.json(
             {
               ...message201,
               data: newScenario,

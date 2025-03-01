@@ -14,12 +14,10 @@ import { noImage } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import {
+  changeContentStatus,
   fetchDataEntry,
   fetchEmailTemplate,
   fetchLandingPage,
-  handleChangeDataEntry,
-  handleChangeEmailData,
-  handleChangeLandingPage,
   handleChangeScenarioData,
 } from "@/redux/slice/scenario";
 import { useTranslations } from "next-intl";
@@ -84,34 +82,42 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
   });
 
   const onChange: PaginationProps["onChange"] = async (page, pageNumber) => {
+    let filterTemp: any = {
+      limit: pageNumber,
+      page: page,
+      ...filter,
+    };
+    if (page === 1) {
+      filterTemp.orderId = selected;
+    }
     if (type === "emailTemplate") {
-      dispatch(
-        fetchEmailTemplate({
-          limit: pageNumber,
-          page: page,
-          ...filter,
-        })
-      );
+      dispatch(fetchEmailTemplate(filterTemp));
     } else if (type === "landingPage") {
-      dispatch(fetchLandingPage({ limit: pageNumber, page }));
+      dispatch(fetchLandingPage(filterTemp));
     } else if (type === "dataEntry") {
-      dispatch(fetchDataEntry({ limit: pageNumber, page }));
+      dispatch(fetchDataEntry(filterTemp));
     } else {
       notification.error({ message: "type is not defined" });
     }
-    setPage(page)
+    setPage(page);
     setPageSize(pageNumber);
   };
 
   useEffect(() => {
     if (type === "emailTemplate" && emailTemplateStatus === "idle") {
-      dispatch(fetchEmailTemplate({ limit: 6, page: 1 }));
+      dispatch(
+        fetchEmailTemplate({ limit: 6, page: 1, orderId: scenarioData[type] })
+      );
     }
     if (type === "dataEntry" && dataEntryStatus === "idle") {
-      dispatch(fetchDataEntry(6));
+      dispatch(
+        fetchDataEntry({ limit: 6, page: 1, orderId: scenarioData[type] })
+      );
     }
     if (type === "landingPage" && landingPageStatus === "idle") {
-      dispatch(fetchLandingPage(6));
+      dispatch(
+        fetchLandingPage({ limit: 6, page: 1, orderId: scenarioData[type] })
+      );
     }
   }, [
     emailTemplateStatus,
@@ -123,8 +129,19 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
 
   useEffect(() => {
     if (!!scenarioData[type]) {
-      setPage(1)
-      setPageSize(6)
+      dispatch(
+        changeContentStatus({
+          status:
+            type === "landingPage"
+              ? "landingPageStatus"
+              : type === "dataEntry"
+                ? "dataEntryStatus"
+                : "emailTemplateStatus",
+          value: "idle",
+        })
+      );
+      setPage(1);
+      setPageSize(6);
       setSelected(scenarioData[type]);
     }
   }, [type]);
@@ -189,7 +206,7 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
                 }
                 value={selected}
               >
-                <Radio value={list._id} className="h-">
+                <Radio value={list._id} className="h-full flex">
                   <Badge.Ribbon
                     className="card-title-ribbon"
                     color={list?.authorType === "superadmin" ? "green" : "red"}
@@ -200,9 +217,10 @@ const TemplateList: React.FC<IProps> = ({ type, next, prev, current }) => {
                   >
                     <Card
                       actions={actions}
-                      className={clsx("h-full", {
+                      className={clsx("flex flex-col", {
                         "!border !border-blue-700": selected === list._id,
                       })}
+                      rootClassName="flex h-full"
                       key={list._id}
                       hoverable
                       loading={

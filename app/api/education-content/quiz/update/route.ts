@@ -31,6 +31,7 @@ export async function POST(request: Request) {
           const newVideo = new Quiz({
             ...findQuiz.toObject(),
             ...updateData,
+            created_at: Date.now(),
             _id: undefined,
             authorType: "User",
             author: verificationResult.id,

@@ -34,6 +34,7 @@ export async function POST(request: Request) {
             ...findDataEntry.toObject(),
             ...updateData,
             _id: undefined,
+            created_at: Date.now(),
             authorType: "User",
             author: verificationResult.id,
             company: verificationResult?.companyId,
