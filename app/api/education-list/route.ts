@@ -35,9 +35,11 @@ export async function GET(request: Request) {
     const authorType = searchParams.get("authorType");
     const id = searchParams.get("id");
     const language = !!searchParams.get("language")
-      ? searchParams.get("language")?.split("&")
+      ? searchParams.get("language")?.split(",")
       : null;
-    if (!!language) filter2.languages = { $all: language };
+    if (!!language) {
+      filter2.languages = { $all: language };
+    }
 
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
@@ -258,14 +260,8 @@ export async function GET(request: Request) {
           }
         } else {
           if (verificationResult?.role === "superadmin") {
-            const educationTotal = await EducationList.countDocuments({
-              isDelete: false,
-              ...filter2,
-            });
-            const education = await EducationList.find({
-              isDelete: false,
-              ...filter2,
-            })
+            const educationTotal = await EducationList.countDocuments(filter2);
+            const education = await EducationList.find(filter2)
               .populate({
                 path: "educations", // `educations` Course tablosuna referans içeriyor
                 match: {
@@ -293,14 +289,8 @@ export async function GET(request: Request) {
               { status: 200 }
             );
           }
-          const educationTotal = await EducationList.countDocuments({
-            isDelete: false,
-            ...filter2,
-          });
-          const education = await EducationList.find({
-            isDelete: false,
-            ...filter2,
-          })
+          const educationTotal = await EducationList.countDocuments(filter2);
+          const education = await EducationList.find(filter2)
             .populate({
               path: "educations", // `educations` Course tablosuna referans içeriyor
               match: {

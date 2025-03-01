@@ -14,40 +14,27 @@ import {
 } from "@/redux/slice/education";
 import { AppDispatch, RootState } from "@/redux/store";
 import { deleteEducation } from "@/services/service/educationService";
-import { DeleteFilled, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { CloseCircleOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Badge,
   Button,
   Card,
-  Checkbox,
-  Input,
+  Modal,
   Pagination,
   PaginationProps,
   Popconfirm,
   Popover,
-  Select,
-  Splitter,
   Tag,
 } from "antd";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import EducationFilter, { IFilter } from "./filter";
 const { Meta } = Card;
-const { Search } = Input;
-const { Option } = Select;
-
-const options = [
-  { label: "Global", value: "superadmin" },
-  { label: "Local", value: "User" },
-];
 
 const EducationList: React.FC = () => {
   const t = useTranslations("pages");
-  const { replace } = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector(
     (state: RootState) => state.education.educationListStatus
@@ -59,35 +46,24 @@ const EducationList: React.FC = () => {
   const totalItems = useSelector(
     (state: RootState) => state.education.educationListTotalItems
   );
-  const languages = useSelector((state: RootState) => state.language.language);
   const [pageSize, setPageSize] = useState(8);
-  const [filter, setFilter] = useState({
-    title: searchParams.get("title") ?? "",
-    description: searchParams.get("description") ?? "",
-    levelOfDifficulty: searchParams.get("levelOfDifficulty") ?? "",
-    authorType: searchParams.get("authorType")?.split("&") ?? [],
-    language: searchParams.get("language")?.split("&") ?? [],
+  const [filter, setFilter] = useState<IFilter>({
+    title: "",
+    authorType: [],
+    levelOfDifficulty: [],
+    language: [],
   });
+ const [isEdit, setIsEdit] = useState({
+    show: false,
+    id: "",
+  });
+  const router = useRouter()
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchEducationList({}));
+      dispatch(fetchEducationList({ limit: pageSize }));
     }
   }, [status, dispatch]);
-
-  useEffect(() => {
-    if (status !== "idle") {
-      dispatch(
-        fetchEducationList({
-          language: searchParams.get("language") ?? "",
-          title: searchParams.get("title") ?? "",
-          description: searchParams.get("description") ?? "",
-          levelOfDifficulty: searchParams.get("levelOfDifficulty") ?? "",
-          authorType: searchParams.get("authorType") ?? "",
-        })
-      );
-    }
-  }, [searchParams, dispatch]);
 
   const handleDeleteEducation = async (id: string) => {
     const res = await deleteEducation(id);
@@ -106,233 +82,35 @@ const EducationList: React.FC = () => {
       fetchEducationList({
         limit: pageNumber,
         page,
-        language: searchParams.get("language") ?? "",
-        title: searchParams.get("title") ?? "",
-        description: searchParams.get("description") ?? "",
-        levelOfDifficulty: searchParams.get("levelOfDifficulty") ?? "",
-        authorType: searchParams.get("authorType") ?? "",
+        ...filter,
       })
     );
     setPageSize(pageNumber);
   };
 
-  const handleSelect = (value: string[], type: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (value) {
-      params.set(type, value.join("&").replaceAll(" ", ""));
-    } else {
-      params.delete(type);
-    }
-    replace(`${pathname}?${params.toString()}`);
-  };
-
-  const onSearch = (value: any, event: any, info: any, name: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (value.length > 3) {
-      params.set(name, value);
-    } else {
-      params.delete(name);
-    }
-    replace(`${pathname}?${params.toString()}`);
+  const handleDeleteEducationList = async (id: string) => {
+    // const res = await deleteEducati(id);
+    // if (res.success) {
+    //   notification.success({ message: res.data?.title + " deleted" });
+    //   dispatch(
+    //     fetchScenario({
+    //       limit: pageSize,
+    //       page: page,
+    //     })
+    //   );
+    // } else {
+    //   notification.error({
+    //     message: res.data?.title + " could not be deleted",
+    //   });
+    // }
   };
 
   return (
     <div>
-      <div className="flex justify-between w-full items-center mb-4">
-        {!!filter.title ||
-        !!filter.description ||
-        filter.levelOfDifficulty ||
-        filter.language.length > 0 ||
-        filter.authorType.length > 0 ? (
-          <div className="flex">
-            {!!filter.authorType &&
-              filter.authorType.map((e) => (
-                <Tag
-                  bordered={false}
-                  key={e}
-                  onClose={(event) =>
-                    setFilter({
-                      ...filter,
-                      authorType: filter.authorType.filter(
-                        (element) => element !== e
-                      ),
-                    })
-                  }
-                  closable
-                >
-                  {e === "superadmin" ? "Global" : "Local"}
-                </Tag>
-              ))}
-            {!!filter.language &&
-              filter.language.map((e) => (
-                <Tag
-                  bordered={false}
-                  key={e}
-                  onClose={(event) =>
-                    setFilter({
-                      ...filter,
-                      language: filter.language.filter(
-                        (element) => element !== e
-                      ),
-                    })
-                  }
-                  closable
-                >
-                  {e}
-                </Tag>
-              ))}
-            {!!filter.title && (
-              <Tag
-                bordered={false}
-                onClose={(event) =>
-                  setFilter({
-                    ...filter,
-                    title: "",
-                  })
-                }
-                closable
-              >
-                {filter.title}
-              </Tag>
-            )}
-            {!!filter.description && (
-              <Tag
-                bordered={false}
-                onClose={(event) =>
-                  setFilter({
-                    ...filter,
-                    description: "",
-                  })
-                }
-                closable
-              >
-                {filter.description}
-              </Tag>
-            )}
-            {!!filter.levelOfDifficulty && (
-              <Tag
-                bordered={false}
-                onClose={(event) =>
-                  setFilter({
-                    ...filter,
-                    levelOfDifficulty: "",
-                  })
-                }
-                closable
-              >
-                {filter.levelOfDifficulty}
-              </Tag>
-            )}
-            <Popover content={t("clear-filter")} title="">
-              <DeleteFilled
-                className="ml-2 cursor-pointer"
-                onClick={() => {
-                  setFilter({
-                    authorType: [],
-                    description: "",
-                    title: "",
-                    language: [],
-                    levelOfDifficulty: "",
-                  });
-                  replace(`${pathname}`);
-                }}
-              />
-            </Popover>
-          </div>
-        ) : (
-          <span></span>
-        )}
-        <Link href="/dashboard/education/add">
-          <Button type="primary" className="!bg-[#181140] w-full"> {t("menu-education-add")}</Button>
-        </Link>
-      </div>
-      <div className="flex justify-between">
+      <EducationFilter filter={filter} setFilter={setFilter} pageSize={1} />
+      <div className="">
         {!!data && (
-          <div className="flex flex-col ">
-            <Search
-              placeholder={t("education-title")}
-              size="large"
-              name="title"
-              defaultValue={filter.title}
-              className="!w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary "
-              allowClear
-              onSearch={(value: any, event: any, info: any) => {
-                setFilter({ ...filter, title: value });
-                onSearch(value, event, info, "title");
-              }}
-              enterButton
-            />
-            <Search
-              placeholder={t("education-description")}
-              size="large"
-              name="description"
-              defaultValue={filter.description}
-              className="!w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary mt-4"
-              allowClear
-              onSearch={(value: any, event: any, info: any) => {
-                setFilter({ ...filter, description: value });
-                onSearch(value, event, info, "description");
-              }}
-              enterButton
-            />
-            <Select
-              mode="multiple"
-              size="large"
-              className="w-full !mt-4"
-              placeholder={t("resources-language")}
-              value={filter.language}
-              onChange={(value: string[]) => {
-                setFilter({ ...filter, language: value });
-                handleSelect(value, "language");
-              }}
-            >
-              {languages.map((e) => {
-                return (
-                  <Option key={e.code} value={e.code}>
-                    {e.name}
-                  </Option>
-                );
-              })}
-            </Select>
-            <Checkbox.Group
-              className="!my-4"
-              options={options}
-              value={filter.authorType}
-              defaultValue={["Pear"]}
-              onChange={(value: string[]) => {
-                setFilter({ ...filter, authorType: value });
-                handleSelect(value, "authorType");
-              }}
-            />
-            <Select
-              size="large"
-              className="w-full "
-              placeholder="level of difficulty"
-              value={filter.levelOfDifficulty}
-              onChange={(value: string) => {
-                setFilter({ ...filter, levelOfDifficulty: value });
-                onSearch(value, "", "", "levelOfDifficulty");
-              }}
-              options={[
-                {
-                  value: "easy",
-                  label: "easy",
-                },
-                {
-                  value: "medium",
-                  label: "medium",
-                },
-                {
-                  value: "hard",
-                  label: "hard",
-                },
-              ]}
-            />
-          </div>
-        )}
-
-        {!!data && (
-          <div className="grid grid-cols-4 gap-5">
+          <div className="grid grid-cols-4 gap-5 mt-8">
             {data.map((item) => {
               const education = item.educations[0];
               const reduce = education?.contents?.reduce(
@@ -345,23 +123,53 @@ const EducationList: React.FC = () => {
                 },
                 {}
               );
-              const actions: React.ReactNode[] = [
-                <Link href={"/dashboard/education/update/" + item._id}>
+              let deleteIcon;
+            let editIcon;
+            if (
+              user?.role === "admin" &&
+              item.authorType === "superadmin"
+            ) {
+              deleteIcon = (
+                <Popover
+                  content={t("not-deleted", { name: t("menu-education") })}
+                  title={""}
+                >
+                  <CloseCircleOutlined />
+                </Popover>
+              );
+              editIcon = (
+                <Button
+                  type="text"
+                  onClick={() => setIsEdit({ show: true, id: item._id })}
+                >
                   <EditOutlined key="edit" />
-                </Link>,
+                </Button>
+              );
+            } else {
+              deleteIcon = (
                 <Popconfirm
-                  title={t("delete-document")}
-                  description={t("delete-document-2")}
-                  onConfirm={() => handleDeleteEducation(item._id)}
+                  title={t("delete-document", {
+                    document: t("menu-education"),
+                  })}
+                  description={t("delete-document-2", {
+                    document: t("menu-education"),
+                  })}
+                  onConfirm={() => handleDeleteEducationList(item._id)}
                   okText={t("yes-btn")}
                   cancelText={t("no-btn")}
-                  disabled={
-                    item?.authorType === "superadmin" &&
-                    user?.role !== "superadmin"
-                  }
                 >
                   <DeleteOutlined />
-                </Popconfirm>,
+                </Popconfirm>
+              );
+              editIcon = (
+                <Link href={"/dashboard/education/update/" + item._id}>
+                  <EditOutlined key="edit" />
+                </Link>
+              );
+            }
+              const actions: React.ReactNode[] = [
+                editIcon,
+                deleteIcon,
               ];
               return (
                 <div style={{ width: 240 }} className="flex" key={item._id}>
@@ -476,6 +284,33 @@ const EducationList: React.FC = () => {
           />
         )}
       </div>
+      <Modal
+        title=""
+        key={"edit-modal"}
+        centered
+        open={isEdit.show}
+        onCancel={() => setIsEdit({ show: false, id: "" })}
+        onClose={() => setIsEdit({ show: false, id: "" })}
+        footer={[
+          <Button key="back" onClick={() => setIsEdit({ show: false, id: "" })}>
+            {t("cancel-btn")}
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={() => {
+              router.push("/dashboard/education/update/" + isEdit.id);
+              setIsEdit({ id: "", show: false });
+            }}
+          >
+            {t("save-and-continue")}
+          </Button>,
+        ]}
+      >
+        <div className="p-5">
+          <p>{t("global-edit-scenario")}</p>
+        </div>
+      </Modal>
     </div>
   );
 };

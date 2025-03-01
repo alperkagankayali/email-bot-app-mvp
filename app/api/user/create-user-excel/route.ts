@@ -34,6 +34,16 @@ async function processExcelData(rows: any[], user: any) {
         };
       })
     );
+    // Mail atılması gerekiyor
+    // await sendVerificationEmail(
+    //           res.data?._id ?? "",
+    //           {
+    //             resetLink:
+    //               "https://email-bot-app-mvp-mx28.vercel.app/en/reset-password?token=" +
+    //               res.data?._id,
+    //           },
+    //           "675756f633beb29459bc4aac"
+    //         );
 
     console.log(`****** ${userCreated.length} kullanıcı başarıyla oluşturuldu`);
   } catch (error) {
