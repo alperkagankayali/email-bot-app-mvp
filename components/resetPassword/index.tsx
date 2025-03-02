@@ -48,6 +48,11 @@ export default function ResetPasswordCom({ locale }: IProps) {
       ) {
         const res = await updatePassword(id, values.password);
         if (res.success) {
+          notification.open({
+            type: "success",
+            message: t("success-201"),
+            description: t("success-201"),
+          });
           router.push("/");
         } else {
           notification.open({

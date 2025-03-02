@@ -15,6 +15,9 @@ export async function GET(request: Request) {
     const token = request.headers.get("authorization"); // API anahtarı kontrolü
     const jwtKey: string = process.env.JWT_SCREET_KEY as string;
     const id = searchParams.get("id");
+    const page = parseInt(searchParams.get("page") || "1"); // Varsayılan 1. sayfa
+    const limit = parseInt(searchParams.get("limit") || "10"); // Varsayılan limit 10
+    const skip = (page - 1) * limit; //
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
       if (verificationResult instanceof NextResponse) {
@@ -22,10 +25,12 @@ export async function GET(request: Request) {
       } else {
         const user = jwt.verify(token.split(" ")[1], jwtKey) as IUserJWT;
         if (!!id) {
-          const users = await User.findById(id).populate({
-            path: "company",
-            model: Company,
-          }).select(["department","email","language","nameSurname","role"]);
+          const users = await User.findById(id)
+            .populate({
+              path: "company",
+              model: Company,
+            })
+            .select(["department", "email", "language", "nameSurname", "role"]);
           return NextResponse.json(
             {
               ...message200,
@@ -36,11 +41,19 @@ export async function GET(request: Request) {
         } else if (user.role === "admin") {
           const userTotal = await User.countDocuments({
             company: user.companyId,
+            isDelete: false,
           });
-          const users = await User.find({ company: user.companyId }).populate({
-            path: "company",
-            model: Company,
-          });
+          const users = await User.find({
+            company: user.companyId,
+            isDelete: false,
+          })
+            .populate({
+              path: "company",
+              model: Company,
+            })
+            .skip(skip)
+            .limit(limit)
+            .sort({ role: 1 });
           return NextResponse.json(
             {
               ...message200,
@@ -55,11 +68,15 @@ export async function GET(request: Request) {
             jwtKey
           ) as ISuperAdminJWT;
           if (jwtSuperAdmin.role === "superadmin") {
-            const userTotal = await User.countDocuments();
-            const findUser = await User.find().populate({
-              path: "company",
-              model: Company,
-            });
+            const userTotal = await User.countDocuments({ isDelete: false });
+            const findUser = await User.find({ isDelete: false })
+              .populate({
+                path: "company",
+                model: Company,
+              })
+              .sort({ role: 1 })
+              .skip(skip)
+              .limit(limit);
 
             return NextResponse.json(
               {

@@ -28,7 +28,8 @@ async function processExcelData(rows: any[], user: any) {
       rows.map((usermap: any) => {
         return {
           ...usermap,
-          nameSurname: usermap.name +" "+ usermap.surname,
+          role: usermap.role?.toLowerCase(),
+          nameSurname: usermap.name + " " + usermap.surname,
           password: passwordHash,
           company: user.companyId,
         };

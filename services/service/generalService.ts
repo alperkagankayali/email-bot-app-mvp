@@ -275,6 +275,14 @@ export const deleteLandingPage = async (id: string) => {
   return result;
 };
 
+export const deleteUser = async (id: string) => {
+  const url = servicesBaseUrl + finalConfig.DELETE_USER;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};
+
+
 export const updatePassword = async (id: string, password: string) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_PASSWORD;
   const config = headers.content_type.application_json;

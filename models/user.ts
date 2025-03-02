@@ -11,7 +11,11 @@ const userSchema = new Schema<IUser>({
     ref: "Company",
     required: true,
   },
-  role: { type: String, required: true },
+  role: {
+    type: String,
+    enum: ["admin", "user"], // Sadece bu değerler kabul edilir
+    required: true,
+  },
   password: { type: String },
   isDelete: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now() },

@@ -1,19 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import type { TableProps } from "antd";
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  notification,
-  Popconfirm,
-  Table,
-  Tag,
-  Typography,
-} from "antd";
+import { Button, notification, Popconfirm, Table, Tag, Typography } from "antd";
 import { PaginationType } from "@/types/paginationType";
 import {
+  deleteUser,
   getAllUsers,
   getResourceAll,
   getUserById,
@@ -21,14 +12,13 @@ import {
 } from "@/services/service/generalService";
 import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { DownloadOutlined, UserOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import AddUserExel from "./addUserExel";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { userInfo } from "@/redux/slice/user";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { IUserJWT } from "@/app/api/user/login/route";
 
 export interface DataType {
   name: string;
@@ -43,72 +33,23 @@ export interface DataType {
   _id: string;
 }
 
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-  editing: boolean;
-  dataIndex: string;
-  title: any;
-  inputType: "number" | "text";
-  record: DataType;
-  index: number;
-}
-
-const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  // record,
-  // index,
-  children,
-  ...restProps
-}) => {
-  const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
-
-  return (
-    <td {...restProps}>
-      {editing ? (
-        <Form.Item
-          name={dataIndex}
-          style={{ margin: 0 }}
-          rules={[
-            {
-              required: true,
-              message: `Please Input ${title}!`,
-            },
-          ]}
-        >
-          {inputNode}
-        </Form.Item>
-      ) : (
-        children
-      )}
-    </td>
-  );
-};
 type IProps = {
   id?: string;
 };
 const UserTable = ({ id }: IProps) => {
-  const [form] = Form.useForm();
   const [users, setUsers] = useLocalStorage<any>("users", "[]");
   const [data, setData] = useState<DataType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [editingKey, setEditingKey] = useState("");
   const user = useSelector((state: RootState) => state.user.user);
   const router = useRouter();
-  const isEditing = (record: DataType) => record._id === editingKey;
   const dispatch = useDispatch<AppDispatch>();
-  const edit = (record: Partial<DataType> & { key: React.Key }) => {
-    form.setFieldsValue({ name: "", age: "", address: "", ...record });
-    setEditingKey(record?._id || "");
-  };
 
   const cancel = () => {
     setEditingKey("");
   };
 
   const [pagination, setPagination] = useState<PaginationType>();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const t = useTranslations("pages");
 
   useEffect(() => {
@@ -141,6 +82,7 @@ const UserTable = ({ id }: IProps) => {
     }
     fetchUsers();
   }, []);
+
   const handleLogin = async (id: string) => {
     const arrUser: any[] = users;
     const findUser = arrUser?.some((e) => e.user.id === id);
@@ -168,6 +110,43 @@ const UserTable = ({ id }: IProps) => {
       }
     }
   };
+
+  const handleDeleteUser = async (id: string) => {
+    const res = await deleteUser(id);
+    if (res.success) {
+      notification.success({ message: res.data?.title + " deleted" });
+      if (!!id) {
+        const res: any = await getUserById(id ?? "");
+        const newData = res?.data?.map((e: any) => {
+          return {
+            ...e,
+            langKey: e.key,
+            key: e._id,
+          };
+        });
+        setLoading(false);
+        setData(newData);
+        setPagination(res?.pagination);
+      } else {
+        const res: any = await getAllUsers();
+        const newData = res?.data?.map((e: any) => {
+          return {
+            ...e,
+            langKey: e.key,
+            key: e._id,
+          };
+        });
+        setLoading(false);
+        setData(newData);
+        setPagination(res?.pagination);
+      }
+    } else {
+      notification.error({
+        message: res.data?.title + " could not be deleted",
+      });
+    }
+  };
+
   const columns = [
     {
       title: t("user-table-name-surname"),
@@ -239,31 +218,33 @@ const UserTable = ({ id }: IProps) => {
       title: t("user-table-lisance-operation"),
       dataIndex: "operation",
       render: (_: any, record: DataType) => {
-        const editable = isEditing(record);
         return (
           <>
-            {editable ? (
-              <span>
-                <Typography.Link
-                  // onClick={() => save(record.key)}
-                  style={{ marginInlineEnd: 8 }}
-                >
-                  {t("save-btn")}
-                </Typography.Link>
-                <Popconfirm title={t("sure-to-cancel")} onConfirm={cancel}>
-                  <a> {t("cancel-btn")} </a>
-                </Popconfirm>
-              </span>
-            ) : (
-              <Typography.Link
-                disabled={editingKey !== ""}
-                onClick={() =>
-                  router.push("/dashboard/users/update/" + record._id)
-                }
-              >
-                {t("resources-edit")}
+            <Typography.Link
+              disabled={editingKey !== ""}
+              onClick={() =>
+                router.push("/dashboard/users/update/" + record._id)
+              }
+            >
+              {t("resources-edit")}
+            </Typography.Link>
+            <Popconfirm
+              title={t("delete-document", {
+                document: t("menu-users"),
+              })}
+              className="ml-4 p-2 border"
+              description={t("delete-document-2", {
+                document: t("menu-users"),
+              })}
+              onConfirm={() => handleDeleteUser(record._id)}
+              okText={t("yes-btn")}
+              cancelText={t("no-btn")}
+            >
+              <Typography.Link type="danger">
+                {" "}
+                {t("delete-btn")}
               </Typography.Link>
-            )}
+            </Popconfirm>
             {user?.role === "superadmin" && (
               <Button
                 color="primary"
@@ -280,25 +261,6 @@ const UserTable = ({ id }: IProps) => {
     },
   ];
 
-  const mergedColumns: TableProps<DataType>["columns"] = columns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: (record: DataType) => ({
-        record,
-        inputType: col.dataIndex === "age" ? "number" : "text",
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    };
-  });
-  const handleAdd = (newData: DataType) => {
-    setIsModalOpen(!isModalOpen);
-    setData([...data, newData]);
-  };
   const onChange: TableProps<DataType>["onChange"] = async (
     pagination
     // filters,
@@ -345,25 +307,19 @@ const UserTable = ({ id }: IProps) => {
           </Button>
         </div>
       </div>
-      <Form form={form} component={false}>
-        <Table<DataType>
-          loading={loading}
-          components={{
-            body: { cell: EditableCell },
-          }}
-          bordered
-          dataSource={data}
-          columns={mergedColumns}
-          rowClassName="editable-row"
-          onChange={onChange}
-          pagination={{
-            defaultPageSize: 10,
-            pageSizeOptions: ["10", "20", "30"],
-            total: pagination?.totalItems,
-            onChange: cancel,
-          }}
-        />
-      </Form>
+      <Table<DataType>
+        loading={loading}
+        bordered
+        dataSource={data}
+        columns={columns}
+        onChange={onChange}
+        pagination={{
+          defaultPageSize: 10,
+          pageSizeOptions: ["10", "20", "30"],
+          total: pagination?.totalItems,
+          onChange: cancel,
+        }}
+      />
       <AddUserExel
         id={!!id ? id : !!user?.companyId ? user.companyId : ""}
         isAddUserModal={isAddUserModal}
