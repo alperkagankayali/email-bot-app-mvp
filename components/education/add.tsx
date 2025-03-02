@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, notification, Result, Steps, theme } from "antd";
+import { Button, Form, notification, Result, Steps, theme } from "antd";
 import EducationInfoForm from "./form/educationInfoForm";
-import EducationContentForm from "./form/educationContentForm";
+// import EducationContentForm from "./form/educationContentForm";
 import OrderForm from "./form/orderForm";
 import {
   createEducation,
@@ -16,6 +16,10 @@ import {
 } from "@/redux/slice/education";
 import { useTranslations } from "next-intl";
 import PreviewEducation from "./previewEducatio";
+import ArticleTab from "./form/articleTab";
+import QuizTab from "./form/quizTab";
+import VideoTab from "./form/videoTab";
+import { useRouter } from "next/navigation";
 
 type IProps = {
   id?: string;
@@ -28,7 +32,8 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
-
+  const router = useRouter();
+  const [form] = Form.useForm();
   const next = () => {
     setCurrent(current + 1);
   };
@@ -41,11 +46,23 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
   const steps = [
     {
       title: t("education-info"),
-      content: <EducationInfoForm next={next} lang={lang} />,
+      content: <EducationInfoForm form={form} next={next} lang={lang} />,
+    },
+    // {
+    //   title: t("education-content"),
+    //   content: <EducationContentForm next={next} lang={lang} />,
+    // },
+    {
+      title: t("menu-academy-article"),
+      content: <ArticleTab lang={lang} />,
     },
     {
-      title: t("education-content"),
-      content: <EducationContentForm next={next} lang={lang} />,
+      title: t("menu-academy-video"),
+      content: <VideoTab lang={lang} />,
+    },
+    {
+      title: t("menu-academy-quiz"),
+      content: <QuizTab lang={lang} />,
     },
     {
       title: t("education-content-order"),
@@ -138,18 +155,76 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
     }
   };
 
+  const handleSubmit = () => {
+    form.submit();
+  };
+
   return (
     <>
+      <div className="mb-4">
+        {current !== steps.length - 1 && (
+          <div className="flex w-full justify-between">
+            <Button
+              className="cursor-pointer rounded-lg border !border-black-2 !bg-transparent !p-7 !text-black transition hover:bg-opacity-90 mr-4"
+              onClick={() => {
+                if (current === 0) {
+                  router.push("/dashboard/education");
+                } else prev();
+              }}
+            >
+              {current === 0 ? t("back-btn-form") : t("previous-btn")}
+            </Button>
+
+            {current > 0 ? (
+              <Button
+                onClick={next}
+                // o
+                className="cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
+              >
+                {t("save-and-continue")}
+              </Button>
+            ) : (
+              <Button
+                // onClick={handleSubmit}
+                onClick={handleSubmit}
+                className="cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
+              >
+                {t("save-and-continue")}
+              </Button>
+            )}
+          </div>
+        )}
+        {current === steps.length - 1 && (
+          <div className="flex w-full justify-between">
+            <Button
+              className="cursor-pointer rounded-lg border !border-black-2 !bg-transparent !p-7 !text-black transition hover:bg-opacity-90 mr-4"
+              onClick={() => prev()}
+            >
+              {t("previous-btn")}
+            </Button>
+            <Button
+              type="primary"
+              className="cursor-pointer rounded-lg border !border-logo !bg-logo !p-7 !text-white transition hover:bg-opacity-90 mr-4"
+              disabled={isSuccess}
+              onClick={onFinish}
+            >
+              {t("done-btn")}
+            </Button>
+          </div>
+        )}
+      </div>
       <Steps
-        type="navigation"
+        type="default"
+        className=""
         current={current}
-        onChange={(value) => setCurrent(value)}
+        size="small"
+        // onChange={(value) => setCurrent(value)}
         items={isSuccess ? steps2 : items}
       />
       <div style={contentStyle}>
         {isSuccess ? steps2[0]?.content : steps[current]?.content}
       </div>
-      <div className="mt-6 flex">
+      {/* <div className="mt-6 flex">
         {current === steps.length - 1 && (
           <Button type="primary" disabled={isSuccess} onClick={onFinish}>
             {t("save-btn")}
@@ -165,7 +240,7 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
             {t("previous-btn")}
           </Button>
         )}
-      </div>
+      </div> */}
     </>
   );
 };

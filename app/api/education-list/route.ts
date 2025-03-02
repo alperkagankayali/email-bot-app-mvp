@@ -238,7 +238,7 @@ export async function GET(request: Request) {
                 created_at: 1,
               },
             },
-          ]);
+          ]).sort({ created_at: -1 });;
           if (education.length) {
             return NextResponse.json(
               {

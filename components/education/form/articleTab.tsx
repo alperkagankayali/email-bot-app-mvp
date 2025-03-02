@@ -30,7 +30,6 @@ const optionsWithDisabled = [
 ];
 
 const ArticleTab = ({ lang }: IProps) => {
-  const [value, setValue] = useState("select");
   const forms = useSelector((state: RootState) => state.education.forms);
   const [selected, setSelected] = useState<string[]>(
     (forms[lang]?.selectArticle as string[]) ?? []
@@ -45,10 +44,6 @@ const ArticleTab = ({ lang }: IProps) => {
   );
   const user = useSelector((state: RootState) => state.user.user);
   const [pageSize, setPageSize] = useState(8);
-
-  const onChange = ({ target: { value } }: RadioChangeEvent) => {
-    setValue(value);
-  };
   const [open, setOpen] = useState({
     show: false,
     data: "",
@@ -77,8 +72,7 @@ const ArticleTab = ({ lang }: IProps) => {
       handleArticleDataChange(data?.filter((e) => e._id !== res.data?._id))
     );
   };
-    const t = useTranslations("pages");
-  
+  const t = useTranslations("pages");
 
   const onChangeArticleSelect = (e: string[]) => {
     const dataFormat = e.map((element: any) => {
@@ -103,90 +97,76 @@ const ArticleTab = ({ lang }: IProps) => {
 
   return (
     <>
-      <Radio.Group
-        block
-        options={optionsWithDisabled}
-        defaultValue="select"
-        optionType="button"
-        onChange={onChange}
-        buttonStyle="solid"
-      />
       <div className="mt-5">
-        {value === "add" && <ArticleForm />}
-
-        {value === "select" && (
-          <CheckboxGroup
-            onChange={onChangeArticleSelect}
-            className={"card-checkbox !grid grid-cols-3 gap-10"}
-            value={selected}
-          >
-            {data.map((article) => {
-              const selectedArticle = selected.some((e) => e === article._id);
-              const actions: React.ReactNode[] = [
-                <Link href={"/dashboard/academy/article/update/" + article._id}>
-                  <EditOutlined key="edit" />
-                </Link>,
-                <EyeOutlined
-                  key="ellipsis"
-                  onClick={() => setOpen({ show: true, data: article.content })}
-                />,
-                <Popconfirm
-                  title={t("delete-document")}
-                  description={t("delete-document-2")}
-                  onConfirm={() => handleDeletArticle(article._id)}
-                  okText={t("yes-btn")}
-                  disabled={
-                    article?.authorType === "superadmin" &&
-                    user?.role !== "superadmin"
+        <CheckboxGroup
+          onChange={onChangeArticleSelect}
+          className={"card-checkbox !grid grid-cols-4 gap-10"}
+          value={selected}
+        >
+          {data.map((article) => {
+            const selectedArticle = selected.some((e) => e === article._id);
+            const actions: React.ReactNode[] = [
+              <Link href={"/dashboard/academy/article/update/" + article._id}>
+                <EditOutlined key="edit" />
+              </Link>,
+              <EyeOutlined
+                key="ellipsis"
+                onClick={() => setOpen({ show: true, data: article.content })}
+              />,
+              <Popconfirm
+                title={t("delete-document")}
+                description={t("delete-document-2")}
+                onConfirm={() => handleDeletArticle(article._id)}
+                okText={t("yes-btn")}
+                disabled={
+                  article?.authorType === "superadmin" &&
+                  user?.role !== "superadmin"
+                }
+                cancelText={t("no-btn")}
+              >
+                <DeleteOutlined />
+              </Popconfirm>,
+            ];
+            return (
+              <Checkbox
+                value={article._id}
+                key={article._id}
+                className="card-checkbox-check"
+              >
+                <Badge.Ribbon
+                  color={article?.authorType === "superadmin" ? "green" : "red"}
+                  text={
+                    article?.authorType === "superadmin" ? "Global" : "Local"
                   }
-                  cancelText={t("no-btn")}
-                >
-                  <DeleteOutlined />
-                </Popconfirm>,
-              ];
-              return (
-                <Checkbox
-                  value={article._id}
                   key={article._id}
-                  className="card-checkbox-check"
                 >
-                  <Badge.Ribbon
-                    color={
-                      article?.authorType === "superadmin" ? "green" : "red"
-                    }
-                    text={
-                      article?.authorType === "superadmin" ? "Global" : "Local"
-                    }
+                  <Card
+                    className={clsx("!h-full !pt-2", {
+                      "!border !border-blue-700": selectedArticle,
+                    })}
+                    rootClassName="!flex !h-full"
                     key={article._id}
+                    hoverable
+                    actions={actions}
+                    loading={status === "loading"}
+                    style={{
+                      width: 240,
+                      boxShadow: selectedArticle
+                        ? "0 1px 2px -2px rgba(0, 0, 0, 0.16),0 3px 6px 0 rgba(0, 0, 0, 0.12),0 5px 12px 4px rgba(0, 0, 0, 0.09)"
+                        : "inherit",
+                    }}
                   >
-                    <Card
-                      className={clsx("!h-full !pt-2", {
-                        "!border !border-blue-700": selectedArticle,
-                      })}
-                      rootClassName="!flex !h-full"
-                      key={article._id}
-                      hoverable
-                      actions={actions}
-                      loading={status === "loading"}
-                      style={{
-                        width: 240,
-                        boxShadow: selectedArticle
-                          ? "0 1px 2px -2px rgba(0, 0, 0, 0.16),0 3px 6px 0 rgba(0, 0, 0, 0.12),0 5px 12px 4px rgba(0, 0, 0, 0.09)"
-                          : "inherit",
-                      }}
-                    >
-                      <Meta
-                        title={article.title}
-                        className="!line-clamp-3"
-                        description={article?.description}
-                      />
-                    </Card>
-                  </Badge.Ribbon>
-                </Checkbox>
-              );
-            })}
-          </CheckboxGroup>
-        )}
+                    <Meta
+                      title={article.title}
+                      className="!line-clamp-3"
+                      description={article?.description}
+                    />
+                  </Card>
+                </Badge.Ribbon>
+              </Checkbox>
+            );
+          })}
+        </CheckboxGroup>
         <div className="mt-10 mb-20 w-full">
           {!!totalItems && (
             <Pagination

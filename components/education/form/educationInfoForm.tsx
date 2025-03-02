@@ -1,5 +1,13 @@
 "use client";
-import { Button, Form, FormProps, Input, notification, Select } from "antd";
+import {
+  Button,
+  Form,
+  FormInstance,
+  FormProps,
+  Input,
+  notification,
+  Select,
+} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { ICourse } from "@/types/courseType";
@@ -11,9 +19,9 @@ import { useTranslations } from "next-intl";
 type IProps = {
   next: () => void;
   lang: string;
+  form: FormInstance<any>;
 };
-const EducationInfoForm = ({ next, lang }: IProps) => {
-  const [form] = Form.useForm();
+const EducationInfoForm = ({ next, lang, form }: IProps) => {
   const educationDetail = useSelector(
     (state: RootState) => state.education.forms
   );
@@ -65,7 +73,10 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
             {t("label")}
           </label>
           <div className="relative">
-            <Form.Item<ICourse> name="title" required>
+            <Form.Item<ICourse>
+              name="title"
+              rules={[{ required: true, message: "" }]}
+            >
               <Input
                 size="large"
                 type="text"
@@ -81,7 +92,10 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
             {t("description")}
           </label>
           <div className="relative">
-            <Form.Item<ICourse> name="description">
+            <Form.Item<ICourse>
+              name="description"
+              rules={[{ required: true, message: "" }]}
+            >
               <Input
                 size="large"
                 type="text"
@@ -100,9 +114,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
           <div className="relative">
             <Form.Item<ICourse>
               name="levelOfDifficulty"
-              rules={[
-                { required: true, message: "Zorluk derecesi alanını giriniz" },
-              ]}
+              rules={[{ required: true, message: "" }]}
             >
               <Select
                 size="large"
@@ -140,7 +152,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
           </div>
         </div>
 
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <Form.Item>
             <Button
               htmlType="submit"
@@ -149,7 +161,7 @@ const EducationInfoForm = ({ next, lang }: IProps) => {
               {t("save-and-continue")}
             </Button>
           </Form.Item>
-        </div>
+        </div> */}
       </Form>
     </>
   );
