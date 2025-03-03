@@ -200,8 +200,8 @@ export const fetchArticle = createAsyncThunk(
 );
 export const fetchQuiz = createAsyncThunk(
   "/education-content/quiz",
-  async (limit: number) => {
-    const response = await getQuiz(limit, 1);
+  async (filter: any) => {
+    const response = await getQuiz(filter);
     return response;
   }
 );

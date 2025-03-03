@@ -22,7 +22,7 @@ export async function POST(request: Request) {
           ...body,
           author: verificationResult?.id,
           authorType:
-            verificationResult?.role === "admin" ? "user" : "superadmin",
+            verificationResult?.role === "admin" ? "User" : "superadmin",
           company: verificationResult?.companyId,
         });
         const quiz = await quizCreate.save();

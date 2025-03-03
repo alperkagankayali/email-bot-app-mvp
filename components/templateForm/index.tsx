@@ -1,6 +1,6 @@
 "use client";
 import { IEmailTemplate } from "@/types/scenarioType";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, notification, Select } from "antd";
 import type { FormInstance, FormProps } from "antd";
 import RinchTextEditor from "../rinchTextEditor";
 import FileUpload from "../fileUpload";
@@ -52,6 +52,9 @@ const TemplateForm = ({
         onReset={handleResetForm}
         form={form}
         autoComplete="off"
+        onFinishFailed={() => {
+          notification.error({ message: t("form-require-error") });
+        }}
       >
         <div className="mb-4">
           <label className="mb-2.5 block font-medium text-black dark:text-white">

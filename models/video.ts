@@ -18,6 +18,7 @@ const videoSchema = new Schema<IVideoType>({
   created_at: { type: Date, default: Date.now },
   isDelete: { type: Boolean, default: false },
   company: { type: Types.ObjectId, ref: "Company" },
+  language: { type: Types.ObjectId, ref: "Languages" },
 });
 
 const Video = models.Video || model<IVideoType>("Video", videoSchema);

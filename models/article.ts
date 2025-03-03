@@ -18,7 +18,7 @@ const articleSchema = new Schema<IArticleType>({
   created_at: { type: Date, default: Date.now },
   isDelete: { type: Boolean, default: false },
   company: { type: Types.ObjectId, ref: "Company" },
-
+  language: { type: Types.ObjectId, ref: "Languages" },
 });
 
 const Article = models.Article || model<IArticleType>("Article", articleSchema);

@@ -1,4 +1,5 @@
 import { ICompany } from "./companyType";
+import { ILanguage } from "./languageType";
 import { IUser } from "./userType";
 
 export interface IArticleType {
@@ -11,4 +12,5 @@ export interface IArticleType {
   company: ICompany;
   authorType: "admin" | "superadmin";
   _id:string;
+  language: ILanguage | string
 }

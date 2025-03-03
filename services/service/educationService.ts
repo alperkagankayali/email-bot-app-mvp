@@ -45,8 +45,8 @@ export const createEducation = async (data: any) => {
   const result: IResponseType = await postRequest(url, data, config);
   return result;
 };
-export const getQuiz = async (limit = 10, page = 1, id = "") => {
-  const queryParams = jsonToQueryString({ limit, page, id });
+export const getQuiz = async (filter:any) => {
+  const queryParams = jsonToQueryString(filter);
   const url = servicesBaseUrl + finalConfig.GET_QUIZ + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);

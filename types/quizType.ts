@@ -1,4 +1,5 @@
 import { ICompany } from "./companyType";
+import { ILanguage } from "./languageType";
 import { IUser } from "./userType";
 
 export interface IQuizType {
@@ -11,6 +12,7 @@ export interface IQuizType {
   company: ICompany;
   _id: string;  
   authorType: "admin" | "superadmin";
+  language: ILanguage | string
 
 }
 

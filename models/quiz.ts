@@ -37,6 +37,7 @@ const quizSchema = new Schema<IQuizType>({
     },
   ],
   company: { type: Types.ObjectId, ref: "Company" },
+  language: { type: Types.ObjectId, ref: "Languages" },
 });
 
 const Quiz = models.Quiz || model<IQuizType>("Quiz", quizSchema);

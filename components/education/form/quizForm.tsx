@@ -12,6 +12,7 @@ import {
   Input,
   notification,
   Radio,
+  Select,
   Space,
   theme,
 } from "antd";
@@ -22,8 +23,8 @@ import {
   updateQuiz,
 } from "@/services/service/educationService";
 import { useRouter } from "@/i18n/routing";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { fetchQuiz } from "@/redux/slice/education";
 import type { CSSProperties } from "react";
 import { useTranslations } from "next-intl";
@@ -39,6 +40,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const { token } = theme.useToken();
+  const languages = useSelector((state: RootState) => state.language.language);
   const panelStyle: React.CSSProperties = {
     marginBottom: 24,
     background: "white",
@@ -67,7 +69,7 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
   useEffect(() => {
     if (!!quizId) {
       const fetchArticleById = async () => {
-        const res = await getQuiz(10, 1, quizId);
+        const res = await getQuiz({ id: quizId });
         form.setFieldsValue({
           title: res.data.title,
           description: res.data.description,
@@ -212,18 +214,22 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
   const t = useTranslations("pages");
 
   return (
-    <div className="">
+    <div className=" flex justify-center w-full">
       <Form
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 18 }}
         form={form}
         name="dynamic_form_complex"
+        className="w-full"
         style={{ maxWidth: 600 }}
         autoComplete="off"
         initialValues={{ items: [{}] }}
         onFinish={onFinish}
         onValuesChange={(_, allFields) => {
           setFields(allFields);
+        }}
+        onFinishFailed={() => {
+          notification.error({ message: t("form-require-error") });
         }}
       >
         <Form.Item
@@ -246,6 +252,24 @@ const QuizForm: React.FC<IProps> = ({ redirect = false, quizId }) => {
           className="!mb-10"
         >
           <Input.TextArea rows={1} />
+        </Form.Item>
+        <Form.Item
+          layout="vertical"
+          labelCol={{ span: 24 }}
+          wrapperCol={{ span: 24 }}
+          label={t("resources-language")}
+          name="language"
+          rules={[{ required: true }]}
+          className="!mb-10 h-12"
+        >
+          <Select
+            size="large"
+            className="w-full"
+            placeholder={t("resources-language")}
+            options={languages?.map((type) => {
+              return { value: type._id, label: type.name };
+            })}
+          />
         </Form.Item>
         <Form.List name="question">
           {(fields, { add, remove }) => {

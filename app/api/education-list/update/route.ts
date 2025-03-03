@@ -38,6 +38,7 @@ export async function POST(request: Request) {
             _id: undefined,
             authorType: "User",
             author: verificationResult.id,
+            company: verificationResult?.companyId,
           });
 
           await newEducationList.save();
