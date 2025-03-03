@@ -80,10 +80,8 @@ const DataEntriesList: React.FC = () => {
   };
 
   useEffect(() => {
-    if (status === "idle") {
       dispatch(fetchDataEntry({ limit: pageSize, page }));
-    }
-  }, [status, dispatch]);
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col items-start">

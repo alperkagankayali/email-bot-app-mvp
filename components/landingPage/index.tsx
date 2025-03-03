@@ -80,10 +80,8 @@ const LandingPageList: React.FC = () => {
   };
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchLandingPage({ limit: pageSize, page }));
-    }
-  }, [status, dispatch]);
+    dispatch(fetchLandingPage({ limit: pageSize, page }));
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col items-start">

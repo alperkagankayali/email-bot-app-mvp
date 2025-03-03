@@ -74,10 +74,8 @@ const EmailTemplateList: React.FC = () => {
   };
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchEmailTemplate({ limit: 8, page: page }));
-    }
-  }, [status, dispatch]);
+    dispatch(fetchEmailTemplate({ limit: 8, page: page }));
+  }, [dispatch]);
 
   const handleDeleteEmailTemplate = async (id: string) => {
     const res = await deleteEmailTemplate(id);
@@ -220,7 +218,10 @@ const EmailTemplateList: React.FC = () => {
         footer={[]}
         width={"auto"}
       >
-        <div className="w-auto min-w-[520px] overflow-auto min-h-75 max-h-[600px]" dangerouslySetInnerHTML={{ __html: open.data }}></div>
+        <div
+          className="w-auto min-w-[520px] overflow-auto min-h-75 max-h-[600px]"
+          dangerouslySetInnerHTML={{ __html: open.data }}
+        ></div>
       </Modal>
       <Modal
         title=""
