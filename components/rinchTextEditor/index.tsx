@@ -22,6 +22,8 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({
     () => ({
       readonly: false,
       placeholder: t("rinch-text-editor-placeholder"),
+      autofocus: true,
+      height: "300",
       extraButtons: [
         {
           name: "uploadToAws",
@@ -51,13 +53,16 @@ const RinchTextEditor: React.FC<ImageHandlerProps> = ({
   );
 
   return (
-    <div>
+    <div className="w-full flex">
       <JoditEditor
         ref={editor}
+        className="min-h-56"
         value={content}
         config={config}
         onBlur={(newContent) => setContent(newContent)}
-        onChange={(newContent) => {setContent(newContent)}}
+        onChange={(newContent) => {
+          setContent(newContent);
+        }}
       />
     </div>
   );

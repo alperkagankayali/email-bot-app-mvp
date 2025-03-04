@@ -193,8 +193,8 @@ export const fetchVideo = createAsyncThunk(
 );
 export const fetchArticle = createAsyncThunk(
   "/education-content/article",
-  async (limit: number) => {
-    const response = await getArticle(limit, 1);
+  async (filter:any) => {
+    const response = await getArticle(filter);
     return response;
   }
 );

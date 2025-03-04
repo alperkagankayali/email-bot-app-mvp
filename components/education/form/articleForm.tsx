@@ -4,12 +4,17 @@ import type { FormProps } from "antd";
 import RinchTextEditor from "@/components/rinchTextEditor";
 import { useEffect, useState } from "react";
 import { IArticleType } from "@/types/articleType";
-import { createArticle, getArticle, updateArticle } from "@/services/service/educationService";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import {
+  createArticle,
+  getArticle,
+  updateArticle,
+} from "@/services/service/educationService";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { useRouter } from "@/i18n/routing";
 import { fetchArticle } from "@/redux/slice/education";
 import { useTranslations } from "next-intl";
+import { titleCase } from "@/constants";
 
 type IProps = {
   redirect?: boolean;
@@ -21,19 +26,23 @@ const ArticleForm = ({ redirect = false, articleId }: IProps) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const t = useTranslations("pages");
+  const languages = useSelector((state: RootState) => state.language.language);
+  const [loading, setLoading] = useState(false);
 
   const onFinish: FormProps<IArticleType>["onFinish"] = async (values) => {
+    setLoading(true);
     values.content = content;
     let res = null;
-    if(!!articleId) {
-      res = await updateArticle(articleId,values);
-    }
-    else{
+    if (!!articleId) {
+      res = await updateArticle(articleId, values);
+      setLoading(false);
+    } else {
       res = await createArticle(values);
+      setLoading(false);
     }
-    if (res?.status) {
+    if (res.success) {
       if (redirect) {
-        dispatch(fetchArticle(10));
+        dispatch(fetchArticle({ limit: 8, page: 1 }));
         router.push("/dashboard/academy/article");
       }
       notification.info({ message: t("article-form-success-message") });
@@ -43,76 +52,110 @@ const ArticleForm = ({ redirect = false, articleId }: IProps) => {
   };
 
   useEffect(() => {
-    if(!!articleId) {
+    if (!!articleId) {
       const fetchArticleById = async () => {
-        const res = await getArticle(10,1,articleId);
+        const res = await getArticle({ id: articleId });
         form.setFieldsValue({
-          title:res.data.title,
-          description:res.data.description,
-        })
-        setContent(res.data.content)
-      }
-      fetchArticleById()
+          title: res.data.title,
+          description: res.data.description,
+          language: res.data.language,
+        });
+        setContent(res.data.content);
+      };
+      fetchArticleById();
     }
-  },[articleId])
+  }, [articleId]);
 
   return (
     <div className="mb-6 flex">
       <Form
         name="resource"
-        initialValues={{ remember: true }}
+        // initialValues={{ remember: true }}
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 18 }}
+        className="w-full"
         onFinish={onFinish}
         form={form}
         autoComplete="off"
+        onFinishFailed={() => {
+          notification.error({ message: t("form-require-error") });
+        }}
       >
-        <div className="mb-4">
-          <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Title
-          </label>
+        <div className="mb-4 h-17">
           <div className="relative">
-            <Form.Item<IArticleType> name="title">
+            <Form.Item<IArticleType>
+              layout="vertical"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              label={t("title")}
+              name="title"
+              rules={[{ required: true, message: t("title-required") }]}
+              className="!h-15"
+            >
               <Input
                 size="large"
                 type="text"
-                placeholder="Title"
+                placeholder={t("title")}
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </Form.Item>
           </div>
         </div>
-        <div className="mb-4">
-          <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Description
-          </label>
+        <div className="mb-4 h-17">
           <div className="relative">
-            <Form.Item<IArticleType> name="description" required>
+            <Form.Item<IArticleType>
+              layout="vertical"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              label={titleCase(t("description"))}
+              name="description"
+              className="!h-15"
+              rules={[{ required: false }]}
+            >
               <Input
                 size="large"
                 type="text"
-                required
-                placeholder="Description"
+                placeholder={t("description")}
                 className="w-full rounded-lg border  border-stroke bg-transparent text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </Form.Item>
           </div>
         </div>
-        <div className="mb-4">
-          <label className="mb-2.5 block font-medium text-black dark:text-white">
-            Content
-          </label>
+        <div className="mb-4 h-17">
           <div className="relative">
-            <Form.Item<IArticleType> name="content">
-              <RinchTextEditor content={content} setContent={setContent} />
-            </Form.Item>
-            <Form.Item>
-              <Button
-                htmlType="submit"
-                className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
-              >
-                  {t("save-btn")}
-                  </Button>
+            <Form.Item
+              layout="vertical"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              label={t("resources-language")}
+              name="language"
+              rules={[{ required: true, message: t("select-language") }]}
+              className="!mb-30 mt-4 p-4"
+            >
+              <Select
+                size="large"
+                className="w-full "
+                placeholder={t("resources-language")}
+                options={languages?.map((type) => {
+                  return { value: type._id, label: type.name };
+                })}
+              />
             </Form.Item>
           </div>
+        </div>
+        <div className="flex w-full ">
+          <div className="relative">
+            <RinchTextEditor content={content} setContent={setContent} />
+          </div>
+        </div>
+        <div className="mt-10 w-full flex">
+          <Button
+            loading={loading}
+            htmlType="submit"
+            className="w-full cursor-pointer rounded-lg border !border-primary !bg-primary !p-7 !text-white transition hover:bg-opacity-90"
+          >
+            {t("save-btn")}
+          </Button>
         </div>
       </Form>
     </div>

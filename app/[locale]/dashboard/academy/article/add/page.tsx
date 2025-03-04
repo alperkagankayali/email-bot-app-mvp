@@ -3,9 +3,12 @@ import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Loader from "@/components/common/Loader";
 import dynamic from "next/dynamic";
-const ArticleForm = dynamic(() => import("@/components/education/form/articleForm"), {
-  ssr: false,
-});
+const ArticleForm = dynamic(
+  () => import("@/components/education/form/articleForm"),
+  {
+    ssr: false,
+  }
+);
 const ArticleAdd: React.FC = async () => {
   return (
     <DefaultLayout>
@@ -13,7 +16,7 @@ const ArticleAdd: React.FC = async () => {
         <Breadcrumb pageName="menu-academy-article" />
         <div>
           <Suspense fallback={<Loader />}>
-            <ArticleForm />
+            <ArticleForm redirect={true} />
           </Suspense>
         </div>
       </div>

@@ -31,7 +31,7 @@ export async function POST(request: Request) {
           verificationResult?.role === "admin" &&
           findArticle.authorType === "superadmin"
         ) {
-          const newVideo = new Article({
+          const newArticle = new Article({
             ...findArticle.toObject(),
             ...updateData,
             created_at: Date.now(),
@@ -41,12 +41,12 @@ export async function POST(request: Request) {
             company: verificationResult?.companyId,
           });
 
-          await newVideo.save();
+          await newArticle.save();
 
           return NextResponse.json(
             {
               ...message201,
-              data: newVideo,
+              data: newArticle,
             },
             { status: 201 }
           );

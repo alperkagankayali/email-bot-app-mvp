@@ -18,7 +18,9 @@ export function jsonToQueryString(json: any) {
       .join("&")
   );
 }
-
+export function titleCase(string:string){
+  return string[0].toUpperCase() + string.slice(1).toLowerCase();
+}
 export function queryStringTo(str: string) {
   return Object.fromEntries(new URLSearchParams(str));
 }
