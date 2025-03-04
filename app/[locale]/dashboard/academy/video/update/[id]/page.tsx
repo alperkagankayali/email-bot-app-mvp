@@ -10,7 +10,7 @@ const VideoUpdate: React.FC<{
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-[67rem]">
-        <Breadcrumb pageName="menu-academy-article" />
+        <Breadcrumb pageName="menu-academy-video" />
         <div>
           <Suspense fallback={<Loader />}>
             <VideoForm redirect={true} videoId={id} />

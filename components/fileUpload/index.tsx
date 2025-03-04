@@ -26,7 +26,7 @@ const FileUpload = ({ handleUploadFile, defaultValue, type }: IProps) => {
     if (type === "video") {
       const isLt2M = file.size / 1024 / 1024 < 50;
       if (!isLt2M) {
-        message.error("Image must smaller than 50MB!");
+        message.error("video must smaller than 50MB!");
       }
       return isLt2M;
     } else {
@@ -48,7 +48,9 @@ const FileUpload = ({ handleUploadFile, defaultValue, type }: IProps) => {
     beforeUpload: beforeUpload,
     maxCount: 1,
     defaultFileList: !!defaultValue
-      ? [{ url: defaultValue, name: "image", uid: uuidv4(), status: "done" }]
+      ? type === "video"
+        ? [{ url: defaultValue, name: "video", uid: uuidv4(), status: "done" }]
+        : [{ url: defaultValue, name: "image", uid: uuidv4(), status: "done" }]
       : [],
     onChange(info) {
       const { status } = info.file;

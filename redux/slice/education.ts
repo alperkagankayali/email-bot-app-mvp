@@ -186,8 +186,8 @@ export const fetchEducationList = createAsyncThunk(
 
 export const fetchVideo = createAsyncThunk(
   "/education-content/video",
-  async (limit: number) => {
-    const response = await getVideo(limit, 1);
+  async (filter:any) => {
+    const response = await getVideo(filter);
     return response;
   }
 );

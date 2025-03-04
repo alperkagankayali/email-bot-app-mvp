@@ -7,8 +7,8 @@ import { IArticleType } from "@/types/articleType";
 import { IVideoType } from "@/types/videoType";
 import { IQuizType } from "@/types/quizType";
 
-export const getVideo = async (limit = 10, page = 1, id = "") => {
-  const queryParams = jsonToQueryString({ limit, page, id });
+export const getVideo = async (filter: any) => {
+  const queryParams = jsonToQueryString(filter);
   const url = servicesBaseUrl + finalConfig.GET_VIDEO + queryParams;
   const config = headers.content_type.application_json;
   const result: IResponseType = await getRequest(url, config);

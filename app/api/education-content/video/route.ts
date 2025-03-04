@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { message200, message401, message500 } from "@/constants";
 import { verifyToken } from "@/lib/jwt";
 import Video from "@/models/video";
+import { Types } from "mongoose";
 
 export async function GET(request: Request) {
   try {
@@ -14,6 +15,10 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get("limit") || "50"); // Varsayılan limit 10
     const skip = (page - 1) * limit; //
     const id = searchParams.get("id");
+    const authorType = searchParams.get("authorType");
+    const language = searchParams.get("language");
+    const name = searchParams.get("name");
+    const orderId = searchParams.get("orderId");
 
     if (!!token) {
       const verificationResult: any = await verifyToken(token.split(" ")[1]);
@@ -34,44 +39,45 @@ export async function GET(request: Request) {
             { status: 200, statusText: message200.message }
           );
         } else {
-          if (verificationResult?.role === "superadmin") {
-            const videoTotal = await Video.countDocuments({
-              isDelete: false,
-            });
-            const video = await Video.find({
-              isDelete: false,
-            })
-              .skip(skip)
-              .limit(limit);
-            return NextResponse.json(
-              {
-                ...message200,
-                data: video,
-                totalItems: videoTotal,
-              },
-              { status: 200, statusText: message200.message }
-            );
+          const filter: any = {};
+          if (!!authorType) {
+            if (authorType.split("&").length > 1) {
+              filter["$or"] = [
+                { company: verificationResult?.companyId },
+                { authorType: authorType.split("&") },
+              ];
+            } else {
+              filter.authorType = authorType;
+            }
+          } else if (verificationResult?.role !== "superadmin") {
+            filter["$or"] = [
+              { company: verificationResult?.companyId },
+              { authorType: "superadmin" },
+            ];
           }
-          const videoTotal = await Video.countDocuments({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
-          });
-          const video = await Video.find({
-            isDelete: false,
-            $or: [
-              { company: verificationResult.companyId },
-              { authorType: "superadmin" },
-            ],
-          })
+          filter.isDelete = false;
+          !!language && (filter.language = language);
+          !!name && (filter.title = { $regex: name, $options: "i" });
+          let orderObjectId = null;
+          let videoList = [];
+          let videoTotal = await Video.countDocuments(filter);
+          if (orderId && Types.ObjectId.isValid(orderId) && page === 1) {
+            orderObjectId = new Types.ObjectId(orderId);
+            const firstItems = await Video.findById(orderObjectId);
+            videoList.push(firstItems.toObject());
+            filter._id = { $nin: orderId }; // orderId'leri diğer listeden hariç tut
+          }
+          const video = await Video.find(filter)
             .skip(skip)
-            .limit(limit);
+            .limit(limit - videoList.length) // orderId varsa limitten düş
+            .sort({ created_at: -1 });
+
+          videoList = [...videoList, ...video];
+
           return NextResponse.json(
             {
               ...message200,
-              data: video,
+              data: videoList,
               totalItems: videoTotal,
             },
             { status: 200, statusText: message200.message }
