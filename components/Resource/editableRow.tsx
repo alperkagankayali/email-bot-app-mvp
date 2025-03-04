@@ -212,8 +212,12 @@ const ResourceTable: React.FC = () => {
               </Typography.Link>
             )}
             <Popconfirm
-              title={t("delete-document")}
-              description={t("delete-document-2")}
+              title={t("delete-document", {
+                document: t("menu-resource"),
+              })}
+              description={t("delete-document-2", {
+                document: t("menu-resource"),
+              })}
               onConfirm={() => handleDeleteResource(record.key)}
               okText={t("yes-btn")}
               cancelText={t("no-btn")}
