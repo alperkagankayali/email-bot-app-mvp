@@ -34,12 +34,12 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
     beforeUpload: (file) => {
       const isJpgOrPng = file.type === "text/csv";
       if (!isJpgOrPng) {
-        message.error("You can only upload JPG/PNG file!");
+        message.error(t("error-image-upload"));
         return false;
       }
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 1024 / 1024 < 40;
       if (!isLt2M) {
-        message.error("Image must smaller than 2MB!");
+        message.error(t("error-file-size", { size: "40MB" }));
         return false;
       }
       setFileList([...fileList, file]);
@@ -96,7 +96,7 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
           className="float-right my-4 !bg-[#181140] !text-white"
           onClick={handleDowloandCsv}
         >
-          Dowloand Example CSV
+          {t("dowloand-csv")}
         </Button>
         <p></p>
         <p></p>
@@ -108,12 +108,18 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
             <th className="border border-gray-200 text-center p-2">
               {t("user-table-name-surname")?.split(" ")[1]}
             </th>
-            <th className="border border-gray-200 text-center p-2">email</th>
-            <th className="border border-gray-200 text-center p-2">language</th>
             <th className="border border-gray-200 text-center p-2">
-              department
+              {t("login-emailInput")}
             </th>
-            <th className="border border-gray-200 text-center p-2">role</th>
+            <th className="border border-gray-200 text-center p-2">
+              {t("resources-language")}
+            </th>
+            <th className="border border-gray-200 text-center p-2">
+              {t("user-table-department")}
+            </th>
+            <th className="border border-gray-200 text-center p-2">
+              {t("user-table-role")}
+            </th>
           </tr>
           <tr>
             <td className="border border-gray-200 bg-slate-500 text-white p-2 text-center"></td>
@@ -130,7 +136,7 @@ const AddUserExel = ({ isAddUserModal, setIsAddUserModal, id }: IProps) => {
         </table>
         <div className="mt-6">
           <Upload {...props} className="">
-            <Button icon={<UploadOutlined />}>Select File</Button>
+            <Button icon={<UploadOutlined />}>{t("select-file")}</Button>
           </Upload>
         </div>
       </Modal>

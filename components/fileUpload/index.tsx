@@ -26,16 +26,16 @@ const FileUpload = ({ handleUploadFile, defaultValue, type }: IProps) => {
     if (type === "video") {
       const isLt2M = file.size / 1024 / 1024 < 50;
       if (!isLt2M) {
-        message.error("video must smaller than 50MB!");
+        message.error(t("error-file-size", { size: "50MB" }));
       }
       return isLt2M;
     } else {
       if (!isJpgOrPng) {
-        message.error("You can only upload JPG/PNG file!");
+        message.error(t("error-image-upload"));
       }
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        message.error("Image must smaller than 2MB!");
+        message.error(t("error-file-size", { size: "2MB" }));
       }
       return isJpgOrPng && isLt2M;
     }
