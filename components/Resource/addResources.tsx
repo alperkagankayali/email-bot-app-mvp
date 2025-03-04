@@ -43,9 +43,9 @@ const AddResource = ({ isModalOpen, setIsModalOpen, handleAdd }: IProps) => {
     });
     if (res.success) {
       form.resetFields();
-      notification.info({ message: "Başarı ile kaydedildi" });
+      notification.info({ message: t(res.message) });
     } else {
-      notification.error({ message: "Kaydedilemedi" });
+      notification.error({ message: t(res.message) });
     }
     handleAdd({
       ...res.data,

@@ -206,6 +206,7 @@ const AddCompanies = ({
                     format: "DD-MM-YYYY",
                     type: "mask",
                   }}
+                  placeholder={[t("start-date"), t("end-date")]} 
                   className="w-full"
                   id={{
                     start: "startInput",

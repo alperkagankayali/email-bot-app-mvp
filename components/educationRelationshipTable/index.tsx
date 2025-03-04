@@ -12,10 +12,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchScenario, fetchScenarioType } from "@/redux/slice/scenario";
-import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { EditOutlined, EyeOutlined } from "@ant-design/icons";
+import {  EyeOutlined } from "@ant-design/icons";
 import type { TableProps } from "antd";
 import EducationListCheckBox from "./educationListCheckbox";
 import { IEducationList } from "@/types/educationListType";
