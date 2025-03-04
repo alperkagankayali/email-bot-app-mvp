@@ -205,15 +205,15 @@ const EducationFilter: React.FC<IEducationFilter> = ({
               options={[
                 {
                   value: "easy",
-                  label: "easy",
+                  label: t("easy"),
                 },
                 {
                   value: "medium",
-                  label: "medium",
+                  label: t("medium"),
                 },
                 {
                   value: "hard",
-                  label: "hard",
+                  label: t("hard"),
                 },
               ]}
             />

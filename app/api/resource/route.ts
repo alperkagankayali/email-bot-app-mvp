@@ -1,3 +1,4 @@
+import { message201, message500 } from "@/constants";
 import connectToDatabase from "@/lib/mongoose";
 import Resources from "@/models/resources";
 import { NextResponse } from "next/server";
@@ -9,15 +10,11 @@ export async function POST(request: Request) {
     const resourceCreated = await Resources.insertMany(body);
 
     return NextResponse.json({
-      success: true,
-      message: "Veri başarıyla alındı",
+      ...message201,
       resourceCreated,
     });
   } catch (error) {
     console.error("Hata:", error);
-    return NextResponse.json(
-      { success: false, message: "Bir hata oluştu" },
-      { status: 500 }
-    );
+    return NextResponse.json({ ...message500 }, { status: 500 });
   }
 }
