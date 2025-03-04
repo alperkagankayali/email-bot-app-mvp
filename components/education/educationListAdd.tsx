@@ -69,7 +69,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
     return selectLang.map((e, index) => {
       return {
         key: index + 1,
-        label: e + " Education - " + (index + 1),
+        label: e + " " +t("menu-education")+ "  - " + (index + 1),
         children: <EducationAddForm id={id} lang={e} />,
         style: panelStyle,
         extra: genExtra(e),
