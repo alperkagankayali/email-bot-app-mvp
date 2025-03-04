@@ -229,19 +229,19 @@ const EducationList: React.FC = () => {
                               {!!reduce["article"]?.count && (
                                 <Tag className="!m-0 !pl-1">
                                   {" "}
-                                  Article: {reduce["article"]?.count ?? 0}
+                                  {t("menu-academy-article")}: {reduce["article"]?.count ?? 0}
                                 </Tag>
                               )}
                               {!!reduce["quiz"]?.count && (
                                 <Tag className="!m-0 !px-1">
                                   {" "}
-                                  Quiz: {reduce["quiz"]?.count ?? 0}
+                                  {t("menu-academy-quiz")}: {reduce["quiz"]?.count ?? 0}
                                 </Tag>
                               )}
                               {!!reduce["video"]?.count && (
                                 <Tag className="!m-0 !pl-1">
                                   {" "}
-                                  Video: {reduce["video"]?.count ?? 0}
+                                  {t("menu-academy-video")}: {reduce["video"]?.count ?? 0}
                                 </Tag>
                               )}
                             </div>
