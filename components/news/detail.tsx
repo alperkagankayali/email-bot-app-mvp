@@ -81,7 +81,7 @@ const NewsDetail: React.FC<IProps> = ({ id }) => {
         ></div>
         <div className="flex w-full justify-between">
           <p className="mb-4">
-            Create date:{" "}
+            {t("create-date")}:{" "}
             {format.dateTime(dateTime, {
               hour: "numeric",
               minute: "numeric",
@@ -91,7 +91,7 @@ const NewsDetail: React.FC<IProps> = ({ id }) => {
             })}
           </p>
           <p className="mb-4">
-            Update date:{" "}
+            {t("update-date")}:{" "}
             {format.dateTime(dateTime2, {
               hour: "numeric",
               minute: "numeric",
