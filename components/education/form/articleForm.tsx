@@ -70,7 +70,6 @@ const ArticleForm = ({ redirect = false, articleId }: IProps) => {
     <div className="mb-6 flex">
       <Form
         name="resource"
-        // initialValues={{ remember: true }}
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 18 }}
         className="w-full"

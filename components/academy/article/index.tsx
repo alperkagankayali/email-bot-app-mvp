@@ -230,7 +230,6 @@ const ArticleList: React.FC = () => {
         open={open.show}
         onOk={() => setOpen({ show: false, data: "" })}
         onCancel={() => setOpen({ show: false, data: "" })}
-        width={1000}
       >
         <div dangerouslySetInnerHTML={{ __html: open.data }}></div>
       </Modal>

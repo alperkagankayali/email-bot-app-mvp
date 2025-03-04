@@ -34,6 +34,7 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const router = useRouter();
   const [form] = Form.useForm();
+  const t = useTranslations("pages");
   const next = () => {
     setCurrent(current + 1);
   };
@@ -41,7 +42,6 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
   const prev = () => {
     setCurrent(current - 1);
   };
-  const t = useTranslations("pages");
 
   const steps = [
     {

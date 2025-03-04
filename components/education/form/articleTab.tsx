@@ -1,9 +1,8 @@
 "use client";
 
 import { AppDispatch, RootState } from "@/redux/store";
-import ArticleForm from "./articleForm";
-import { Badge, Card, Pagination, Popconfirm, Radio } from "antd";
-import type { PaginationProps, RadioChangeEvent } from "antd";
+import { Badge, Card, Modal, Pagination } from "antd";
+import type { PaginationProps } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,10 +12,10 @@ import {
 } from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
-import { deleteArticle, getArticle } from "@/services/service/educationService";
-import { Link } from "@/i18n/routing";
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import {  getArticle } from "@/services/service/educationService";
+import {  EyeOutlined } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
+import ContentFilter, { IFilter } from "@/components/academy/filter";
 
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
@@ -24,10 +23,6 @@ const { Meta } = Card;
 type IProps = {
   lang: string;
 };
-const optionsWithDisabled = [
-  { label: "Select", value: "select" },
-  { label: "Add", value: "add" },
-];
 
 const ArticleTab = ({ lang }: IProps) => {
   const forms = useSelector((state: RootState) => state.education.forms);
@@ -39,11 +34,19 @@ const ArticleTab = ({ lang }: IProps) => {
     (state: RootState) => state.education.articleStatus
   );
   const data = useSelector((state: RootState) => state.education.article);
+  const languages = useSelector((state: RootState) => state.language.language);
   const totalItems = useSelector(
     (state: RootState) => state.education.articleTotalItems
   );
-  const user = useSelector((state: RootState) => state.user.user);
+  const [filter, setFilter] = useState<IFilter>({
+    name: "",
+    authorType: [],
+    language: languages.find((e) => e.code === lang)?._id ?? "",
+  });
+
   const [pageSize, setPageSize] = useState(8);
+  const [page, setPage] = useState(1);
+  const t = useTranslations("pages");
   const [open, setOpen] = useState({
     show: false,
     data: "",
@@ -51,7 +54,13 @@ const ArticleTab = ({ lang }: IProps) => {
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(fetchArticle(8));
+      dispatch(
+        fetchArticle({
+          limit: pageSize,
+          page,
+          language: languages.find((e) => e.code === lang)?._id ?? "",
+        })
+      );
     }
   }, [status, dispatch]);
 
@@ -59,20 +68,17 @@ const ArticleTab = ({ lang }: IProps) => {
     page,
     pageNumber
   ) => {
-    const res = await getArticle(pageNumber, page);
+    const res = await getArticle({
+      limit: pageNumber,
+      page,
+      language: languages.find((e) => e.code === lang)?._id ?? "",
+    });
     if (res.success && !!data) {
       dispatch(handleArticleDataChange(res.data));
     }
+    setPage(page);
     setPageSize(pageNumber);
   };
-
-  const handleDeletArticle = async (id: string) => {
-    const res = await deleteArticle(id);
-    dispatch(
-      handleArticleDataChange(data?.filter((e) => e._id !== res.data?._id))
-    );
-  };
-  const t = useTranslations("pages");
 
   const onChangeArticleSelect = (e: string[]) => {
     const dataFormat = e.map((element: any) => {
@@ -95,9 +101,44 @@ const ArticleTab = ({ lang }: IProps) => {
     setSelected(e);
   };
 
+  const handleGetQuizFilter = async (
+    key: string,
+    value: string | string[],
+    isDelete?: boolean
+  ) => {
+    if (isDelete) {
+      dispatch(
+        fetchArticle({
+          limit: 8,
+          page: page,
+        })
+      );
+      setFilter({ name: "", authorType: [], language: "" });
+    } else {
+      dispatch(
+        fetchArticle({
+          limit: 8,
+          page: page,
+          ...filter,
+          [key]: value,
+        })
+      );
+      setFilter({ ...filter, [key]: value });
+    }
+  };
+
   return (
     <>
       <div className="mt-5">
+        <div className="p-2">
+          <ContentFilter
+            page={page}
+            isLanguage={false}
+            handleGetContentFilter={handleGetQuizFilter}
+            filter={filter}
+            setFilter={setFilter}
+          />
+        </div>
         <CheckboxGroup
           onChange={onChangeArticleSelect}
           className={"card-checkbox !grid grid-cols-4 gap-10"}
@@ -106,26 +147,11 @@ const ArticleTab = ({ lang }: IProps) => {
           {data.map((article) => {
             const selectedArticle = selected.some((e) => e === article._id);
             const actions: React.ReactNode[] = [
-              <Link href={"/dashboard/academy/article/update/" + article._id}>
-                <EditOutlined key="edit" />
-              </Link>,
               <EyeOutlined
                 key="ellipsis"
+                className="z-9999"
                 onClick={() => setOpen({ show: true, data: article.content })}
               />,
-              <Popconfirm
-                title={t("delete-document")}
-                description={t("delete-document-2")}
-                onConfirm={() => handleDeletArticle(article._id)}
-                okText={t("yes-btn")}
-                disabled={
-                  article?.authorType === "superadmin" &&
-                  user?.role !== "superadmin"
-                }
-                cancelText={t("no-btn")}
-              >
-                <DeleteOutlined />
-              </Popconfirm>,
             ];
             return (
               <Checkbox
@@ -182,6 +208,15 @@ const ArticleTab = ({ lang }: IProps) => {
           )}
         </div>
       </div>
+      <Modal
+        title=""
+        centered
+        open={open.show}
+        onOk={() => setOpen({ show: false, data: "" })}
+        onCancel={() => setOpen({ show: false, data: "" })}
+      >
+        <div dangerouslySetInnerHTML={{ __html: open.data }}></div>
+      </Modal>
     </>
   );
 };

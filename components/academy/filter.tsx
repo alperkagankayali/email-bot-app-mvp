@@ -25,6 +25,7 @@ type IContentFilter = {
   page: number;
   setFilter: (x: IFilter) => void;
   filter: IFilter;
+  isLanguage?: boolean;
   handleGetContentFilter: (
     key: string,
     value: string | string[],
@@ -37,12 +38,13 @@ const ContentFilter: React.FC<IContentFilter> = ({
   filter,
   setFilter,
   handleGetContentFilter,
+  isLanguage = true,
 }) => {
   const languages = useSelector((state: RootState) => state.language.language);
   const t = useTranslations("pages");
 
   const FilterTagList = (!!filter.name ||
-    filter.language ||
+    (filter.language && isLanguage) ||
     filter.authorType.length > 0) && (
     <div className="flex">
       {filter.authorType.length > 0 &&
@@ -61,7 +63,7 @@ const ContentFilter: React.FC<IContentFilter> = ({
             {e === "superadmin" ? "Global" : "Local"}
           </Tag>
         ))}
-      {!!filter.language && (
+      {!!filter.language && isLanguage && (
         <Tag
           bordered={false}
           onClose={(event) => handleGetContentFilter("language", "")}
@@ -107,23 +109,25 @@ const ContentFilter: React.FC<IContentFilter> = ({
         }}
         enterButton
       />
-      <Select
-        size="large"
-        className="w-auto min-w-54"
-        placeholder={t("language")}
-        value={filter.language || undefined}
-        onChange={(value: string) => {
-          handleGetContentFilter("language", value);
-        }}
-      >
-        {languages.map((e) => {
-          return (
-            <Option key={e.code} value={e._id}>
-              {e.name}
-            </Option>
-          );
-        })}
-      </Select>
+      {isLanguage && (
+        <Select
+          size="large"
+          className="w-auto min-w-54"
+          placeholder={t("language")}
+          value={filter.language || undefined}
+          onChange={(value: string) => {
+            handleGetContentFilter("language", value);
+          }}
+        >
+          {languages.map((e) => {
+            return (
+              <Option key={e.code} value={e._id}>
+                {e.name}
+              </Option>
+            );
+          })}
+        </Select>
+      )}
       <Checkbox.Group
         className="!my-4"
         options={options}
