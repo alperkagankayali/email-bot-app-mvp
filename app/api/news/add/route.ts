@@ -22,7 +22,7 @@ export async function POST(request: Request) {
           ...body,
           author: verificationResult?.id,
           authorType:
-            verificationResult?.role === "admin" ? "User" : "SuperAdmin",
+            verificationResult?.role === "admin" ? "User" : "superadmin",
           company: verificationResult?.companyId,
         });
         const news = await newNews.save();

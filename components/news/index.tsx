@@ -54,7 +54,6 @@ const NewsList: React.FC = () => {
         <Link href="/dashboard/news/add">
           <Button type="primary" className="!bg-[#181140] w-full"> {t("menu-news-add")}</Button>
         </Link>
-        <span className="ml-2">Total items</span>
       </div>
 
       <div className="grid grid-cols-4 gap-8 mt-4">

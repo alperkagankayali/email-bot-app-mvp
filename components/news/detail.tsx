@@ -56,7 +56,7 @@ const NewsDetail: React.FC<IProps> = ({ id }) => {
           </span>
           <span className="hidden lg:block ml-2">
             <span className="block text-sm font-medium text-black dark:text-white">
-              {data.author.nameSurname}
+              {data.author?.nameSurname}
             </span>
             <span className="block text-xs">
               {type === "superadmin"
