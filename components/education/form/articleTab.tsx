@@ -12,8 +12,8 @@ import {
 } from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
-import {  getArticle } from "@/services/service/educationService";
-import {  EyeOutlined } from "@ant-design/icons";
+import { getArticle } from "@/services/service/educationService";
+import { EyeOutlined } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
 import ContentFilter, { IFilter } from "@/components/academy/filter";
 
@@ -26,9 +26,7 @@ type IProps = {
 
 const ArticleTab = ({ lang }: IProps) => {
   const forms = useSelector((state: RootState) => state.education.forms);
-  const [selected, setSelected] = useState<string[]>(
-    (forms[lang]?.selectArticle as string[]) ?? []
-  );
+  const [selected, setSelected] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector(
     (state: RootState) => state.education.articleStatus
@@ -53,16 +51,26 @@ const ArticleTab = ({ lang }: IProps) => {
   });
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(
-        fetchArticle({
-          limit: pageSize,
-          page,
-          language: languages.find((e) => e.code === lang)?._id ?? "",
-        })
+    dispatch(
+      fetchArticle({
+        limit: pageSize,
+        page,
+        language: languages.find((e) => e.code === lang)?._id ?? "",
+      })
+    );
+  }, [dispatch]);
+  console.log(forms[lang]?.selectArticle, forms[lang], lang, selected);
+
+  useEffect(() => {
+    if (
+      !!forms[lang]?.selectArticle &&
+      (forms[lang]?.selectArticle as string[]).length > 0
+    ) {
+      setSelected(
+        (forms[lang]?.selectArticle as Array<any>).map((e) => e?.refId)
       );
     }
-  }, [status, dispatch]);
+  }, []);
 
   const onChangePagination: PaginationProps["onChange"] = async (
     page,
@@ -101,7 +109,7 @@ const ArticleTab = ({ lang }: IProps) => {
     setSelected(e);
   };
 
-  const handleGetQuizFilter = async (
+  const handleArticleFilter = async (
     key: string,
     value: string | string[],
     isDelete?: boolean
@@ -134,7 +142,7 @@ const ArticleTab = ({ lang }: IProps) => {
           <ContentFilter
             page={page}
             isLanguage={false}
-            handleGetContentFilter={handleGetQuizFilter}
+            handleGetContentFilter={handleArticleFilter}
             filter={filter}
             setFilter={setFilter}
           />

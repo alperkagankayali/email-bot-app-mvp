@@ -308,7 +308,7 @@ const EducationList: React.FC = () => {
         ]}
       >
         <div className="p-5">
-          <p>{t("global-edit-scenario")}</p>
+          <p>{t("global-edit-content")}</p>
         </div>
       </Modal>
     </div>

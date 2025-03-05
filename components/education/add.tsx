@@ -149,9 +149,9 @@ const EducationAddForm: React.FC<IProps> = ({ id, lang }) => {
           })
         );
       }
-      notification.info({ message: "Başarıyla kaydedildi" });
+      notification.info({ message: t(res.message) });
     } else {
-      notification.error({ message: res.message });
+      notification.error({ message: t(res.message) });
     }
   };
 

@@ -1,8 +1,8 @@
 "use client";
 
 import { AppDispatch, RootState } from "@/redux/store";
-import { Badge, Card, List, Modal, Pagination, Popconfirm, Radio } from "antd";
-import type { PaginationProps, RadioChangeEvent } from "antd";
+import { Badge, Card, List, Modal, Pagination, Popconfirm } from "antd";
+import type { PaginationProps } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,12 +12,12 @@ import {
 } from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
-import QuizForm from "./quizForm";
 import { deleteQuiz, getQuiz } from "@/services/service/educationService";
 import { Link } from "@/i18n/routing";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { IQuestion } from "@/types/quizType";
 import { useTranslations } from "next-intl";
+import ContentFilter, { IFilter } from "@/components/academy/filter";
 
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
@@ -25,13 +25,8 @@ const { Meta } = Card;
 type IProps = {
   lang: string;
 };
-const optionsWithDisabled = [
-  { label: "Select", value: "select" },
-  { label: "Add", value: "add" },
-];
 
 const QuizTab = ({ lang }: IProps) => {
-  const [value, setValue] = useState("select");
   const forms = useSelector((state: RootState) => state.education.forms);
   const [selected, setSelected] = useState(
     (forms[lang]?.selectQuiz as string[]) ?? []
@@ -43,26 +38,35 @@ const QuizTab = ({ lang }: IProps) => {
   const totalItems = useSelector(
     (state: RootState) => state.education.quizTotalItems
   );
+  const languages = useSelector((state: RootState) => state.language.language);
+  const [filter, setFilter] = useState<IFilter>({
+    name: "",
+    authorType: [],
+    language: languages.find((e) => e.code === lang)?._id ?? "",
+  });
+
   const [pageSize, setPageSize] = useState(8);
+  const [page, setPage] = useState(1);
   const [open, setOpen] = useState<{ show: boolean; data: IQuestion[] }>({
     show: false,
     data: [],
   });
-  const onChange = ({ target: { value } }: RadioChangeEvent) => {
-    setValue(value);
-  };
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchQuiz(6));
-    }
-  }, [status, dispatch]);
+    dispatch(
+      fetchQuiz({
+        limit: pageSize,
+        page,
+        language: languages.find((e) => e.code === lang)?._id ?? "",
+      })
+    );
+  }, [dispatch]);
 
   const onChangePagination: PaginationProps["onChange"] = async (
     page,
     pageNumber
   ) => {
-    const res = await getQuiz(pageNumber, page);
+    const res = await getQuiz({ limit: pageNumber, page });
     if (res.success && !!data) {
       dispatch(handleQuizDataChange(res.data));
     }
@@ -98,89 +102,101 @@ const QuizTab = ({ lang }: IProps) => {
     setSelected(e);
   };
 
+  useEffect(() => {
+    if (
+      !!forms[lang]?.selectQuiz &&
+      (forms[lang]?.selectQuiz as string[]).length > 0
+    ) {
+      setSelected(
+        (forms[lang]?.selectQuiz as Array<any>).map((e) => e?.refId)
+      );
+    }
+  }, []);
+
+  const handleArticleFilter = async (
+    key: string,
+    value: string | string[],
+    isDelete?: boolean
+  ) => {
+    if (isDelete) {
+      dispatch(
+        fetchQuiz({
+          limit: 8,
+          page: page,
+        })
+      );
+      setFilter({ name: "", authorType: [], language: "" });
+    } else {
+      dispatch(
+        fetchQuiz({
+          limit: 8,
+          page: page,
+          ...filter,
+          [key]: value,
+        })
+      );
+      setFilter({ ...filter, [key]: value });
+    }
+  };
+
   return (
     <>
-      <Radio.Group
-        block
-        options={optionsWithDisabled}
-        defaultValue="select"
-        optionType="button"
-        onChange={onChange}
-        buttonStyle="solid"
-      />
       <div className="mt-5 w-full">
-        {value === "add" && (
-          <>
-            <QuizForm />
-          </>
-        )}
-
-        {value === "select" && (
-          <CheckboxGroup
-            onChange={onChangeQuizSelect}
-            className={"card-checkbox !grid grid-cols-3 gap-10"}
-            value={selected}
-          >
-            {data.map((quiz) => {
-              const selectedArticle = selected.some((e) => e === quiz._id);
-              const actions: React.ReactNode[] = [
-                <Link href={"/dashboard/academy/quiz/update/" + quiz._id}>
-                  <EditOutlined key="edit" />
-                </Link>,
-                <EyeOutlined
-                  key="ellipsis"
-                  onClick={() => setOpen({ show: true, data: quiz.question })}
-                />,
-                <Popconfirm
-                  title={t("delete-document")}
-                  disabled={
-                    quiz?.authorType === "superadmin" &&
-                    user?.role !== "superadmin"
-                  }
-                  description={t("delete-document-2")}
-                  onConfirm={() => handleDeletQuiz(quiz._id)}
-                  okText={t("yes-btn")}
-                  cancelText={t("no-btn")}
+        <div className="p-2">
+          <ContentFilter
+            page={page}
+            isLanguage={false}
+            handleGetContentFilter={handleArticleFilter}
+            filter={filter}
+            setFilter={setFilter}
+          />
+        </div>
+        <CheckboxGroup
+          onChange={onChangeQuizSelect}
+          className={"card-checkbox !grid grid-cols-3 gap-10"}
+          value={selected}
+        >
+          {data.map((quiz) => {
+            const selectedArticle = selected.some((e) => e === quiz._id);
+            const actions: React.ReactNode[] = [
+              <EyeOutlined
+                key="ellipsis"
+                onClick={() => setOpen({ show: true, data: quiz.question })}
+              />,
+            ];
+            return (
+              <Checkbox value={quiz._id} key={quiz._id}>
+                <Badge.Ribbon
+                  color={quiz?.authorType === "superadmin" ? "green" : "red"}
+                  text={quiz?.authorType === "superadmin" ? "Global" : "Local"}
+                  key={quiz._id}
                 >
-                  <DeleteOutlined />
-                </Popconfirm>,
-              ];
-              return (
-                <Checkbox value={quiz._id} key={quiz._id}>
-                  <Badge.Ribbon
-                    color={quiz?.authorType === "superadmin" ? "green" : "red"}
-                    text={
-                      quiz?.authorType === "superadmin" ? "Global" : "Local"
-                    }
+                  <Card
+                    className={clsx("!h-60 !pt-2", {
+                      "!border !border-blue-700": selectedArticle,
+                    })}
+                    actions={actions}
                     key={quiz._id}
+                    hoverable
+                    loading={status === "loading"}
+                    style={{
+                      width: 240,
+                      boxShadow: selectedArticle
+                        ? "0 1px 2px -2px rgba(0, 0, 0, 0.16),0 3px 6px 0 rgba(0, 0, 0, 0.12),0 5px 12px 4px rgba(0, 0, 0, 0.09)"
+                        : "inherit",
+                    }}
                   >
-                    <Card
-                      className={clsx("!h-60 !pt-2", {
-                        "!border !border-blue-700": selectedArticle,
-                      })}
-                      actions={actions}
-                      key={quiz._id}
-                      hoverable
-                      loading={status === "loading"}
-                      style={{
-                        width: 240,
-                        boxShadow: selectedArticle
-                          ? "0 1px 2px -2px rgba(0, 0, 0, 0.16),0 3px 6px 0 rgba(0, 0, 0, 0.12),0 5px 12px 4px rgba(0, 0, 0, 0.09)"
-                          : "inherit",
-                      }}
-                    >
-                      <Meta
-                        title={quiz.title}
-                        className="!line-clamp-3"
-                        description={quiz?.description}
-                      />
-                    </Card>
-                  </Badge.Ribbon>
-                </Checkbox>
-              );
-            })}
-          </CheckboxGroup>
-        )}
+                    <Meta
+                      title={quiz.title}
+                      className="!line-clamp-3"
+                      description={quiz?.description}
+                    />
+                  </Card>
+                </Badge.Ribbon>
+              </Checkbox>
+            );
+          })}
+        </CheckboxGroup>
         <div className="mt-10 mb-20 w-full">
           {!!totalItems && (
             <Pagination

@@ -1,8 +1,8 @@
 "use client";
 
 import { AppDispatch, RootState } from "@/redux/store";
-import { Badge, Card, Modal, Pagination, Popconfirm, Radio } from "antd";
-import type { PaginationProps, RadioChangeEvent } from "antd";
+import { Badge, Card, Modal, Pagination, Popconfirm } from "antd";
+import type { PaginationProps } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,11 +12,11 @@ import {
 } from "@/redux/slice/education";
 import clsx from "clsx";
 import { Checkbox } from "antd";
-import VideoForm from "./videoForm";
 import { deleteVideo, getVideo } from "@/services/service/educationService";
 import { Link } from "@/i18n/routing";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
+import ContentFilter, { IFilter } from "@/components/academy/filter";
 
 const CheckboxGroup = Checkbox.Group;
 const { Meta } = Card;
@@ -24,48 +24,64 @@ const { Meta } = Card;
 type IProps = {
   lang: string;
 };
-const optionsWithDisabled = [
-  { label: "Select", value: "select" },
-  { label: "Add", value: "add" },
-];
 
 const VideoTab = ({ lang }: IProps) => {
-  const [value, setValue] = useState("select");
   const forms = useSelector((state: RootState) => state.education.forms);
-  const [selected, setSelected] = useState(
-    (forms[lang]?.selectVideo as string[]) ?? []
-  );
+  const [selected, setSelected] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const status = useSelector((state: RootState) => state.education.videoStatus);
   const data = useSelector((state: RootState) => state.education.videos);
   const totalItems = useSelector(
     (state: RootState) => state.education.videoTotalItems
   );
+  const languages = useSelector((state: RootState) => state.language.language);
   const user = useSelector((state: RootState) => state.user.user);
   const [open, setOpen] = useState<{ show: boolean; data: any }>({
     show: false,
     data: {},
   });
   const [pageSize, setPageSize] = useState(8);
-
-  const onChange = ({ target: { value } }: RadioChangeEvent) => {
-    setValue(value);
-  };
+  const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState<IFilter>({
+    name: "",
+    authorType: [],
+    language: languages.find((e) => e.code === lang)?._id ?? "",
+  });
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchVideo(6));
+    dispatch(
+      fetchVideo({
+        limit: pageSize,
+        page,
+        language: languages.find((e) => e.code === lang)?._id ?? "",
+      })
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (
+      !!forms[lang]?.selectVideo &&
+      (forms[lang]?.selectVideo as string[]).length > 0
+    ) {
+      setSelected(
+        (forms[lang]?.selectVideo as Array<any>).map((e) => e?.refId)
+      );
     }
-  }, [status, dispatch]);
+  }, []);
 
   const onChangePagitnation: PaginationProps["onChange"] = async (
     page,
     pageNumber
   ) => {
-    const res = await getVideo(pageNumber, page);
+    const res = await getVideo({
+      limit: pageNumber,
+      page,
+      language: languages.find((e) => e.code === lang)?._id ?? "",
+    });
     if (res.success && !!data) {
       dispatch(handleVideoDataChange(res.data));
     }
+    setPage(page);
     setPageSize(pageNumber);
   };
 
@@ -98,103 +114,103 @@ const VideoTab = ({ lang }: IProps) => {
     setSelected(e);
   };
 
+  const handleArticleFilter = async (
+    key: string,
+    value: string | string[],
+    isDelete?: boolean
+  ) => {
+    if (isDelete) {
+      dispatch(
+        fetchVideo({
+          limit: 8,
+          page: page,
+        })
+      );
+      setFilter({ name: "", authorType: [], language: "" });
+    } else {
+      dispatch(
+        fetchVideo({
+          limit: 8,
+          page: page,
+          ...filter,
+          [key]: value,
+        })
+      );
+      setFilter({ ...filter, [key]: value });
+    }
+  };
+
   return (
     <>
-      <Radio.Group
-        block
-        options={optionsWithDisabled}
-        defaultValue="select"
-        optionType="button"
-        onChange={onChange}
-        buttonStyle="solid"
-      />
       <div className="mt-5 w-full">
-        {value === "add" && (
-          <>
-            {" "}
-            <VideoForm />{" "}
-          </>
-        )}
-
-        {value === "select" && (
-          <CheckboxGroup
-            onChange={onChangeVideoSelect}
-            className={"card-checkbox !grid grid-cols-3 gap-10"}
-            value={selected}
-          >
-            {data.map((video) => {
-              const selectedVideo = selected.some((e) => e === video._id);
-              const actions: React.ReactNode[] = [
-                <Link href={"/dashboard/academy/video/update/" + video._id}>
-                  <EditOutlined key="edit" />
-                </Link>,
-                <EyeOutlined
-                  key="ellipsis"
-                  onClick={() => {
-                    setOpen({
-                      show: true,
-                      data: {
-                        link: video.videolink,
-                        title: video.title,
-                        description: video.description,
-                      },
-                    });
-                  }}
-                />,
-                <Popconfirm
-                  title={t("delete-document")}
-                  description={t("delete-document-2")}
-                  onConfirm={() => handleDeleteVideo(video._id)}
-                  okText={t("yes-btn")}
-                  disabled={
-                    video?.authorType === "superadmin" &&
-                    user?.role !== "superadmin"
-                  }
-                  cancelText={t("no-btn")}
-                >
-                  <DeleteOutlined />
-                </Popconfirm>,
-              ];
-              return (
-                <Checkbox
-                  value={video._id}
+        <div className="p-2">
+          <ContentFilter
+            page={page}
+            isLanguage={false}
+            handleGetContentFilter={handleArticleFilter}
+            filter={filter}
+            setFilter={setFilter}
+          />
+        </div>
+        <CheckboxGroup
+          onChange={onChangeVideoSelect}
+          className={"card-checkbox !grid grid-cols-4 gap-10"}
+          value={selected}
+        >
+          {data.map((video) => {
+            const selectedVideo = selected.some((e) => e === video._id);
+            const actions: React.ReactNode[] = [
+              <EyeOutlined
+                key="ellipsis"
+                onClick={() => {
+                  setOpen({
+                    show: true,
+                    data: {
+                      link: video.videolink,
+                      title: video.title,
+                      description: video.description,
+                    },
+                  });
+                }}
+              />,
+            ];
+            return (
+              <Checkbox
+                value={video._id}
+                key={video._id}
+                className="card-checkbox-check"
+              >
+                <Badge.Ribbon
+                  color={video?.authorType === "superadmin" ? "green" : "red"}
+                  text={video?.authorType === "superadmin" ? "Global" : "Local"}
                   key={video._id}
-                  className="card-checkbox-check"
                 >
-                  <Badge.Ribbon
-                    color={video?.authorType === "superadmin" ? "green" : "red"}
-                    text={
-                      video?.authorType === "superadmin" ? "Global" : "Local"
-                    }
+                  <Card
+                    className={clsx("!h-60 !pt-2", {
+                      "!border !border-blue-700": selectedVideo,
+                    })}
+                    actions={actions}
                     key={video._id}
+                    hoverable
+                    loading={status === "loading"}
+                    style={{
+                      width: 240,
+                      boxShadow: selectedVideo
+                        ? "0 1px 2px -2px rgba(0, 0, 0, 0.16),0 3px 6px 0 rgba(0, 0, 0, 0.12),0 5px 12px 4px rgba(0, 0, 0, 0.09)"
+                        : "inherit",
+                    }}
                   >
-                    <Card
-                      className={clsx("!h-60 !pt-2", {
-                        "!border !border-blue-700": selectedVideo,
-                      })}
-                      actions={actions}
-                      key={video._id}
-                      hoverable
-                      loading={status === "loading"}
-                      style={{
-                        width: 240,
-                        boxShadow: selectedVideo
-                          ? "0 1px 2px -2px rgba(0, 0, 0, 0.16),0 3px 6px 0 rgba(0, 0, 0, 0.12),0 5px 12px 4px rgba(0, 0, 0, 0.09)"
-                          : "inherit",
-                      }}
-                    >
-                      <Meta
-                        title={video.title}
-                        className="!line-clamp-3"
-                        description={video?.description}
-                      />
-                    </Card>
-                  </Badge.Ribbon>
-                </Checkbox>
-              );
-            })}
-          </CheckboxGroup>
-        )}
+                    <Meta
+                      title={video.title}
+                      className="!line-clamp-3"
+                      description={video?.description}
+                    />
+                  </Card>
+                </Badge.Ribbon>
+              </Checkbox>
+            );
+          })}
+        </CheckboxGroup>
       </div>
       <div className="mt-10 mb-20 w-full">
         {!!totalItems && (
