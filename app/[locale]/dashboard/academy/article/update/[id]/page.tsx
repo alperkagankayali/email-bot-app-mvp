@@ -1,9 +1,14 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React, { Suspense } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import ArticleForm from "@/components/education/form/articleForm";
 import Loader from "@/components/common/Loader";
-
+import dynamic from "next/dynamic";
+const ArticleForm = dynamic(
+  () => import("@/components/education/form/articleForm"),
+  {
+    ssr: false,
+  }
+);
 const ArticleUpdate: React.FC<{
   params: { id: string };
 }> = async ({ params: { id } }) => {
