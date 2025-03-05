@@ -1,25 +1,21 @@
 "use client";
 
-import {
-  languageColor,
-  languageEnum,
-  noImage,
-  queryStringTo,
-  randomColor,
-} from "@/constants";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
-import {
-  fetchEducationList,
-  handleEducationContentDataChange,
-} from "@/redux/slice/education";
+import { languageColor, languageEnum, noImage } from "@/constants";
+import { Link, useRouter } from "@/i18n/routing";
+import { fetchEducationList } from "@/redux/slice/education";
 import { AppDispatch, RootState } from "@/redux/store";
-import { deleteEducation } from "@/services/service/educationService";
-import { CloseCircleOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { deleteEducationList } from "@/services/service/educationService";
+import {
+  CloseCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import {
   Badge,
   Button,
   Card,
   Modal,
+  notification,
   Pagination,
   PaginationProps,
   Popconfirm,
@@ -47,32 +43,24 @@ const EducationList: React.FC = () => {
     (state: RootState) => state.education.educationListTotalItems
   );
   const [pageSize, setPageSize] = useState(8);
+  const [page, setPage] = useState(1);
   const [filter, setFilter] = useState<IFilter>({
     title: "",
     authorType: [],
-    levelOfDifficulty: [],
+    levelOfDifficulty: "",
     language: [],
   });
- const [isEdit, setIsEdit] = useState({
+  const [isEdit, setIsEdit] = useState({
     show: false,
     id: "",
   });
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchEducationList({ limit: pageSize }));
     }
   }, [status, dispatch]);
-
-  const handleDeleteEducation = async (id: string) => {
-    const res = await deleteEducation(id);
-    dispatch(
-      handleEducationContentDataChange(
-        data?.filter((e) => e._id !== res.data?._id)
-      )
-    );
-  };
 
   const onChangePagitnation: PaginationProps["onChange"] = async (
     page,
@@ -85,24 +73,26 @@ const EducationList: React.FC = () => {
         ...filter,
       })
     );
+    setPage(page);
     setPageSize(pageNumber);
   };
 
   const handleDeleteEducationList = async (id: string) => {
-    // const res = await deleteEducati(id);
-    // if (res.success) {
-    //   notification.success({ message: res.data?.title + " deleted" });
-    //   dispatch(
-    //     fetchScenario({
-    //       limit: pageSize,
-    //       page: page,
-    //     })
-    //   );
-    // } else {
-    //   notification.error({
-    //     message: res.data?.title + " could not be deleted",
-    //   });
-    // }
+    const res = await deleteEducationList(id);
+    if (res.success) {
+      notification.success({ message: res.message });
+      dispatch(
+        fetchEducationList({
+          limit: pageSize,
+          page,
+          ...filter,
+        })
+      );
+    } else {
+      notification.error({
+        message: res.data?.title + " could not be deleted",
+      });
+    }
   };
 
   return (
@@ -124,53 +114,47 @@ const EducationList: React.FC = () => {
                 {}
               );
               let deleteIcon;
-            let editIcon;
-            if (
-              user?.role === "admin" &&
-              item.authorType === "superadmin"
-            ) {
-              deleteIcon = (
-                <Popover
-                  content={t("not-deleted", { name: t("menu-education") })}
-                  title={""}
-                >
-                  <CloseCircleOutlined />
-                </Popover>
-              );
-              editIcon = (
-                <Button
-                  type="text"
-                  onClick={() => setIsEdit({ show: true, id: item._id })}
-                >
-                  <EditOutlined key="edit" />
-                </Button>
-              );
-            } else {
-              deleteIcon = (
-                <Popconfirm
-                  title={t("delete-document", {
-                    document: t("menu-education"),
-                  })}
-                  description={t("delete-document-2", {
-                    document: t("menu-education"),
-                  })}
-                  onConfirm={() => handleDeleteEducationList(item._id)}
-                  okText={t("yes-btn")}
-                  cancelText={t("no-btn")}
-                >
-                  <DeleteOutlined />
-                </Popconfirm>
-              );
-              editIcon = (
-                <Link href={"/dashboard/education/update/" + item._id}>
-                  <EditOutlined key="edit" />
-                </Link>
-              );
-            }
-              const actions: React.ReactNode[] = [
-                editIcon,
-                deleteIcon,
-              ];
+              let editIcon;
+              if (user?.role === "admin" && item.authorType === "superadmin") {
+                deleteIcon = (
+                  <Popover
+                    content={t("not-deleted", { name: t("menu-education") })}
+                    title={""}
+                  >
+                    <CloseCircleOutlined />
+                  </Popover>
+                );
+                editIcon = (
+                  <Button
+                    type="text"
+                    onClick={() => setIsEdit({ show: true, id: item._id })}
+                  >
+                    <EditOutlined key="edit" />
+                  </Button>
+                );
+              } else {
+                deleteIcon = (
+                  <Popconfirm
+                    title={t("delete-document", {
+                      document: t("menu-education"),
+                    })}
+                    description={t("delete-document-2", {
+                      document: t("menu-education"),
+                    })}
+                    onConfirm={() => handleDeleteEducationList(item._id)}
+                    okText={t("yes-btn")}
+                    cancelText={t("no-btn")}
+                  >
+                    <DeleteOutlined />
+                  </Popconfirm>
+                );
+                editIcon = (
+                  <Link href={"/dashboard/education/update/" + item._id}>
+                    <EditOutlined key="edit" />
+                  </Link>
+                );
+              }
+              const actions: React.ReactNode[] = [editIcon, deleteIcon];
               return (
                 <div style={{ width: 240 }} className="flex" key={item._id}>
                   <Badge.Ribbon
@@ -229,19 +213,22 @@ const EducationList: React.FC = () => {
                               {!!reduce["article"]?.count && (
                                 <Tag className="!m-0 !pl-1">
                                   {" "}
-                                  {t("menu-academy-article")}: {reduce["article"]?.count ?? 0}
+                                  {t("menu-academy-article")}:{" "}
+                                  {reduce["article"]?.count ?? 0}
                                 </Tag>
                               )}
                               {!!reduce["quiz"]?.count && (
                                 <Tag className="!m-0 !px-1">
                                   {" "}
-                                  {t("menu-academy-quiz")}: {reduce["quiz"]?.count ?? 0}
+                                  {t("menu-academy-quiz")}:{" "}
+                                  {reduce["quiz"]?.count ?? 0}
                                 </Tag>
                               )}
                               {!!reduce["video"]?.count && (
                                 <Tag className="!m-0 !pl-1">
                                   {" "}
-                                  {t("menu-academy-video")}: {reduce["video"]?.count ?? 0}
+                                  {t("menu-academy-video")}:{" "}
+                                  {reduce["video"]?.count ?? 0}
                                 </Tag>
                               )}
                             </div>
@@ -308,7 +295,7 @@ const EducationList: React.FC = () => {
         ]}
       >
         <div className="p-5">
-          <p>{t("global-edit-content")}</p>
+          <p>{t("global-edit-education")}</p>
         </div>
       </Modal>
     </div>

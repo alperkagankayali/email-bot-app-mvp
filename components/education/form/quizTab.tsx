@@ -73,12 +73,6 @@ const QuizTab = ({ lang }: IProps) => {
     setPageSize(pageNumber);
   };
 
-  const handleDeletQuiz = async (id: string) => {
-    const res = await deleteQuiz(id);
-    dispatch(
-      handleQuizDataChange(data?.filter((e) => e._id !== res.data?._id))
-    );
-  };
   const t = useTranslations("pages");
 
   const onChangeQuizSelect = (e: string[]) => {
@@ -107,9 +101,16 @@ const QuizTab = ({ lang }: IProps) => {
       !!forms[lang]?.selectQuiz &&
       (forms[lang]?.selectQuiz as string[]).length > 0
     ) {
-      setSelected(
-        (forms[lang]?.selectQuiz as Array<any>).map((e) => e?.refId)
-      );
+      if (
+        Array.isArray(forms[lang]?.selectQuiz) &&
+        typeof forms[lang]?.selectQuiz[0] === "string"
+      ) {
+        setSelected(forms[lang]?.selectQuiz);
+      } else {
+        setSelected(
+          (forms[lang]?.selectQuiz as Array<any>).map((e) => e?.refId)
+        );
+      }
     }
   }, []);
 

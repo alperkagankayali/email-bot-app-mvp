@@ -5,10 +5,11 @@ import { CaretRightOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { CollapseProps } from "antd";
 import { Button, Collapse, notification, Select, theme } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import EducationAddForm from "./add";
 import clsx from "clsx";
 import {
+  fetchEducationList,
   handleAddEducationForm,
   handleAddEducationFormReset,
   handleAddEducationListValue,
@@ -32,7 +33,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
   const forms = useSelector((state: RootState) => state.education.forms);
   const [selectLang, setSelectLang] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(!!id);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const t = useTranslations("pages");
 
   const panelStyle: React.CSSProperties = {
@@ -69,7 +70,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
     return selectLang.map((e, index) => {
       return {
         key: index + 1,
-        label: e + " " +t("menu-education")+ "  - " + (index + 1),
+        label: e + " " + t("menu-education") + "  - " + (index + 1),
         children: <EducationAddForm id={id} lang={e} />,
         style: panelStyle,
         extra: genExtra(e),
@@ -92,17 +93,23 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
         res = await createEducationList(forms);
       }
       if (res.success) {
+        dispatch(
+          fetchEducationList({
+            limit: 8,
+            page:1,
+          })
+        );
         router.push("/dashboard/education");
       }
     } else {
       notification.error({
-        message:
-          t("education-list-add-info-message"),
+        message: t("education-list-add-info-message"),
       });
     }
   };
 
   useEffect(() => {
+    debugger;
     if (!!id && languages?.length > 0) {
       const getDetail = async () => {
         const response = await getEducationListContent(10, 1, { id });
@@ -120,9 +127,9 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
 
             if (!!e[type] && Array.isArray(e[type])) {
               prevValue = e[type];
-              e[type] = [...prevValue, content.refId];
+              e[type] = [...prevValue, content];
             } else {
-              e[type] = [content.refId];
+              e[type] = [content];
             }
           });
           newArr.push({ language: e.language, values: e });
@@ -148,7 +155,7 @@ const EducationListAdd: React.FC<IProps> = ({ id }) => {
       };
       getDetail();
     }
-  }, [id]);
+  }, [id, languages]);
 
   if (loading) {
     return <Loader />;

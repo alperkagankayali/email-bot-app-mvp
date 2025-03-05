@@ -108,6 +108,14 @@ export const deleteEducation = async (id: string) => {
   return result;
 };
 
+export const deleteEducationList = async (id: string) => {
+  const url = servicesBaseUrl + finalConfig.DELETE_EDUCATION_LIST;
+  const config = headers.content_type.application_json;
+  const result: IResponseType = await postRequest(url, { id }, config);
+  return result;
+};
+
+
 export const updateArticle = async (id: string, updateData: any) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_ARTICLE;
   const config = headers.content_type.application_json;

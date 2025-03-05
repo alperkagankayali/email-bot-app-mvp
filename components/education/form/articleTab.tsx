@@ -59,16 +59,22 @@ const ArticleTab = ({ lang }: IProps) => {
       })
     );
   }, [dispatch]);
-  console.log(forms[lang]?.selectArticle, forms[lang], lang, selected);
 
   useEffect(() => {
     if (
       !!forms[lang]?.selectArticle &&
       (forms[lang]?.selectArticle as string[]).length > 0
     ) {
-      setSelected(
-        (forms[lang]?.selectArticle as Array<any>).map((e) => e?.refId)
-      );
+      if (
+        Array.isArray(forms[lang]?.selectArticle) &&
+        typeof forms[lang]?.selectArticle[0] === "string"
+      ) {
+        setSelected(forms[lang]?.selectArticle);
+      } else {
+        setSelected(
+          (forms[lang]?.selectArticle as Array<any>).map((e) => e?.refId)
+        );
+      }
     }
   }, []);
 

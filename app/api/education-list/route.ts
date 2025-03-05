@@ -37,6 +37,8 @@ export async function GET(request: Request) {
     const language = !!searchParams.get("language")
       ? searchParams.get("language")?.split(",")
       : null;
+    filter2.isDelete = false;
+
     if (!!language) {
       filter2.languages = { $all: language };
     }
@@ -238,7 +240,8 @@ export async function GET(request: Request) {
                 created_at: 1,
               },
             },
-          ]).sort({ created_at: -1 });;
+          ]);
+
           if (education.length) {
             return NextResponse.json(
               {
@@ -278,6 +281,7 @@ export async function GET(request: Request) {
                   "title description author isPublished contents language levelOfDifficulty img", // Sadece gerekli alanlar
                 model: Course,
               })
+              .sort({ created_at: -1 })
               .skip(skip)
               .limit(limit);
             return NextResponse.json(
@@ -306,6 +310,7 @@ export async function GET(request: Request) {
                 "title description author isPublished contents language levelOfDifficulty img", // Sadece gerekli alanlar
               model: Course,
             })
+            .sort({ created_at: -1 })
             .skip(skip)
             .limit(limit);
           return NextResponse.json(

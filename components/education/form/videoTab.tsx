@@ -1,7 +1,7 @@
 "use client";
 
 import { AppDispatch, RootState } from "@/redux/store";
-import { Badge, Card, Modal, Pagination, Popconfirm } from "antd";
+import { Badge, Card, Modal, Pagination } from "antd";
 import type { PaginationProps } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,8 +13,7 @@ import {
 import clsx from "clsx";
 import { Checkbox } from "antd";
 import { deleteVideo, getVideo } from "@/services/service/educationService";
-import { Link } from "@/i18n/routing";
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
 import ContentFilter, { IFilter } from "@/components/academy/filter";
 
@@ -35,7 +34,6 @@ const VideoTab = ({ lang }: IProps) => {
     (state: RootState) => state.education.videoTotalItems
   );
   const languages = useSelector((state: RootState) => state.language.language);
-  const user = useSelector((state: RootState) => state.user.user);
   const [open, setOpen] = useState<{ show: boolean; data: any }>({
     show: false,
     data: {},
@@ -47,6 +45,8 @@ const VideoTab = ({ lang }: IProps) => {
     authorType: [],
     language: languages.find((e) => e.code === lang)?._id ?? "",
   });
+
+  const t = useTranslations("pages");
 
   useEffect(() => {
     dispatch(
@@ -63,9 +63,16 @@ const VideoTab = ({ lang }: IProps) => {
       !!forms[lang]?.selectVideo &&
       (forms[lang]?.selectVideo as string[]).length > 0
     ) {
-      setSelected(
-        (forms[lang]?.selectVideo as Array<any>).map((e) => e?.refId)
-      );
+      if (
+        Array.isArray(forms[lang]?.selectVideo) &&
+        typeof forms[lang]?.selectVideo[0] === "string"
+      ) {
+        setSelected(forms[lang]?.selectVideo);
+      } else {
+        setSelected(
+          (forms[lang]?.selectVideo as Array<any>).map((e) => e?.refId)
+        );
+      }
     }
   }, []);
 
@@ -84,14 +91,6 @@ const VideoTab = ({ lang }: IProps) => {
     setPage(page);
     setPageSize(pageNumber);
   };
-
-  const handleDeleteVideo = async (id: string) => {
-    const res = await deleteVideo(id);
-    dispatch(
-      handleVideoDataChange(data?.filter((e) => e._id !== res.data?._id))
-    );
-  };
-  const t = useTranslations("pages");
 
   const onChangeVideoSelect = (e: string[]) => {
     const dataFormat = e.map((element: any) => {

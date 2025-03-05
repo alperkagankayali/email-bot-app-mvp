@@ -23,7 +23,6 @@ export async function POST(request: Request) {
           return NextResponse.json(
             {
               ...message404,
-              message: "Education list not found",
             },
             { status: 404 }
           );

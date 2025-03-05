@@ -18,7 +18,7 @@ const options = [
 export type IFilter = {
   title: string;
   authorType: Array<string>;
-  levelOfDifficulty: Array<string>;
+  levelOfDifficulty: string;
   language: Array<string>;
 };
 type IEducationFilter = {
@@ -55,7 +55,7 @@ const EducationFilter: React.FC<IEducationFilter> = ({
         authorType: [],
         language: [],
         title: "",
-        levelOfDifficulty: [],
+        levelOfDifficulty:"",
       });
     } else {
       dispatch(
@@ -74,7 +74,7 @@ const EducationFilter: React.FC<IEducationFilter> = ({
     <div className="">
       <div className="flex justify-between w-full items-center mb-4">
         {!!filter.title ||
-        filter.levelOfDifficulty.length > 0 ||
+        filter.levelOfDifficulty ||
         filter.language.length > 0 ||
         filter.authorType.length > 0 ? (
           <div className="flex">
@@ -197,9 +197,9 @@ const EducationFilter: React.FC<IEducationFilter> = ({
               size="large"
               className="w-full "
               placeholder={t("level-of-difficulty")}
-              mode="multiple"
-              value={filter.levelOfDifficulty || []}
-              onChange={(value: string[]) => {
+              // mode=""
+              value={filter.levelOfDifficulty || undefined}
+              onChange={(value: string) => {
                 handleGetEducationFilter("levelOfDifficulty", value);
               }}
               options={[
