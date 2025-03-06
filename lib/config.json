@@ -73,5 +73,6 @@
   "UPDATE_CAMPAIGN": "/campaign/update",
   "DELETE_CAMPAIGN": "/campaign/delete",
   "GET_CAMPAIGN": "/campaign",
-  "SET_COOKIE":"/cookie"
+  "SET_COOKIE":"/cookie",
+  "LOG_SERVICE":"/import-log"
 }

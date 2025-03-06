@@ -11,7 +11,6 @@ export const routing = defineRouting({
   defaultLocale: "en",
 
   // Sayfa geçişlerini hızlandırmak için
-  prefetch: "intent", // Mouse hover olduğunda prefetch yapar
 
   // Locale detection'ı devre dışı bırakalım
   localeDetection: false,

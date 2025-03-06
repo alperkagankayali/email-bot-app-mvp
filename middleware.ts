@@ -8,6 +8,7 @@ const intlMiddleware = createMiddleware({
   localeDetection: false,
 });
 const isPublicPage = ["/data-entry", "reset-password"];
+
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   if (path.startsWith("/api")) {
@@ -41,6 +42,7 @@ export async function middleware(request: NextRequest) {
 
   return intlMiddleware(request);
 }
+
 export const config = {
   matcher: ["/", "/(de|en|tr)/:path*", "/dashboard/:path*", "/api/:path*"],
 };

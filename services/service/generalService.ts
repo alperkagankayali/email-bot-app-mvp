@@ -282,7 +282,6 @@ export const deleteUser = async (id: string) => {
   return result;
 };
 
-
 export const updatePassword = async (id: string, password: string) => {
   const url = servicesBaseUrl + finalConfig.UPDATE_PASSWORD;
   const config = headers.content_type.application_json;
@@ -300,4 +299,15 @@ export const setCookie = async (name: string, token: string) => {
   const config = headers.content_type.application_json;
   const result: IResponseType = await postRequest(url, {}, config);
   return result;
+};
+
+export const getImportLog = async (importLogId: string) => {
+  try {
+    const url = servicesBaseUrl + finalConfig.LOG_SERVICE + "/" + importLogId;
+    const config = headers.content_type.application_json;
+    const result: IResponseType = await postRequest(url, {}, config);
+    return result;
+  } catch (error) {
+    return error;
+  }
 };
