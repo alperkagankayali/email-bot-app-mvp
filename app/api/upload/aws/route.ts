@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import AWS from "aws-sdk";
 import { message200 } from "@/constants";
+export const dynamic = "force-dynamic"; // Route segment configuration
+export const maxDuration = 300; // Max execution time in seconds
+export const sizeLimit = "100mb"; // Upload size limit
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -8,14 +11,6 @@ const s3 = new AWS.S3({
   region: process.env.AWS_REGION,
 });
 
-export const config = {
-  api: {
-    responseLimit: false,
-    bodyParser: {
-      sizeLimit: '100mb',
-    },
-  },
-}
 
 export async function GET() {
   try {
