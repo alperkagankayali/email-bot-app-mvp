@@ -8,6 +8,15 @@ const s3 = new AWS.S3({
   region: process.env.AWS_REGION,
 });
 
+export const config = {
+  api: {
+    responseLimit: false,
+    bodyParser: {
+      sizeLimit: '100mb',
+    },
+  },
+}
+
 export async function GET() {
   try {
     const params = {
