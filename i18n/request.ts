@@ -6,7 +6,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
   let locale = await requestLocale;
   if (!routing.locales.includes(locale as any)) notFound();
   return {
-    // locale,
+    locale,
     messages: (
       await (locale === "en"
         ? // When using Turbopack, this will enable HMR for `en`

@@ -164,7 +164,7 @@ const ArticleList: React.FC = () => {
                   </Popconfirm>
                 );
                 editIcon = (
-                  <Link href={"/dashboard/academy/quiz/update/" + article._id}>
+                  <Link href={"/dashboard/academy/article/update/" + article._id}>
                     <EditOutlined key="edit" />
                   </Link>
                 );
